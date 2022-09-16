@@ -11,7 +11,7 @@ dotenv.config();
 
 const config: HardhatUserConfig = {
     defaultNetwork: 'hardhat',
-    solidity: '0.8.10',
+    solidity: '0.8.9',
     networks: {
         hardhat: {
             chainId: 1337
