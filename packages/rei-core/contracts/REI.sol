@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.9;
-
+// import './Approver.sol';
+import './Approver.sol';
 import '@openzeppelin/contracts/utils/Counters.sol';
 import '@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol';
 import '@openzeppelin/contracts/access/Ownable.sol';
@@ -10,16 +11,34 @@ contract REI is Ownable, ERC721Enumerable {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
     string public baseURI = 'https://gateway.pinata.cloud/ipfs/';
+    Approver approverContract;
     mapping(uint256 => string) private _hashes;
 
-    constructor(string memory name, string memory symbol)
-        ERC721(name, symbol);
-    {}
+    constructor(
+        string memory name,
+        string memory symbol,
+        address approverAddress
+    ) ERC721(name, symbol) {
+        approverContract = Approver(approverAddress);
+    }
 
-    function mint(string memory tokenURI_) public returns (uint256) {
+    modifier onlyApprover() {
+        require(
+            approverContract.isApprover(_msgSender()) ||
+                _msgSender() == owner(),
+            'AccessControl: caller is not approver'
+        );
+        _;
+    }
+
+    function mint(address to, string memory tokenURI_)
+        public
+        onlyApprover
+        returns (uint256)
+    {
         _tokenIds.increment();
         uint256 newREIID = _tokenIds.current();
-        _mint(msg.sender, newREIID);
+        _mint(to, newREIID);
         _hashes[newREIID] = tokenURI_;
         return newREIID;
     }
@@ -53,5 +72,9 @@ contract REI is Ownable, ERC721Enumerable {
 
     function _burn(uint256 tokenId) internal override(ERC721) {
         super._burn(tokenId);
+    }
+
+    function setApproverContract(address approverAddress) public onlyOwner {
+        approverContract = Approver(approverAddress);
     }
 }
