@@ -1,12 +1,12 @@
 import { ethers } from 'hardhat';
 
 async function main() {
-    const REI = await ethers.getContractFactory('REI');
-    const rei = await REI.deploy();
+    const Storage = await ethers.getContractFactory('Storage');
+    const storage = await Storage.deploy();
 
-    await rei.deployed();
+    await storage.deployed();
 
-    console.log('Deployed to ', rei.address);
+    console.log('Deployed to ', storage.address);
 }
 
 main().catch((error) => {

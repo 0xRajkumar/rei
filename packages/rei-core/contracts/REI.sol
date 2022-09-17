@@ -5,13 +5,12 @@ import './Approver.sol';
 import '@openzeppelin/contracts/utils/Counters.sol';
 import '@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol';
 import '@openzeppelin/contracts/access/Ownable.sol';
-import 'hardhat/console.sol';
 
 contract REI is Ownable, ERC721Enumerable {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
-    string public baseURI = 'https://gateway.pinata.cloud/ipfs/';
     Approver approverContract;
+    string public baseURI = 'https://gateway.pinata.cloud/ipfs/';
     mapping(uint256 => string) private _hashes;
 
     constructor(
@@ -70,11 +69,8 @@ contract REI is Ownable, ERC721Enumerable {
         baseURI = _baseURI;
     }
 
-    function _burn(uint256 tokenId) internal override(ERC721) {
-        super._burn(tokenId);
-    }
-
     function setApproverContract(address approverAddress) public onlyOwner {
+        require(approverAddress != address(0), 'Invalid address');
         approverContract = Approver(approverAddress);
     }
 }
