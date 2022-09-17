@@ -57,4 +57,12 @@ contract Fractionaliser is Ownable {
     function setReiAddress(address _reiAddress) external {
         reiAddress = _reiAddress;
     }
+
+    function getAddressOfFractionisedId(uint256 id)
+        external
+        view
+        returns (address)
+    {
+        return fractionaliseds[id];
+    }
 }
