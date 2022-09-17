@@ -11,10 +11,12 @@ import {
     IconButton,
     useColorModeValue,
     Heading,
+    HStack,
   } from "@chakra-ui/react";
   import { ReactNode } from "react";
   import { FaInstagram, FaTwitter, FaYoutube } from "react-icons/fa";
   import { BiMailSend } from "react-icons/bi";
+import Image from "next/image";
   
   const Footer = () => {
     return (
@@ -30,12 +32,13 @@ import {
             >
               <Stack spacing={6}>
                 <Box>
-                  <Heading color={"green.500"} as="h2" size="lg">
-                    CC-EX
-                  </Heading>
+                <HStack>
+                  <Image src="/images/rei.png" alt="logo" height="30px" width="30px"/>
+                  <Heading color={"grey.500"} as='h2' size='lg'>REI</Heading>
+                </HStack>
                 </Box>
                 <Text fontSize={"sm"}>
-                  © 2022 Carbon Credit Exchange. All rights reserved
+                  © 2022 REI Tokenized. All rights reserved
                 </Text>
                 {/* <Stack direction={"row"} spacing={6}>
                   <SocialButton label={"Twitter"} href={"#"}>

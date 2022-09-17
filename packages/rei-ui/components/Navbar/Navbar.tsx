@@ -29,6 +29,7 @@ import {
     ModalBody,
     ModalCloseButton,
   } from "@chakra-ui/react";
+import Image from 'next/image';
 
 const Navbar = () => {
 
@@ -49,12 +50,15 @@ const Navbar = () => {
   return (
     <>
     <HStack
-        paddingX="8"
+        paddingX={{base:2,md:8}}
         paddingY="4"
         display="flex"
         justifyContent="space-between"
-      >
-        <Heading color={"green.500"} as='h2' size='lg'>CC-EX</Heading>
+      > 
+        <HStack>
+          <Image src="/images/rei.png" alt="logo" height="30px" width="30px"/>
+          <Heading color={"grey.500"} as='h2' size='lg'>REI</Heading>
+        </HStack>
         <HStack display="flex" gap={{base:2,md:4}} flexDirection={{base:'row', md:'row-reverse'}}
         justifyContent="end">
           {!isSSR && isConnected ? (

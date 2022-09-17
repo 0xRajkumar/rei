@@ -71,10 +71,13 @@ import {
                   Home
                 </Button>
                 <Button colorScheme="teal" variant="ghost">
+                  Marketplace
+                </Button>
+                <Button colorScheme="teal" variant="ghost">
                   About
                 </Button>
                 <Button colorScheme="teal" variant="ghost">
-                  Docs
+                  FAQs
                 </Button>
               </VStack>
             </DrawerBody>
@@ -182,27 +185,31 @@ import {
   
   const NAV_ITEMS: Array<NavItem> = [
     {
-      label: 'Route 1 dropdown',
+      label: 'Home',
+      href: '/',
+    },{
+      label: 'Marketplace',
       children: [
         {
-          label: 'Route 1 (i)',
-          subLabel: 'About route 1 text',
+          label: 'Invest in properties',
+          subLabel: 'Become the landlord of the future',
           href: '#',
         },
         {
-          label: 'Route 1 (ii)',
-          subLabel: 'About route 1 text',
+          label: 'Get funds for your property',
+          subLabel: 'Get investment for your dream home',
           href: '#',
         },
       ],
     },
     
+    
     {
-      label: 'Route 2 Normal',
+      label: 'About',
       href: '#',
     },
     {
-      label: 'Route 3 Normal',
+      label: 'FAQs',
       href: '#',
     },
   ];
