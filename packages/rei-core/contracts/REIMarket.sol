@@ -12,6 +12,7 @@ contract REIMarket is Ownable {
     Counters.Counter NumberOfLended;
     Fractionaliser FractionaliserContract;
     IERC20 USDTContract;
+    uint256 public relaxationPeriodForlonee;
 
     constructor(address fractionaliser, address usdtAddress) {
         FractionaliserContract = Fractionaliser(fractionaliser);
@@ -21,7 +22,7 @@ contract REIMarket is Ownable {
     enum LendStatus {
         Created,
         Funded,
-        Token,
+        Taken,
         Repayed,
         Liquidated
     }
@@ -34,7 +35,7 @@ contract REIMarket is Ownable {
         Counters.Counter numberOfInvesters;
         mapping(address => uint256) InvestmentsByInvesters;
         uint256 LoanAmountPerFraction;
-        uint256 InterestPerFraction;
+        uint256 InterestPerFractionInPercentage;
         uint256 repayByTimeStamp;
         uint256 startedAt;
         LendStatus status;
@@ -46,7 +47,7 @@ contract REIMarket is Ownable {
         uint256 _fractionalisedId,
         uint256 _numberOfFractions,
         uint256 _loanAmountPerFraction,
-        uint256 _interestPerFraction,
+        uint256 _interestPerFractionInPercentage, // as a % unit, from 0 - 10000 (2 extra 0s) for eg 25% is 2500
         uint256 repayByTimeStamp
     ) public {
         require(
@@ -63,7 +64,7 @@ contract REIMarket is Ownable {
         );
 
         require(
-            _loanAmountPerFraction > 0 && _interestPerFraction > 0,
+            _loanAmountPerFraction > 0 && _interestPerFractionInPercentage > 0,
             'Invalid'
         );
 
@@ -89,7 +90,8 @@ contract REIMarket is Ownable {
         lended.numberOfFractions = _numberOfFractions;
         lended.Loanee = payable(_msgSender());
         lended.LoanAmountPerFraction = _loanAmountPerFraction;
-        lended.InterestPerFraction = _interestPerFraction;
+        lended
+            .InterestPerFractionInPercentage = _interestPerFractionInPercentage;
         lended.repayByTimeStamp = repayByTimeStamp;
         lended.status = LendStatus.Created;
     }
@@ -183,5 +185,94 @@ contract REIMarket is Ownable {
         if (selectedLended.InvestmentsByInvesters[_msgSender()] == 0) {
             selectedLended.numberOfInvesters.decrement();
         }
+    }
+
+    function withdrawLoan(uint256 lendingNumber) public {
+        require(lendingNumber <= NumberOfLended.current(), '');
+        LendForLoan storage selectedLended = LendedForLoans[lendingNumber];
+        require(selectedLended.status == LendStatus.Funded);
+        require(selectedLended.Loanee == _msgSender(), '');
+        selectedLended.status = LendStatus.Taken;
+        USDTContract.transferFrom(
+            address(this),
+            _msgSender(),
+            selectedLended.LoanAmountPerFraction *
+                selectedLended.numberOfFractions
+        );
+    }
+
+    function repay(uint256 lendingNumber) public {
+        require(lendingNumber <= NumberOfLended.current(), '');
+        LendForLoan storage selectedLended = LendedForLoans[lendingNumber];
+        require(
+            selectedLended.repayByTimeStamp + selectedLended.startedAt >=
+                block.timestamp,
+            ''
+        );
+        require(selectedLended.status == LendStatus.Taken);
+        uint256 loanPerFraction = selectedLended.LoanAmountPerFraction;
+        uint256 interestPerFraction = (selectedLended.LoanAmountPerFraction *
+            selectedLended.InterestPerFractionInPercentage) / 10000;
+        uint256 totalPerFraction = loanPerFraction + interestPerFraction;
+        require(
+            USDTContract.balanceOf(_msgSender()) >=
+                totalPerFraction * selectedLended.numberOfFractions,
+            ''
+        );
+        require(
+            USDTContract.allowance(_msgSender(), address(this)) >=
+                totalPerFraction * selectedLended.numberOfFractions,
+            ''
+        );
+        USDTContract.transferFrom(
+            _msgSender(),
+            address(this),
+            totalPerFraction * selectedLended.numberOfFractions
+        );
+        selectedLended.status = LendStatus.Repayed;
+    }
+
+    function getBackInvestmentWithInterest(uint256 lendingNumber) public {
+        require(lendingNumber <= NumberOfLended.current(), '');
+        LendForLoan storage selectedLended = LendedForLoans[lendingNumber];
+        require(
+            selectedLended.repayByTimeStamp +
+                selectedLended.startedAt +
+                relaxationPeriodForlonee >=
+                block.timestamp,
+            ''
+        );
+        require(selectedLended.status == LendStatus.Repayed);
+        uint256 loanPerFraction = selectedLended.LoanAmountPerFraction;
+        uint256 interestPerFraction = (selectedLended.LoanAmountPerFraction *
+            selectedLended.InterestPerFractionInPercentage) / 10000;
+        uint256 totalPerFraction = loanPerFraction + interestPerFraction;
+        uint256 totalFraction = selectedLended.InvestmentsByInvesters[
+            _msgSender()
+        ];
+        uint256 totalNeedToPay = totalPerFraction * totalFraction;
+        require(
+            FractionalisedNFT(selectedLended.fractionalisedNftAddress)
+                .balanceOf(_msgSender()) == totalFraction,
+            'Invalid'
+        );
+
+        require(
+            FractionalisedNFT(selectedLended.fractionalisedNftAddress)
+                .allowance(_msgSender(), address(this)) >= totalFraction,
+            ''
+        );
+
+        FractionalisedNFT(selectedLended.fractionalisedNftAddress).transferFrom(
+                _msgSender(),
+                selectedLended.Loanee,
+                totalFraction
+            );
+        USDTContract.transferFrom(address(this), _msgSender(), totalNeedToPay);
+        selectedLended.InvestmentsByInvesters[_msgSender()] = 0;
+        selectedLended.numberOfFractionsInvested =
+            selectedLended.numberOfFractionsInvested -
+            totalFraction;
+        selectedLended.numberOfInvesters.decrement();
     }
 }
