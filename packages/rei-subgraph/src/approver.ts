@@ -1,65 +1,53 @@
 import {
-  DecisionTaken as DecisionTakenEvent,
-  NewApplicationCreated as NewApplicationCreatedEvent,
-  Approver as ApproverContract,
+  Approval as ApprovalEvent,
+  ApprovalForAll as ApprovalForAllEvent,
+  OwnershipTransferred as OwnershipTransferredEvent,
+  Transfer as TransferEvent,
 } from "../generated/Approver/Approver";
-import { Application, WithStatus, User } from "../generated/schema";
 import {
-  ipfs,
-  json,
-  BigInt,
-  ethereum,
-  Bytes,
-  bigInt,
-} from "@graphprotocol/graph-ts";
-export function handleNewApplicationCreated(
-  event: NewApplicationCreatedEvent
-): void {
-  let application = new Application(event.params.applicationNumber.toString());
-  // type Application @entity {
-  //   id: ID!
-  //   applicationNumber: BigInt!
-  //   applicant: Bytes!
-  //   name: String!
-  //   description: String!
-  //   imageURI: String!
-  //   country: String!
-  //   gpsCoordinates: String!
-  //   surfaceAreaInMTRs: BigInt!
-  //   applicationStatus: WithStatus!
-  // }
-  application.applicationNumber = event.params.applicationNumber;
-  application.applicant = event.params.applicant.toHexString();
-  application.name = event.params.name;
-  application.description = event.params.description;
-  application.imageURI = event.params.imageURI;
-  application.country = event.params.country;
-  application.gpsCoordinates = event.params.gpsCoordinates;
-  application.surfaceAreaInMTRs = event.params.surfaceAreaInMTRs;
-  application.applicationStatus = event.params.applicationStatus.toString();
-  // let approverContract = ApproverContract.bind(event.address);
-  // approverContract.getApllicationAt(event.params.applicationNumber);
-  // entity.applicant = approverContract.getApllicationAt(
-  //   event.params.applicationNumber
-  // ).applicant;
-  // entity.applicationStatus = approverContract
-  //   .getApllicationAt(event.params.applicationNumber)
-  //   .applicationStatus.toString();
-  // entity.description = approverContract
-  //   .getApllicationAt(event.params.applicationNumber)
-  //   .description.toString();
-  // entity.imageURI = approverContract
-  //   .getApllicationAt(event.params.applicationNumber)
-  //   .imageURI.toString();
-  application.save();
-  let withstatus = new WithStatus(event.params.applicationStatus.toString());
-  withstatus.save();
-  let user = new User(event.params.applicant.toHexString());
-  user.save();
+  Approval,
+  ApprovalForAll,
+  OwnershipTransferred,
+  Transfer,
+} from "../generated/schema";
+
+export function handleApproval(event: ApprovalEvent): void {
+  let entity = new Approval(
+    event.transaction.hash.toHex() + "-" + event.logIndex.toString()
+  );
+  entity.owner = event.params.owner;
+  entity.approved = event.params.approved;
+  entity.tokenId = event.params.tokenId;
+  entity.save();
 }
 
-export function handleDecisionTaken(event: DecisionTakenEvent): void {
-  let application = new Application(event.params.applicationNumber.toString());
-  application.applicationStatus = event.params.decision.toString();
-  application.save();
+export function handleApprovalForAll(event: ApprovalForAllEvent): void {
+  let entity = new ApprovalForAll(
+    event.transaction.hash.toHex() + "-" + event.logIndex.toString()
+  );
+  entity.owner = event.params.owner;
+  entity.operator = event.params.operator;
+  entity.approved = event.params.approved;
+  entity.save();
+}
+
+export function handleOwnershipTransferred(
+  event: OwnershipTransferredEvent
+): void {
+  let entity = new OwnershipTransferred(
+    event.transaction.hash.toHex() + "-" + event.logIndex.toString()
+  );
+  entity.previousOwner = event.params.previousOwner;
+  entity.newOwner = event.params.newOwner;
+  entity.save();
+}
+
+export function handleTransfer(event: TransferEvent): void {
+  let entity = new Transfer(
+    event.transaction.hash.toHex() + "-" + event.logIndex.toString()
+  );
+  entity.from = event.params.from;
+  entity.to = event.params.to;
+  entity.tokenId = event.params.tokenId;
+  entity.save();
 }

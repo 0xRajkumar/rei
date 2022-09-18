@@ -1,34 +1,29 @@
-# emit NewApplicationCreated(
-#     applicationNumber,
-#     _msgSender(),
-#     name,
-#     description,
-#     imageURI,
-#     country,
-#     city,
-#     gpsCoordinates,
-#     surfaceAreaInMTRs,
-#     ApplicationStatus.Pending
-# );
+# uint256 applicationNumber;
+#       address applicant;
+#       string name;
+#       string description;
+#       string imageURI;
+#       REIAttributes attributes;
+#       ApplicationStatus applicationStatus;
+
 type Application @entity {
   id: ID!
   applicationNumber: BigInt!
-  applicant: User!
-  name: String!
+  applicant: Bytes!
+  applicationStatus: WithStatus!
   description: String!
   imageURI: String!
-  country: String!
-  gpsCoordinates: String!
-  surfaceAreaInMTRs: BigInt!
-  applicationStatus: WithStatus!
 }
 
 type WithStatus @entity {
   id: ID!
   applications: [Application!]! @derivedFrom(field: "applicationStatus")
 }
+<<<<<<< HEAD
 
 type User @entity {
   id: ID!
   applications: [Application!]! @derivedFrom(field: "applicant")
 }
+=======
+>>>>>>> develop

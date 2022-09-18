@@ -6,9 +6,8 @@ dataSources:
     name: Approver
     network: goerli
     source:
-      address: "0x9F6C11f4Ed1d342183c32B715eBc61c63ddF7064"
+      address: "0x5ba6c1dF7932636f26Be70c2E33D66Ce77BD79DA"
       abi: Approver
-      startBlock: 7613736
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -20,8 +19,19 @@ dataSources:
         - name: Approver
           file: ./abis/Approver.json
       eventHandlers:
+<<<<<<< HEAD
         - event: DecisionTaken(indexed uint256,indexed address,indexed uint8)
           handler: handleDecisionTaken
         - event: NewApplicationCreated(indexed uint256,indexed address,string,string,string,string,string,string,uint256,uint8)
           handler: handleNewApplicationCreated
+=======
+        - event: Approval(indexed address,indexed address,indexed uint256)
+          handler: handleApproval
+        - event: ApprovalForAll(indexed address,indexed address,bool)
+          handler: handleApprovalForAll
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: handleOwnershipTransferred
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleTransfer
+>>>>>>> develop
       file: ./src/approver.ts
