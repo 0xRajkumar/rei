@@ -11,20 +11,20 @@ import {
 } from "@chakra-ui/react";
 import type { NextPage } from "next";
 import { useQuery, gql } from "@apollo/client";
-import { GET_PENDING_APPLICATION } from "../graphql/subgraph";
+import { GET_PENDING_APPLICATIONS } from "../graphql/subgraph";
 const PendingApplication: NextPage = () => {
   const {
     loading,
     error,
     data: pendingUsers,
-  } = useQuery(GET_PENDING_APPLICATION);
+  } = useQuery(GET_PENDING_APPLICATIONS);
   console.log(
     loading ? "Loading" : pendingUsers.withStatuses[0].applications[0]
   );
   if (loading) return <p>Loading...</p>;
   const applications = pendingUsers.withStatuses[0].applications;
   return (
-    <Center h="calc(100vh - 131px)">
+    <Center>
       <Stack flexDirection="row" flexWrap="wrap" gap="2">
         {loading ? (
           <Heading textShadow="2px 2px #0987A0">Loading Data</Heading>

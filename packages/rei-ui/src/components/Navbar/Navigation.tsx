@@ -3,6 +3,7 @@ import {
   Flex,
   HStack,
   Input,
+  Link as CLink,
   StackDivider,
   useDisclosure,
   VStack,
@@ -26,13 +27,12 @@ import {
   Text,
   Stack,
   Icon,
-  Link,
   Popover,
   PopoverTrigger,
   PopoverContent,
   useColorModeValue,
 } from "@chakra-ui/react";
-
+import Link from "next/link";
 const Navigation = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const btnRef = React.useRef(null);
@@ -105,9 +105,8 @@ const DesktopNav = () => {
         <Box key={navItem.label}>
           <Popover trigger={"hover"} placement={"bottom-start"}>
             <PopoverTrigger>
-              <Link
+              <CLink
                 p={2}
-                href={navItem.href ?? "#"}
                 fontSize={"sm"}
                 fontWeight={500}
                 color={linkColor}
@@ -116,8 +115,8 @@ const DesktopNav = () => {
                   color: linkHoverColor,
                 }}
               >
-                {navItem.label}
-              </Link>
+                <Link href={navItem.href ?? "#"}>{navItem.label}</Link>
+              </CLink>
             </PopoverTrigger>
 
             {navItem.children && (
@@ -145,7 +144,7 @@ const DesktopNav = () => {
 
 const DesktopSubNav = ({ label, href, subLabel }: NavItem) => {
   return (
-    <Link
+    <CLink
       href={href}
       role={"group"}
       display={"block"}
@@ -176,7 +175,7 @@ const DesktopSubNav = ({ label, href, subLabel }: NavItem) => {
           <Icon color={"green.400"} w={5} h={5} as={FaChevronRight} />
         </Flex>
       </Stack>
-    </Link>
+    </CLink>
   );
 };
 
@@ -198,12 +197,12 @@ const NAV_ITEMS: Array<NavItem> = [
       {
         label: "Pending Applications",
         subLabel: "See pending applications",
-        href: "/pendingapplication",
+        href: "/pendingapplications",
       },
       {
-        label: "Get funds for your property",
-        subLabel: "Get investment for your dream home",
-        href: "#",
+        label: "Create Application",
+        subLabel: "Create and see already created applications",
+        href: "/createapplication",
       },
     ],
   },

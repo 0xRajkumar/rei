@@ -1,0 +1,458 @@
+[
+  {
+    "inputs": [
+      { "internalType": "address", "name": "reiAddress", "type": "address" }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "constructor"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "_user",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "_access",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "bool",
+        "name": "_enabled",
+        "type": "bool"
+      }
+    ],
+    "name": "AccessSet",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "applicationNumber",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "decisionTaker",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "enum Approver.ApplicationStatus",
+        "name": "decision",
+        "type": "uint8"
+      }
+    ],
+    "name": "DecisionTaken",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "applicationNumber",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "applicant",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "name",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "imageURI",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "country",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "city",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "gpsCoordinates",
+        "type": "string"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "surfaceAreaInMTRs",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "enum Approver.ApplicationStatus",
+        "name": "applicationStatus",
+        "type": "uint8"
+      }
+    ],
+    "name": "NewApplicationCreated",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "previousOwner",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "OwnershipTransferred",
+    "type": "event"
+  },
+  {
+    "inputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }],
+    "name": "Applications",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "applicationNumber",
+        "type": "uint256"
+      },
+      { "internalType": "address", "name": "applicant", "type": "address" },
+      { "internalType": "string", "name": "name", "type": "string" },
+      { "internalType": "string", "name": "description", "type": "string" },
+      { "internalType": "string", "name": "imageURI", "type": "string" },
+      {
+        "components": [
+          { "internalType": "string", "name": "country", "type": "string" },
+          { "internalType": "string", "name": "city", "type": "string" },
+          {
+            "internalType": "string",
+            "name": "gpsCoordinates",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "surfaceAreaInMTRs",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct Approver.REIAttributes",
+        "name": "attributes",
+        "type": "tuple"
+      },
+      {
+        "internalType": "enum Approver.ApplicationStatus",
+        "name": "applicationStatus",
+        "type": "uint8"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "applicationNumber",
+        "type": "uint256"
+      },
+      {
+        "internalType": "enum Approver.ApplicationStatus",
+        "name": "status",
+        "type": "uint8"
+      },
+      { "internalType": "string", "name": "reiURI", "type": "string" }
+    ],
+    "name": "applicationDecision",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "string", "name": "name", "type": "string" },
+      { "internalType": "string", "name": "description", "type": "string" },
+      { "internalType": "string", "name": "imageURI", "type": "string" },
+      { "internalType": "string", "name": "country", "type": "string" },
+      { "internalType": "string", "name": "city", "type": "string" },
+      { "internalType": "string", "name": "gpsCoordinates", "type": "string" },
+      {
+        "internalType": "uint256",
+        "name": "surfaceAreaInMTRs",
+        "type": "uint256"
+      }
+    ],
+    "name": "applyForApproval",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "index", "type": "uint256" }
+    ],
+    "name": "getApplication",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "applicationNumber",
+            "type": "uint256"
+          },
+          { "internalType": "address", "name": "applicant", "type": "address" },
+          { "internalType": "string", "name": "name", "type": "string" },
+          { "internalType": "string", "name": "description", "type": "string" },
+          { "internalType": "string", "name": "imageURI", "type": "string" },
+          {
+            "components": [
+              { "internalType": "string", "name": "country", "type": "string" },
+              { "internalType": "string", "name": "city", "type": "string" },
+              {
+                "internalType": "string",
+                "name": "gpsCoordinates",
+                "type": "string"
+              },
+              {
+                "internalType": "uint256",
+                "name": "surfaceAreaInMTRs",
+                "type": "uint256"
+              }
+            ],
+            "internalType": "struct Approver.REIAttributes",
+            "name": "attributes",
+            "type": "tuple"
+          },
+          {
+            "internalType": "enum Approver.ApplicationStatus",
+            "name": "applicationStatus",
+            "type": "uint8"
+          }
+        ],
+        "internalType": "struct Approver.Application",
+        "name": "",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getPendingApplication",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "applicationNumber",
+            "type": "uint256"
+          },
+          { "internalType": "address", "name": "applicant", "type": "address" },
+          { "internalType": "string", "name": "name", "type": "string" },
+          { "internalType": "string", "name": "description", "type": "string" },
+          { "internalType": "string", "name": "imageURI", "type": "string" },
+          {
+            "components": [
+              { "internalType": "string", "name": "country", "type": "string" },
+              { "internalType": "string", "name": "city", "type": "string" },
+              {
+                "internalType": "string",
+                "name": "gpsCoordinates",
+                "type": "string"
+              },
+              {
+                "internalType": "uint256",
+                "name": "surfaceAreaInMTRs",
+                "type": "uint256"
+              }
+            ],
+            "internalType": "struct Approver.REIAttributes",
+            "name": "attributes",
+            "type": "tuple"
+          },
+          {
+            "internalType": "enum Approver.ApplicationStatus",
+            "name": "applicationStatus",
+            "type": "uint8"
+          }
+        ],
+        "internalType": "struct Approver.Application[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getRejectedApplication",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "applicationNumber",
+            "type": "uint256"
+          },
+          { "internalType": "address", "name": "applicant", "type": "address" },
+          { "internalType": "string", "name": "name", "type": "string" },
+          { "internalType": "string", "name": "description", "type": "string" },
+          { "internalType": "string", "name": "imageURI", "type": "string" },
+          {
+            "components": [
+              { "internalType": "string", "name": "country", "type": "string" },
+              { "internalType": "string", "name": "city", "type": "string" },
+              {
+                "internalType": "string",
+                "name": "gpsCoordinates",
+                "type": "string"
+              },
+              {
+                "internalType": "uint256",
+                "name": "surfaceAreaInMTRs",
+                "type": "uint256"
+              }
+            ],
+            "internalType": "struct Approver.REIAttributes",
+            "name": "attributes",
+            "type": "tuple"
+          },
+          {
+            "internalType": "enum Approver.ApplicationStatus",
+            "name": "applicationStatus",
+            "type": "uint8"
+          }
+        ],
+        "internalType": "struct Approver.Application[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "approver", "type": "address" }
+    ],
+    "name": "isApprover",
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "numberOfApplications",
+    "outputs": [
+      { "internalType": "uint256", "name": "_value", "type": "uint256" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "numberOfApplicationsAccepted",
+    "outputs": [
+      { "internalType": "uint256", "name": "_value", "type": "uint256" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "numberOfApplicationsRejected",
+    "outputs": [
+      { "internalType": "uint256", "name": "_value", "type": "uint256" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "owner",
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "renounceOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "approver", "type": "address" },
+      { "internalType": "bool", "name": "enabled", "type": "bool" }
+    ],
+    "name": "setApprover",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address[]", "name": "approvers", "type": "address[]" },
+      { "internalType": "bool", "name": "enabled", "type": "bool" }
+    ],
+    "name": "setApprovers",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "reiaddress", "type": "address" }
+    ],
+    "name": "setREIAddress",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "address", "name": "newOwner", "type": "address" }
+    ],
+    "name": "transferOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+]
