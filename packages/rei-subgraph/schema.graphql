@@ -19,11 +19,8 @@ type WithStatus @entity {
   id: ID!
   applications: [Application!]! @derivedFrom(field: "applicationStatus")
 }
-<<<<<<< HEAD
 
 type User @entity {
   id: ID!
   applications: [Application!]! @derivedFrom(field: "applicant")
 }
-=======
->>>>>>> develop
