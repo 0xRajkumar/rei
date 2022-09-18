@@ -1,0 +1,21 @@
+# uint256 applicationNumber;
+#       address applicant;
+#       string name;
+#       string description;
+#       string imageURI;
+#       REIAttributes attributes;
+#       ApplicationStatus applicationStatus;
+
+type Application @entity {
+  id: ID!
+  applicationNumber: BigInt!
+  applicant: Bytes!
+  applicationStatus: WithStatus!
+  description: String!
+  imageURI: String!
+}
+
+type WithStatus @entity {
+  id: ID!
+  applications: [Application!]! @derivedFrom(field: "applicationStatus")
+}
