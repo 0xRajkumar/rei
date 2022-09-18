@@ -22,7 +22,7 @@ export declare namespace Approver {
     country: string;
     city: string;
     gpsCoordinates: string;
-    surfaceAreainMTRs: BigNumberish;
+    surfaceAreaInMTRs: BigNumberish;
   };
 
   export type REIAttributesStructOutput = [
@@ -34,7 +34,35 @@ export declare namespace Approver {
     country: string;
     city: string;
     gpsCoordinates: string;
-    surfaceAreainMTRs: BigNumber;
+    surfaceAreaInMTRs: BigNumber;
+  };
+
+  export type ApplicationStruct = {
+    applicationNumber: BigNumberish;
+    applicant: string;
+    name: string;
+    description: string;
+    imageURI: string;
+    attributes: Approver.REIAttributesStruct;
+    applicationStatus: BigNumberish;
+  };
+
+  export type ApplicationStructOutput = [
+    BigNumber,
+    string,
+    string,
+    string,
+    string,
+    Approver.REIAttributesStructOutput,
+    number
+  ] & {
+    applicationNumber: BigNumber;
+    applicant: string;
+    name: string;
+    description: string;
+    imageURI: string;
+    attributes: Approver.REIAttributesStructOutput;
+    applicationStatus: number;
   };
 }
 
@@ -43,9 +71,14 @@ export interface ApproverInterface extends utils.Interface {
   functions: {
     "Applications(uint256)": FunctionFragment;
     "applicationDecision(uint256,uint8,string)": FunctionFragment;
-    "applyForApproval(string,string,string,(string,string,string,uint256))": FunctionFragment;
+    "applyForApproval(string,string,string,string,string,string,uint256)": FunctionFragment;
+    "getApllicationAt(uint256)": FunctionFragment;
+    "getPendingApplication()": FunctionFragment;
+    "getRejectedApplication()": FunctionFragment;
     "isApprover(address)": FunctionFragment;
     "numberOfApplications()": FunctionFragment;
+    "numberOfApplicationsAccepted()": FunctionFragment;
+    "numberOfApplicationsRejected()": FunctionFragment;
     "owner()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "setApprover(address,bool)": FunctionFragment;
@@ -64,11 +97,31 @@ export interface ApproverInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "applyForApproval",
-    values: [string, string, string, Approver.REIAttributesStruct]
+    values: [string, string, string, string, string, string, BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getApllicationAt",
+    values: [BigNumberish]
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getPendingApplication",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getRejectedApplication",
+    values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "isApprover", values: [string]): string;
   encodeFunctionData(
     functionFragment: "numberOfApplications",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "numberOfApplicationsAccepted",
+    values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "numberOfApplicationsRejected",
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
@@ -105,9 +158,29 @@ export interface ApproverInterface extends utils.Interface {
     functionFragment: "applyForApproval",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(
+    functionFragment: "getApllicationAt",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getPendingApplication",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getRejectedApplication",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "isApprover", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "numberOfApplications",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "numberOfApplicationsAccepted",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "numberOfApplicationsRejected",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
@@ -133,20 +206,61 @@ export interface ApproverInterface extends utils.Interface {
   ): Result;
 
   events: {
-    "AssessSet(address,string,bool)": EventFragment;
+    "AccessSet(address,string,bool)": EventFragment;
+    "DecisionTaken(uint256,address,uint8)": EventFragment;
+    "NewApplicationCreated(uint256,address,string,string,string,string,string,string,uint256,uint8)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
   };
 
-  getEvent(nameOrSignatureOrTopic: "AssessSet"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "AccessSet"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "DecisionTaken"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "NewApplicationCreated"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
 }
 
-export type AssessSetEvent = TypedEvent<
+export type AccessSetEvent = TypedEvent<
   [string, string, boolean],
   { _user: string; _access: string; _enabled: boolean }
 >;
 
-export type AssessSetEventFilter = TypedEventFilter<AssessSetEvent>;
+export type AccessSetEventFilter = TypedEventFilter<AccessSetEvent>;
+
+export type DecisionTakenEvent = TypedEvent<
+  [BigNumber, string, number],
+  { applicationNumber: BigNumber; decisionTaker: string; decision: number }
+>;
+
+export type DecisionTakenEventFilter = TypedEventFilter<DecisionTakenEvent>;
+
+export type NewApplicationCreatedEvent = TypedEvent<
+  [
+    BigNumber,
+    string,
+    string,
+    string,
+    string,
+    string,
+    string,
+    string,
+    BigNumber,
+    number
+  ],
+  {
+    applicationNumber: BigNumber;
+    applicant: string;
+    name: string;
+    description: string;
+    imageURI: string;
+    country: string;
+    city: string;
+    gpsCoordinates: string;
+    surfaceAreaInMTRs: BigNumber;
+    applicationStatus: number;
+  }
+>;
+
+export type NewApplicationCreatedEventFilter =
+  TypedEventFilter<NewApplicationCreatedEvent>;
 
 export type OwnershipTransferredEvent = TypedEvent<
   [string, string],
@@ -218,13 +332,37 @@ export interface Approver extends BaseContract {
       name: string,
       description: string,
       imageURI: string,
-      attributions: Approver.REIAttributesStruct,
+      country: string,
+      city: string,
+      gpsCoordinates: string,
+      surfaceAreaInMTRs: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
+
+    getApllicationAt(
+      index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<[Approver.ApplicationStructOutput]>;
+
+    getPendingApplication(
+      overrides?: CallOverrides
+    ): Promise<[Approver.ApplicationStructOutput[]]>;
+
+    getRejectedApplication(
+      overrides?: CallOverrides
+    ): Promise<[Approver.ApplicationStructOutput[]]>;
 
     isApprover(approver: string, overrides?: CallOverrides): Promise<[boolean]>;
 
     numberOfApplications(
+      overrides?: CallOverrides
+    ): Promise<[BigNumber] & { _value: BigNumber }>;
+
+    numberOfApplicationsAccepted(
+      overrides?: CallOverrides
+    ): Promise<[BigNumber] & { _value: BigNumber }>;
+
+    numberOfApplicationsRejected(
       overrides?: CallOverrides
     ): Promise<[BigNumber] & { _value: BigNumber }>;
 
@@ -291,13 +429,33 @@ export interface Approver extends BaseContract {
     name: string,
     description: string,
     imageURI: string,
-    attributions: Approver.REIAttributesStruct,
+    country: string,
+    city: string,
+    gpsCoordinates: string,
+    surfaceAreaInMTRs: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
+
+  getApllicationAt(
+    index: BigNumberish,
+    overrides?: CallOverrides
+  ): Promise<Approver.ApplicationStructOutput>;
+
+  getPendingApplication(
+    overrides?: CallOverrides
+  ): Promise<Approver.ApplicationStructOutput[]>;
+
+  getRejectedApplication(
+    overrides?: CallOverrides
+  ): Promise<Approver.ApplicationStructOutput[]>;
 
   isApprover(approver: string, overrides?: CallOverrides): Promise<boolean>;
 
   numberOfApplications(overrides?: CallOverrides): Promise<BigNumber>;
+
+  numberOfApplicationsAccepted(overrides?: CallOverrides): Promise<BigNumber>;
+
+  numberOfApplicationsRejected(overrides?: CallOverrides): Promise<BigNumber>;
 
   owner(overrides?: CallOverrides): Promise<string>;
 
@@ -362,13 +520,33 @@ export interface Approver extends BaseContract {
       name: string,
       description: string,
       imageURI: string,
-      attributions: Approver.REIAttributesStruct,
+      country: string,
+      city: string,
+      gpsCoordinates: string,
+      surfaceAreaInMTRs: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    getApllicationAt(
+      index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<Approver.ApplicationStructOutput>;
+
+    getPendingApplication(
+      overrides?: CallOverrides
+    ): Promise<Approver.ApplicationStructOutput[]>;
+
+    getRejectedApplication(
+      overrides?: CallOverrides
+    ): Promise<Approver.ApplicationStructOutput[]>;
 
     isApprover(approver: string, overrides?: CallOverrides): Promise<boolean>;
 
     numberOfApplications(overrides?: CallOverrides): Promise<BigNumber>;
+
+    numberOfApplicationsAccepted(overrides?: CallOverrides): Promise<BigNumber>;
+
+    numberOfApplicationsRejected(overrides?: CallOverrides): Promise<BigNumber>;
 
     owner(overrides?: CallOverrides): Promise<string>;
 
@@ -395,16 +573,52 @@ export interface Approver extends BaseContract {
   };
 
   filters: {
-    "AssessSet(address,string,bool)"(
+    "AccessSet(address,string,bool)"(
       _user?: null,
       _access?: null,
       _enabled?: null
-    ): AssessSetEventFilter;
-    AssessSet(
+    ): AccessSetEventFilter;
+    AccessSet(
       _user?: null,
       _access?: null,
       _enabled?: null
-    ): AssessSetEventFilter;
+    ): AccessSetEventFilter;
+
+    "DecisionTaken(uint256,address,uint8)"(
+      applicationNumber?: BigNumberish | null,
+      decisionTaker?: string | null,
+      decision?: BigNumberish | null
+    ): DecisionTakenEventFilter;
+    DecisionTaken(
+      applicationNumber?: BigNumberish | null,
+      decisionTaker?: string | null,
+      decision?: BigNumberish | null
+    ): DecisionTakenEventFilter;
+
+    "NewApplicationCreated(uint256,address,string,string,string,string,string,string,uint256,uint8)"(
+      applicationNumber?: BigNumberish | null,
+      applicant?: string | null,
+      name?: null,
+      description?: null,
+      imageURI?: null,
+      country?: null,
+      city?: null,
+      gpsCoordinates?: null,
+      surfaceAreaInMTRs?: null,
+      applicationStatus?: null
+    ): NewApplicationCreatedEventFilter;
+    NewApplicationCreated(
+      applicationNumber?: BigNumberish | null,
+      applicant?: string | null,
+      name?: null,
+      description?: null,
+      imageURI?: null,
+      country?: null,
+      city?: null,
+      gpsCoordinates?: null,
+      surfaceAreaInMTRs?: null,
+      applicationStatus?: null
+    ): NewApplicationCreatedEventFilter;
 
     "OwnershipTransferred(address,address)"(
       previousOwner?: string | null,
@@ -433,13 +647,29 @@ export interface Approver extends BaseContract {
       name: string,
       description: string,
       imageURI: string,
-      attributions: Approver.REIAttributesStruct,
+      country: string,
+      city: string,
+      gpsCoordinates: string,
+      surfaceAreaInMTRs: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
+
+    getApllicationAt(
+      index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
+    getPendingApplication(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getRejectedApplication(overrides?: CallOverrides): Promise<BigNumber>;
 
     isApprover(approver: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     numberOfApplications(overrides?: CallOverrides): Promise<BigNumber>;
+
+    numberOfApplicationsAccepted(overrides?: CallOverrides): Promise<BigNumber>;
+
+    numberOfApplicationsRejected(overrides?: CallOverrides): Promise<BigNumber>;
 
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -487,8 +717,24 @@ export interface Approver extends BaseContract {
       name: string,
       description: string,
       imageURI: string,
-      attributions: Approver.REIAttributesStruct,
+      country: string,
+      city: string,
+      gpsCoordinates: string,
+      surfaceAreaInMTRs: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    getApllicationAt(
+      index: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getPendingApplication(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    getRejectedApplication(
+      overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     isApprover(
@@ -497,6 +743,14 @@ export interface Approver extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     numberOfApplications(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    numberOfApplicationsAccepted(
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    numberOfApplicationsRejected(
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

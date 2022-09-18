@@ -29,7 +29,7 @@ const _abi = [
         type: "bool",
       },
     ],
-    name: "AssessSet",
+    name: "AccessSet",
     type: "event",
   },
   {

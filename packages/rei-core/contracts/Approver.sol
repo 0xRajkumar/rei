@@ -39,13 +39,21 @@ contract Approver is AccessControl {
 
     event NewApplicationCreated(
         uint256 indexed applicationNumber,
-        address indexed applicant
+        address indexed applicant,
+        string name,
+        string description,
+        string imageURI,
+        string country,
+        string city,
+        string gpsCoordinates,
+        uint256 surfaceAreaInMTRs,
+        ApplicationStatus applicationStatus
     );
 
     event DecisionTaken(
-        uint256 applicationNumber,
-        address decisionTaker,
-        ApplicationStatus decision
+        uint256 indexed applicationNumber,
+        address indexed decisionTaker,
+        ApplicationStatus indexed decision
     );
 
     constructor(address reiAddress) {
@@ -78,7 +86,18 @@ contract Approver is AccessControl {
             attributions,
             ApplicationStatus.Pending
         );
-        emit NewApplicationCreated(applicationNumber, _msgSender());
+        emit NewApplicationCreated(
+            applicationNumber,
+            _msgSender(),
+            name,
+            description,
+            imageURI,
+            country,
+            city,
+            gpsCoordinates,
+            surfaceAreaInMTRs,
+            ApplicationStatus.Pending
+        );
     }
 
     function applicationDecision(
@@ -165,6 +184,15 @@ contract Approver is AccessControl {
             }
         }
         return applications;
+    }
+
+    function getApllicationAt(uint256 index)
+        public
+        view
+        returns (Application memory)
+    {
+        require(numberOfApplications.current() >= index, 'not exist');
+        return Applications[index];
     }
 
     function setREIAddress(address reiaddress) public onlyOwner {
