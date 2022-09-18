@@ -62,4 +62,6 @@ export function handleDecisionTaken(event: DecisionTakenEvent): void {
   let application = new Application(event.params.applicationNumber.toString());
   application.applicationStatus = event.params.decision.toString();
   application.save();
+  let withstatus = new WithStatus(event.params.decision.toString());
+  withstatus.save();
 }

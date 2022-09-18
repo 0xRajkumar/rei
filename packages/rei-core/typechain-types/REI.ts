@@ -25,7 +25,7 @@ export interface REIInterface extends utils.Interface {
     "baseURI()": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
-    "mint(address,string)": FunctionFragment;
+    "mint(address,address,string)": FunctionFragment;
     "name()": FunctionFragment;
     "owner()": FunctionFragment;
     "ownerOf(uint256)": FunctionFragment;
@@ -61,7 +61,7 @@ export interface REIInterface extends utils.Interface {
   ): string;
   encodeFunctionData(
     functionFragment: "mint",
-    values: [string, string]
+    values: [string, string, string]
   ): string;
   encodeFunctionData(functionFragment: "name", values?: undefined): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
@@ -275,6 +275,7 @@ export interface REI extends BaseContract {
     ): Promise<[boolean]>;
 
     mint(
+      msgSender: string,
       to: string,
       tokenURI_: string,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -389,6 +390,7 @@ export interface REI extends BaseContract {
   ): Promise<boolean>;
 
   mint(
+    msgSender: string,
     to: string,
     tokenURI_: string,
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -494,6 +496,7 @@ export interface REI extends BaseContract {
     ): Promise<boolean>;
 
     mint(
+      msgSender: string,
       to: string,
       tokenURI_: string,
       overrides?: CallOverrides
@@ -642,6 +645,7 @@ export interface REI extends BaseContract {
     ): Promise<BigNumber>;
 
     mint(
+      msgSender: string,
       to: string,
       tokenURI_: string,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -757,6 +761,7 @@ export interface REI extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     mint(
+      msgSender: string,
       to: string,
       tokenURI_: string,
       overrides?: Overrides & { from?: string | Promise<string> }

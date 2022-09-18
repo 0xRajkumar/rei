@@ -1,6 +1,6 @@
 specVersion: 0.0.4
 schema:
-  file: ./schema.graphql
+  file: schema.graphql
 dataSources:
   - kind: ethereum
     name: Approver
@@ -18,10 +18,11 @@ dataSources:
         - WithStatus
       abis:
         - name: Approver
-          file: ./abis/Approver.json
+          file: Approver\abis\Approver.json
       eventHandlers:
         - event: DecisionTaken(indexed uint256,indexed address,indexed uint8)
           handler: handleDecisionTaken
-        - event: NewApplicationCreated(indexed uint256,indexed address,string,string,string,string,string,string,uint256,uint8)
+        - event: NewApplicationCreated(indexed uint256,indexed
+            address,string,string,string,string,string,string,uint256,uint8)
           handler: handleNewApplicationCreated
-      file: ./src/approver.ts
+      file: Approver\Approver.wasm

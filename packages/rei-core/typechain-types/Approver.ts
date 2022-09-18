@@ -72,7 +72,7 @@ export interface ApproverInterface extends utils.Interface {
     "Applications(uint256)": FunctionFragment;
     "applicationDecision(uint256,uint8,string)": FunctionFragment;
     "applyForApproval(string,string,string,string,string,string,uint256)": FunctionFragment;
-    "getApllicationAt(uint256)": FunctionFragment;
+    "getApplicationAt(uint256)": FunctionFragment;
     "getPendingApplication()": FunctionFragment;
     "getRejectedApplication()": FunctionFragment;
     "isApprover(address)": FunctionFragment;
@@ -100,7 +100,7 @@ export interface ApproverInterface extends utils.Interface {
     values: [string, string, string, string, string, string, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "getApllicationAt",
+    functionFragment: "getApplicationAt",
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
@@ -159,7 +159,7 @@ export interface ApproverInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(
-    functionFragment: "getApllicationAt",
+    functionFragment: "getApplicationAt",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -339,7 +339,7 @@ export interface Approver extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    getApllicationAt(
+    getApplicationAt(
       index: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[Approver.ApplicationStructOutput]>;
@@ -436,7 +436,7 @@ export interface Approver extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  getApllicationAt(
+  getApplicationAt(
     index: BigNumberish,
     overrides?: CallOverrides
   ): Promise<Approver.ApplicationStructOutput>;
@@ -527,7 +527,7 @@ export interface Approver extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    getApllicationAt(
+    getApplicationAt(
       index: BigNumberish,
       overrides?: CallOverrides
     ): Promise<Approver.ApplicationStructOutput>;
@@ -654,7 +654,7 @@ export interface Approver extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    getApllicationAt(
+    getApplicationAt(
       index: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
@@ -724,7 +724,7 @@ export interface Approver extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    getApllicationAt(
+    getApplicationAt(
       index: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;

@@ -19,7 +19,6 @@ export type { FractionalisedNFT } from "./FractionalisedNFT";
 export type { Fractionaliser } from "./Fractionaliser";
 export type { REI } from "./REI";
 export type { REIMarket } from "./REIMarket";
-export type { Storage } from "./Storage";
 export type { AccessControl } from "./AccessControl";
 
 export { Ownable__factory } from "./factories/Ownable__factory";
@@ -40,5 +39,4 @@ export { FractionalisedNFT__factory } from "./factories/FractionalisedNFT__facto
 export { Fractionaliser__factory } from "./factories/Fractionaliser__factory";
 export { REI__factory } from "./factories/REI__factory";
 export { REIMarket__factory } from "./factories/REIMarket__factory";
-export { Storage__factory } from "./factories/Storage__factory";
 export { AccessControl__factory } from "./factories/AccessControl__factory";

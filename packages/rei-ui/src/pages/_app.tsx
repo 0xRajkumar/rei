@@ -1,4 +1,4 @@
-import "../styles/globals.css";
+import "../../styles/globals.css";
 import type { AppProps } from "next/app";
 import { ChakraProvider } from "@chakra-ui/react";
 import Layout from "../components/Layout";
@@ -12,8 +12,14 @@ import {
 // import { alchemyProvider } from 'wagmi/providers/alchemy'
 import { publicProvider } from "wagmi/providers/public";
 
-import { MetaMaskConnector } from 'wagmi/connectors/metaMask'
-import { WalletConnectConnector } from 'wagmi/connectors/walletConnect'
+import { MetaMaskConnector } from "wagmi/connectors/metaMask";
+import { WalletConnectConnector } from "wagmi/connectors/walletConnect";
+import {
+  ApolloClient,
+  InMemoryCache,
+  ApolloProvider,
+  gql,
+} from "@apollo/client";
 
 const { chains, provider, webSocketProvider } = configureChains(
   [chain.polygon],
@@ -33,15 +39,21 @@ const client = createClient({
   provider,
   webSocketProvider,
 });
+const clientApollo = new ApolloClient({
+  uri: "https://api.studio.thegraph.com/query/34823/reitesting1/0.14",
+  cache: new InMemoryCache(),
+});
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <WagmiConfig client={client}>
-      <ChakraProvider>
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
-      </ChakraProvider>
-    </WagmiConfig>
+    <ApolloProvider client={clientApollo}>
+      <WagmiConfig client={client}>
+        <ChakraProvider>
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
+        </ChakraProvider>
+      </WagmiConfig>
+    </ApolloProvider>
   );
 }
 

@@ -21,20 +21,19 @@ contract REI is Ownable, ERC721Enumerable {
         approverContract = Approver(approverAddress);
     }
 
-    modifier onlyApprover() {
+    modifier onlyApprover(address msgSender) {
         require(
-            approverContract.isApprover(_msgSender()) ||
-                _msgSender() == owner(),
+            approverContract.isApprover(msgSender) || msgSender == owner(),
             'AccessControl: caller is not approver'
         );
         _;
     }
 
-    function mint(address to, string memory tokenURI_)
-        public
-        onlyApprover
-        returns (uint256)
-    {
+    function mint(
+        address msgSender,
+        address to,
+        string memory tokenURI_
+    ) public onlyApprover(msgSender) returns (uint256) {
         _tokenIds.increment();
         uint256 newREIID = _tokenIds.current();
         _mint(to, newREIID);

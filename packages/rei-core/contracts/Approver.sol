@@ -118,10 +118,10 @@ contract Approver is AccessControl {
             status != ApplicationStatus.Pending,
             "It's already in pending state"
         );
-        application.applicationStatus == status;
+        application.applicationStatus = status;
         if (status == ApplicationStatus.Accepted) {
             numberOfApplicationsAccepted.increment();
-            rei.mint(application.applicant, reiURI);
+            rei.mint(_msgSender(), application.applicant, reiURI);
         } else {
             numberOfApplicationsRejected.increment();
         }
@@ -186,7 +186,7 @@ contract Approver is AccessControl {
         return applications;
     }
 
-    function getApllicationAt(uint256 index)
+    function getApplicationAt(uint256 index)
         public
         view
         returns (Application memory)

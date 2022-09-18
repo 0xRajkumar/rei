@@ -10,7 +10,6 @@ import {
   BigInt
 } from "@graphprotocol/graph-ts";
 
-<<<<<<< HEAD
 export class AccessSet extends ethereum.Event {
   get params(): AccessSet__Params {
     return new AccessSet__Params(this);
@@ -33,61 +32,10 @@ export class AccessSet__Params {
   }
 
   get _enabled(): boolean {
-=======
-export class Approval extends ethereum.Event {
-  get params(): Approval__Params {
-    return new Approval__Params(this);
-  }
-}
-
-export class Approval__Params {
-  _event: Approval;
-
-  constructor(event: Approval) {
-    this._event = event;
-  }
-
-  get owner(): Address {
-    return this._event.parameters[0].value.toAddress();
-  }
-
-  get approved(): Address {
-    return this._event.parameters[1].value.toAddress();
-  }
-
-  get tokenId(): BigInt {
-    return this._event.parameters[2].value.toBigInt();
-  }
-}
-
-export class ApprovalForAll extends ethereum.Event {
-  get params(): ApprovalForAll__Params {
-    return new ApprovalForAll__Params(this);
-  }
-}
-
-export class ApprovalForAll__Params {
-  _event: ApprovalForAll;
-
-  constructor(event: ApprovalForAll) {
-    this._event = event;
-  }
-
-  get owner(): Address {
-    return this._event.parameters[0].value.toAddress();
-  }
-
-  get operator(): Address {
-    return this._event.parameters[1].value.toAddress();
-  }
-
-  get approved(): boolean {
->>>>>>> develop
     return this._event.parameters[2].value.toBoolean();
   }
 }
 
-<<<<<<< HEAD
 export class DecisionTaken extends ethereum.Event {
   get params(): DecisionTaken__Params {
     return new DecisionTaken__Params(this);
@@ -168,8 +116,6 @@ export class NewApplicationCreated__Params {
   }
 }
 
-=======
->>>>>>> develop
 export class OwnershipTransferred extends ethereum.Event {
   get params(): OwnershipTransferred__Params {
     return new OwnershipTransferred__Params(this);
@@ -192,7 +138,6 @@ export class OwnershipTransferred__Params {
   }
 }
 
-<<<<<<< HEAD
 export class Approver__ApplicationsResultAttributesStruct extends ethereum.Tuple {
   get country(): string {
     return this[0].toString();
@@ -282,7 +227,7 @@ export class Approver__ApplicationsResult {
   }
 }
 
-export class Approver__getApllicationAtResultValue0Struct extends ethereum.Tuple {
+export class Approver__getApplicationResultValue0Struct extends ethereum.Tuple {
   get applicationNumber(): BigInt {
     return this[0].toBigInt();
   }
@@ -303,8 +248,8 @@ export class Approver__getApllicationAtResultValue0Struct extends ethereum.Tuple
     return this[4].toString();
   }
 
-  get attributes(): Approver__getApllicationAtResultValue0AttributesStruct {
-    return changetype<Approver__getApllicationAtResultValue0AttributesStruct>(
+  get attributes(): Approver__getApplicationResultValue0AttributesStruct {
+    return changetype<Approver__getApplicationResultValue0AttributesStruct>(
       this[5].toTuple()
     );
   }
@@ -314,7 +259,7 @@ export class Approver__getApllicationAtResultValue0Struct extends ethereum.Tuple
   }
 }
 
-export class Approver__getApllicationAtResultValue0AttributesStruct extends ethereum.Tuple {
+export class Approver__getApplicationResultValue0AttributesStruct extends ethereum.Tuple {
   get country(): string {
     return this[0].toString();
   }
@@ -429,31 +374,6 @@ export class Approver__getRejectedApplicationResultValue0AttributesStruct extend
 
   get surfaceAreaInMTRs(): BigInt {
     return this[3].toBigInt();
-=======
-export class Transfer extends ethereum.Event {
-  get params(): Transfer__Params {
-    return new Transfer__Params(this);
-  }
-}
-
-export class Transfer__Params {
-  _event: Transfer;
-
-  constructor(event: Transfer) {
-    this._event = event;
-  }
-
-  get from(): Address {
-    return this._event.parameters[0].value.toAddress();
-  }
-
-  get to(): Address {
-    return this._event.parameters[1].value.toAddress();
-  }
-
-  get tokenId(): BigInt {
-    return this._event.parameters[2].value.toBigInt();
->>>>>>> develop
   }
 }
 
@@ -462,7 +382,6 @@ export class Approver extends ethereum.SmartContract {
     return new Approver("Approver", address);
   }
 
-<<<<<<< HEAD
   Applications(param0: BigInt): Approver__ApplicationsResult {
     let result = super.call(
       "Applications",
@@ -510,26 +429,24 @@ export class Approver extends ethereum.SmartContract {
     );
   }
 
-  getApllicationAt(
-    index: BigInt
-  ): Approver__getApllicationAtResultValue0Struct {
+  getApplication(index: BigInt): Approver__getApplicationResultValue0Struct {
     let result = super.call(
-      "getApllicationAt",
-      "getApllicationAt(uint256):((uint256,address,string,string,string,(string,string,string,uint256),uint8))",
+      "getApplication",
+      "getApplication(uint256):((uint256,address,string,string,string,(string,string,string,uint256),uint8))",
       [ethereum.Value.fromUnsignedBigInt(index)]
     );
 
-    return changetype<Approver__getApllicationAtResultValue0Struct>(
+    return changetype<Approver__getApplicationResultValue0Struct>(
       result[0].toTuple()
     );
   }
 
-  try_getApllicationAt(
+  try_getApplication(
     index: BigInt
-  ): ethereum.CallResult<Approver__getApllicationAtResultValue0Struct> {
+  ): ethereum.CallResult<Approver__getApplicationResultValue0Struct> {
     let result = super.tryCall(
-      "getApllicationAt",
-      "getApllicationAt(uint256):((uint256,address,string,string,string,(string,string,string,uint256),uint8))",
+      "getApplication",
+      "getApplication(uint256):((uint256,address,string,string,string,(string,string,string,uint256),uint8))",
       [ethereum.Value.fromUnsignedBigInt(index)]
     );
     if (result.reverted) {
@@ -537,9 +454,7 @@ export class Approver extends ethereum.SmartContract {
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(
-      changetype<Approver__getApllicationAtResultValue0Struct>(
-        value[0].toTuple()
-      )
+      changetype<Approver__getApplicationResultValue0Struct>(value[0].toTuple())
     );
   }
 
@@ -619,82 +534,6 @@ export class Approver extends ethereum.SmartContract {
     let result = super.tryCall("isApprover", "isApprover(address):(bool)", [
       ethereum.Value.fromAddress(approver)
     ]);
-=======
-  balanceOf(owner: Address): BigInt {
-    let result = super.call("balanceOf", "balanceOf(address):(uint256)", [
-      ethereum.Value.fromAddress(owner)
-    ]);
-
-    return result[0].toBigInt();
-  }
-
-  try_balanceOf(owner: Address): ethereum.CallResult<BigInt> {
-    let result = super.tryCall("balanceOf", "balanceOf(address):(uint256)", [
-      ethereum.Value.fromAddress(owner)
-    ]);
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toBigInt());
-  }
-
-  baseURI(): string {
-    let result = super.call("baseURI", "baseURI():(string)", []);
-
-    return result[0].toString();
-  }
-
-  try_baseURI(): ethereum.CallResult<string> {
-    let result = super.tryCall("baseURI", "baseURI():(string)", []);
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toString());
-  }
-
-  getApproved(tokenId: BigInt): Address {
-    let result = super.call("getApproved", "getApproved(uint256):(address)", [
-      ethereum.Value.fromUnsignedBigInt(tokenId)
-    ]);
-
-    return result[0].toAddress();
-  }
-
-  try_getApproved(tokenId: BigInt): ethereum.CallResult<Address> {
-    let result = super.tryCall(
-      "getApproved",
-      "getApproved(uint256):(address)",
-      [ethereum.Value.fromUnsignedBigInt(tokenId)]
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toAddress());
-  }
-
-  isApprovedForAll(owner: Address, operator: Address): boolean {
-    let result = super.call(
-      "isApprovedForAll",
-      "isApprovedForAll(address,address):(bool)",
-      [ethereum.Value.fromAddress(owner), ethereum.Value.fromAddress(operator)]
-    );
-
-    return result[0].toBoolean();
-  }
-
-  try_isApprovedForAll(
-    owner: Address,
-    operator: Address
-  ): ethereum.CallResult<boolean> {
-    let result = super.tryCall(
-      "isApprovedForAll",
-      "isApprovedForAll(address,address):(bool)",
-      [ethereum.Value.fromAddress(owner), ethereum.Value.fromAddress(operator)]
-    );
->>>>>>> develop
     if (result.reverted) {
       return new ethereum.CallResult();
     }
@@ -702,38 +541,22 @@ export class Approver extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBoolean());
   }
 
-<<<<<<< HEAD
   numberOfApplications(): BigInt {
     let result = super.call(
       "numberOfApplications",
       "numberOfApplications():(uint256)",
       []
     );
-=======
-  mint(to: Address, tokenURI_: string): BigInt {
-    let result = super.call("mint", "mint(address,string):(uint256)", [
-      ethereum.Value.fromAddress(to),
-      ethereum.Value.fromString(tokenURI_)
-    ]);
->>>>>>> develop
 
     return result[0].toBigInt();
   }
 
-<<<<<<< HEAD
   try_numberOfApplications(): ethereum.CallResult<BigInt> {
     let result = super.tryCall(
       "numberOfApplications",
       "numberOfApplications():(uint256)",
       []
     );
-=======
-  try_mint(to: Address, tokenURI_: string): ethereum.CallResult<BigInt> {
-    let result = super.tryCall("mint", "mint(address,string):(uint256)", [
-      ethereum.Value.fromAddress(to),
-      ethereum.Value.fromString(tokenURI_)
-    ]);
->>>>>>> develop
     if (result.reverted) {
       return new ethereum.CallResult();
     }
@@ -741,7 +564,6 @@ export class Approver extends ethereum.SmartContract {
     return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
 
-<<<<<<< HEAD
   numberOfApplicationsAccepted(): BigInt {
     let result = super.call(
       "numberOfApplicationsAccepted",
@@ -758,21 +580,10 @@ export class Approver extends ethereum.SmartContract {
       "numberOfApplicationsAccepted():(uint256)",
       []
     );
-=======
-  name(): string {
-    let result = super.call("name", "name():(string)", []);
-
-    return result[0].toString();
-  }
-
-  try_name(): ethereum.CallResult<string> {
-    let result = super.tryCall("name", "name():(string)", []);
->>>>>>> develop
     if (result.reverted) {
       return new ethereum.CallResult();
     }
     let value = result.value;
-<<<<<<< HEAD
     return ethereum.CallResult.fromValue(value[0].toBigInt());
   }
 
@@ -797,9 +608,6 @@ export class Approver extends ethereum.SmartContract {
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(value[0].toBigInt());
-=======
-    return ethereum.CallResult.fromValue(value[0].toString());
->>>>>>> develop
   }
 
   owner(): Address {
@@ -816,176 +624,6 @@ export class Approver extends ethereum.SmartContract {
     let value = result.value;
     return ethereum.CallResult.fromValue(value[0].toAddress());
   }
-<<<<<<< HEAD
-=======
-
-  ownerOf(tokenId: BigInt): Address {
-    let result = super.call("ownerOf", "ownerOf(uint256):(address)", [
-      ethereum.Value.fromUnsignedBigInt(tokenId)
-    ]);
-
-    return result[0].toAddress();
-  }
-
-  try_ownerOf(tokenId: BigInt): ethereum.CallResult<Address> {
-    let result = super.tryCall("ownerOf", "ownerOf(uint256):(address)", [
-      ethereum.Value.fromUnsignedBigInt(tokenId)
-    ]);
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toAddress());
-  }
-
-  ownerTokenIds(owner: Address): Array<BigInt> {
-    let result = super.call(
-      "ownerTokenIds",
-      "ownerTokenIds(address):(uint256[])",
-      [ethereum.Value.fromAddress(owner)]
-    );
-
-    return result[0].toBigIntArray();
-  }
-
-  try_ownerTokenIds(owner: Address): ethereum.CallResult<Array<BigInt>> {
-    let result = super.tryCall(
-      "ownerTokenIds",
-      "ownerTokenIds(address):(uint256[])",
-      [ethereum.Value.fromAddress(owner)]
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toBigIntArray());
-  }
-
-  supportsInterface(interfaceId: Bytes): boolean {
-    let result = super.call(
-      "supportsInterface",
-      "supportsInterface(bytes4):(bool)",
-      [ethereum.Value.fromFixedBytes(interfaceId)]
-    );
-
-    return result[0].toBoolean();
-  }
-
-  try_supportsInterface(interfaceId: Bytes): ethereum.CallResult<boolean> {
-    let result = super.tryCall(
-      "supportsInterface",
-      "supportsInterface(bytes4):(bool)",
-      [ethereum.Value.fromFixedBytes(interfaceId)]
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toBoolean());
-  }
-
-  symbol(): string {
-    let result = super.call("symbol", "symbol():(string)", []);
-
-    return result[0].toString();
-  }
-
-  try_symbol(): ethereum.CallResult<string> {
-    let result = super.tryCall("symbol", "symbol():(string)", []);
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toString());
-  }
-
-  tokenByIndex(index: BigInt): BigInt {
-    let result = super.call("tokenByIndex", "tokenByIndex(uint256):(uint256)", [
-      ethereum.Value.fromUnsignedBigInt(index)
-    ]);
-
-    return result[0].toBigInt();
-  }
-
-  try_tokenByIndex(index: BigInt): ethereum.CallResult<BigInt> {
-    let result = super.tryCall(
-      "tokenByIndex",
-      "tokenByIndex(uint256):(uint256)",
-      [ethereum.Value.fromUnsignedBigInt(index)]
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toBigInt());
-  }
-
-  tokenOfOwnerByIndex(owner: Address, index: BigInt): BigInt {
-    let result = super.call(
-      "tokenOfOwnerByIndex",
-      "tokenOfOwnerByIndex(address,uint256):(uint256)",
-      [
-        ethereum.Value.fromAddress(owner),
-        ethereum.Value.fromUnsignedBigInt(index)
-      ]
-    );
-
-    return result[0].toBigInt();
-  }
-
-  try_tokenOfOwnerByIndex(
-    owner: Address,
-    index: BigInt
-  ): ethereum.CallResult<BigInt> {
-    let result = super.tryCall(
-      "tokenOfOwnerByIndex",
-      "tokenOfOwnerByIndex(address,uint256):(uint256)",
-      [
-        ethereum.Value.fromAddress(owner),
-        ethereum.Value.fromUnsignedBigInt(index)
-      ]
-    );
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toBigInt());
-  }
-
-  tokenURI(tokenId: BigInt): string {
-    let result = super.call("tokenURI", "tokenURI(uint256):(string)", [
-      ethereum.Value.fromUnsignedBigInt(tokenId)
-    ]);
-
-    return result[0].toString();
-  }
-
-  try_tokenURI(tokenId: BigInt): ethereum.CallResult<string> {
-    let result = super.tryCall("tokenURI", "tokenURI(uint256):(string)", [
-      ethereum.Value.fromUnsignedBigInt(tokenId)
-    ]);
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toString());
-  }
-
-  totalSupply(): BigInt {
-    let result = super.call("totalSupply", "totalSupply():(uint256)", []);
-
-    return result[0].toBigInt();
-  }
-
-  try_totalSupply(): ethereum.CallResult<BigInt> {
-    let result = super.tryCall("totalSupply", "totalSupply():(uint256)", []);
-    if (result.reverted) {
-      return new ethereum.CallResult();
-    }
-    let value = result.value;
-    return ethereum.CallResult.fromValue(value[0].toBigInt());
-  }
->>>>>>> develop
 }
 
 export class ConstructorCall extends ethereum.Call {
@@ -1005,21 +643,8 @@ export class ConstructorCall__Inputs {
     this._call = call;
   }
 
-<<<<<<< HEAD
   get reiAddress(): Address {
     return this._call.inputValues[0].value.toAddress();
-=======
-  get name(): string {
-    return this._call.inputValues[0].value.toString();
-  }
-
-  get symbol(): string {
-    return this._call.inputValues[1].value.toString();
-  }
-
-  get approverAddress(): Address {
-    return this._call.inputValues[2].value.toAddress();
->>>>>>> develop
   }
 }
 
@@ -1031,7 +656,6 @@ export class ConstructorCall__Outputs {
   }
 }
 
-<<<<<<< HEAD
 export class ApplicationDecisionCall extends ethereum.Call {
   get inputs(): ApplicationDecisionCall__Inputs {
     return new ApplicationDecisionCall__Inputs(this);
@@ -1066,43 +690,10 @@ export class ApplicationDecisionCall__Outputs {
   _call: ApplicationDecisionCall;
 
   constructor(call: ApplicationDecisionCall) {
-=======
-export class ApproveCall extends ethereum.Call {
-  get inputs(): ApproveCall__Inputs {
-    return new ApproveCall__Inputs(this);
-  }
-
-  get outputs(): ApproveCall__Outputs {
-    return new ApproveCall__Outputs(this);
-  }
-}
-
-export class ApproveCall__Inputs {
-  _call: ApproveCall;
-
-  constructor(call: ApproveCall) {
-    this._call = call;
-  }
-
-  get to(): Address {
-    return this._call.inputValues[0].value.toAddress();
-  }
-
-  get tokenId(): BigInt {
-    return this._call.inputValues[1].value.toBigInt();
-  }
-}
-
-export class ApproveCall__Outputs {
-  _call: ApproveCall;
-
-  constructor(call: ApproveCall) {
->>>>>>> develop
     this._call = call;
   }
 }
 
-<<<<<<< HEAD
 export class ApplyForApprovalCall extends ethereum.Call {
   get inputs(): ApplyForApprovalCall__Inputs {
     return new ApplyForApprovalCall__Inputs(this);
@@ -1155,44 +746,6 @@ export class ApplyForApprovalCall__Outputs {
   constructor(call: ApplyForApprovalCall) {
     this._call = call;
   }
-=======
-export class MintCall extends ethereum.Call {
-  get inputs(): MintCall__Inputs {
-    return new MintCall__Inputs(this);
-  }
-
-  get outputs(): MintCall__Outputs {
-    return new MintCall__Outputs(this);
-  }
-}
-
-export class MintCall__Inputs {
-  _call: MintCall;
-
-  constructor(call: MintCall) {
-    this._call = call;
-  }
-
-  get to(): Address {
-    return this._call.inputValues[0].value.toAddress();
-  }
-
-  get tokenURI_(): string {
-    return this._call.inputValues[1].value.toString();
-  }
-}
-
-export class MintCall__Outputs {
-  _call: MintCall;
-
-  constructor(call: MintCall) {
-    this._call = call;
-  }
-
-  get value0(): BigInt {
-    return this._call.outputValues[0].value.toBigInt();
-  }
->>>>>>> develop
 }
 
 export class RenounceOwnershipCall extends ethereum.Call {
@@ -1221,7 +774,6 @@ export class RenounceOwnershipCall__Outputs {
   }
 }
 
-<<<<<<< HEAD
 export class SetApproverCall extends ethereum.Call {
   get inputs(): SetApproverCall__Inputs {
     return new SetApproverCall__Inputs(this);
@@ -1244,130 +796,18 @@ export class SetApproverCall__Inputs {
   }
 
   get enabled(): boolean {
-=======
-export class SafeTransferFromCall extends ethereum.Call {
-  get inputs(): SafeTransferFromCall__Inputs {
-    return new SafeTransferFromCall__Inputs(this);
-  }
-
-  get outputs(): SafeTransferFromCall__Outputs {
-    return new SafeTransferFromCall__Outputs(this);
-  }
-}
-
-export class SafeTransferFromCall__Inputs {
-  _call: SafeTransferFromCall;
-
-  constructor(call: SafeTransferFromCall) {
-    this._call = call;
-  }
-
-  get from(): Address {
-    return this._call.inputValues[0].value.toAddress();
-  }
-
-  get to(): Address {
-    return this._call.inputValues[1].value.toAddress();
-  }
-
-  get tokenId(): BigInt {
-    return this._call.inputValues[2].value.toBigInt();
-  }
-}
-
-export class SafeTransferFromCall__Outputs {
-  _call: SafeTransferFromCall;
-
-  constructor(call: SafeTransferFromCall) {
-    this._call = call;
-  }
-}
-
-export class SafeTransferFrom1Call extends ethereum.Call {
-  get inputs(): SafeTransferFrom1Call__Inputs {
-    return new SafeTransferFrom1Call__Inputs(this);
-  }
-
-  get outputs(): SafeTransferFrom1Call__Outputs {
-    return new SafeTransferFrom1Call__Outputs(this);
-  }
-}
-
-export class SafeTransferFrom1Call__Inputs {
-  _call: SafeTransferFrom1Call;
-
-  constructor(call: SafeTransferFrom1Call) {
-    this._call = call;
-  }
-
-  get from(): Address {
-    return this._call.inputValues[0].value.toAddress();
-  }
-
-  get to(): Address {
-    return this._call.inputValues[1].value.toAddress();
-  }
-
-  get tokenId(): BigInt {
-    return this._call.inputValues[2].value.toBigInt();
-  }
-
-  get data(): Bytes {
-    return this._call.inputValues[3].value.toBytes();
-  }
-}
-
-export class SafeTransferFrom1Call__Outputs {
-  _call: SafeTransferFrom1Call;
-
-  constructor(call: SafeTransferFrom1Call) {
-    this._call = call;
-  }
-}
-
-export class SetApprovalForAllCall extends ethereum.Call {
-  get inputs(): SetApprovalForAllCall__Inputs {
-    return new SetApprovalForAllCall__Inputs(this);
-  }
-
-  get outputs(): SetApprovalForAllCall__Outputs {
-    return new SetApprovalForAllCall__Outputs(this);
-  }
-}
-
-export class SetApprovalForAllCall__Inputs {
-  _call: SetApprovalForAllCall;
-
-  constructor(call: SetApprovalForAllCall) {
-    this._call = call;
-  }
-
-  get operator(): Address {
-    return this._call.inputValues[0].value.toAddress();
-  }
-
-  get approved(): boolean {
->>>>>>> develop
     return this._call.inputValues[1].value.toBoolean();
   }
 }
 
-<<<<<<< HEAD
 export class SetApproverCall__Outputs {
   _call: SetApproverCall;
 
   constructor(call: SetApproverCall) {
-=======
-export class SetApprovalForAllCall__Outputs {
-  _call: SetApprovalForAllCall;
-
-  constructor(call: SetApprovalForAllCall) {
->>>>>>> develop
     this._call = call;
   }
 }
 
-<<<<<<< HEAD
 export class SetApproversCall extends ethereum.Call {
   get inputs(): SetApproversCall__Inputs {
     return new SetApproversCall__Inputs(this);
@@ -1420,109 +860,14 @@ export class SetREIAddressCall__Inputs {
   }
 
   get reiaddress(): Address {
-=======
-export class SetApproverContractCall extends ethereum.Call {
-  get inputs(): SetApproverContractCall__Inputs {
-    return new SetApproverContractCall__Inputs(this);
-  }
-
-  get outputs(): SetApproverContractCall__Outputs {
-    return new SetApproverContractCall__Outputs(this);
-  }
-}
-
-export class SetApproverContractCall__Inputs {
-  _call: SetApproverContractCall;
-
-  constructor(call: SetApproverContractCall) {
-    this._call = call;
-  }
-
-  get approverAddress(): Address {
->>>>>>> develop
     return this._call.inputValues[0].value.toAddress();
   }
 }
 
-<<<<<<< HEAD
 export class SetREIAddressCall__Outputs {
   _call: SetREIAddressCall;
 
   constructor(call: SetREIAddressCall) {
-=======
-export class SetApproverContractCall__Outputs {
-  _call: SetApproverContractCall;
-
-  constructor(call: SetApproverContractCall) {
-    this._call = call;
-  }
-}
-
-export class SetBaseURICall extends ethereum.Call {
-  get inputs(): SetBaseURICall__Inputs {
-    return new SetBaseURICall__Inputs(this);
-  }
-
-  get outputs(): SetBaseURICall__Outputs {
-    return new SetBaseURICall__Outputs(this);
-  }
-}
-
-export class SetBaseURICall__Inputs {
-  _call: SetBaseURICall;
-
-  constructor(call: SetBaseURICall) {
-    this._call = call;
-  }
-
-  get _baseURI(): string {
-    return this._call.inputValues[0].value.toString();
-  }
-}
-
-export class SetBaseURICall__Outputs {
-  _call: SetBaseURICall;
-
-  constructor(call: SetBaseURICall) {
-    this._call = call;
-  }
-}
-
-export class TransferFromCall extends ethereum.Call {
-  get inputs(): TransferFromCall__Inputs {
-    return new TransferFromCall__Inputs(this);
-  }
-
-  get outputs(): TransferFromCall__Outputs {
-    return new TransferFromCall__Outputs(this);
-  }
-}
-
-export class TransferFromCall__Inputs {
-  _call: TransferFromCall;
-
-  constructor(call: TransferFromCall) {
-    this._call = call;
-  }
-
-  get from(): Address {
-    return this._call.inputValues[0].value.toAddress();
-  }
-
-  get to(): Address {
-    return this._call.inputValues[1].value.toAddress();
-  }
-
-  get tokenId(): BigInt {
-    return this._call.inputValues[2].value.toBigInt();
-  }
-}
-
-export class TransferFromCall__Outputs {
-  _call: TransferFromCall;
-
-  constructor(call: TransferFromCall) {
->>>>>>> develop
     this._call = call;
   }
 }
