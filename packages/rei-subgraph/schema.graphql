@@ -1,0 +1,34 @@
+# emit NewApplicationCreated(
+#     applicationNumber,
+#     _msgSender(),
+#     name,
+#     description,
+#     imageURI,
+#     country,
+#     city,
+#     gpsCoordinates,
+#     surfaceAreaInMTRs,
+#     ApplicationStatus.Pending
+# );
+type Application @entity {
+  id: ID!
+  applicationNumber: BigInt!
+  applicant: User!
+  name: String!
+  description: String!
+  imageURI: String!
+  country: String!
+  gpsCoordinates: String!
+  surfaceAreaInMTRs: BigInt!
+  applicationStatus: WithStatus!
+}
+
+type WithStatus @entity {
+  id: ID!
+  applications: [Application!]! @derivedFrom(field: "applicationStatus")
+}
+
+type User @entity {
+  id: ID!
+  applications: [Application!]! @derivedFrom(field: "applicant")
+}
