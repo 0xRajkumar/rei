@@ -20,3 +20,30 @@ type User @entity {
   id: ID!
   applications: [Application!]! @derivedFrom(field: "applicant")
 }
+
+# {
+#   "name": "Eiffel Tower",
+#   "description": "The French architect and engineer Gustave Eiffel, who also designed the Statue of Liberty, built the Eiffel Tower in 1889. Standing 324 meters tall, it is one of the most famous buildings in the world and a symbol of Paris, the capital of France. La Tour Eiffel in French language is one of the most visited monuments in the world and represents France in a simple symbol.",
+#   "image": "https://ipfs.io/ipfs/QmdPaPgLUqzqeDTef1yge9BNpM8u1mJzD9ZnrLXfFurjJL",
+#   "attributes": [
+#       "trait_type": "Country",
+#       "value": "India"
+#       "trait_type": "City",
+#       "value": "Faridabad"
+#       "trait_type": "GPSCoordinates",
+#       "value": "48.8584° N, 2.2945° E"
+#       "trait_type": "SurfaceArea",
+#       "value": 1000
+# }
+
+type Token @entity {
+  id: ID!
+  tokenID: BigInt!
+  owner: TokenUser!
+  tokenURI: String!
+}
+
+type TokenUser @entity {
+  id: ID!
+  tokens: [Token!]! @derivedFrom(field: "owner")
+}

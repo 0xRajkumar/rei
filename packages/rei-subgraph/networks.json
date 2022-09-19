@@ -1,7 +1,10 @@
 {
   "goerli": {
     "Approver": {
-      "address": "0x6bf33781dF546c961A3Fef7fAD87Ce41d3C574dE"
+      "address": "0x9D5AfD5ec2448F3E6721f259845281Af0C96902A"
+    },
+    "REI": {
+      "address": "0x8A3b937c015bC0F873d6d6E710b3Dc21e8E24E86"
     }
   }
 }

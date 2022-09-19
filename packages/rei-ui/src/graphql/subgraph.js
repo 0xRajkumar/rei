@@ -41,3 +41,16 @@ export const GET_USER_APPLICATIONS = gql`
     }
   }
 `;
+
+export const GET_USER_TOKENS = gql`
+  query GetUserTokens($address: String!) {
+    tokenUsers(where: { id: $address }) {
+      id
+      tokens {
+        id
+        tokenID
+        tokenURI
+      }
+    }
+  }
+`;

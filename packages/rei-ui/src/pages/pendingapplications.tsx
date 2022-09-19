@@ -12,7 +12,7 @@ import {
 import type { NextPage } from "next";
 import { useQuery, gql } from "@apollo/client";
 import { GET_PENDING_APPLICATIONS } from "../graphql/subgraph";
-const PendingApplication: NextPage = () => {
+const pendingApplication: NextPage = () => {
   const {
     loading,
     error,
@@ -117,4 +117,4 @@ const PendingApplication: NextPage = () => {
   );
 };
 
-export default PendingApplication;
+export default pendingApplication;

@@ -6,9 +6,9 @@ dataSources:
     name: Approver
     network: goerli
     source:
-      address: "0x6bf33781dF546c961A3Fef7fAD87Ce41d3C574dE"
+      address: "0xdC774004f2e576a5a0669c5d7eDBA3E4518d3553"
       abi: Approver
-      startBlock: 7615066
+      startBlock: 7619985
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -25,3 +25,24 @@ dataSources:
         - event: NewApplicationCreated(indexed uint256,indexed address,string,string,string,string,string,string,uint256,uint8)
           handler: handleNewApplicationCreated
       file: ./src/approver.ts
+  - kind: ethereum
+    name: REI
+    network: goerli
+    source:
+      address: "0x2c3d194c45A6dcf3bF2B0f3a7E14f8E1eF50BD48"
+      abi: REI
+      startBlock: 7619985
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - Token
+        - TokenUser
+      abis:
+        - name: REI
+          file: ./abis/REI.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleTransfer
+      file: ./src/rei.ts

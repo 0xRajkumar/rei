@@ -227,7 +227,7 @@ export class Approver__ApplicationsResult {
   }
 }
 
-export class Approver__getApplicationResultValue0Struct extends ethereum.Tuple {
+export class Approver__getApplicationAtResultValue0Struct extends ethereum.Tuple {
   get applicationNumber(): BigInt {
     return this[0].toBigInt();
   }
@@ -248,8 +248,8 @@ export class Approver__getApplicationResultValue0Struct extends ethereum.Tuple {
     return this[4].toString();
   }
 
-  get attributes(): Approver__getApplicationResultValue0AttributesStruct {
-    return changetype<Approver__getApplicationResultValue0AttributesStruct>(
+  get attributes(): Approver__getApplicationAtResultValue0AttributesStruct {
+    return changetype<Approver__getApplicationAtResultValue0AttributesStruct>(
       this[5].toTuple()
     );
   }
@@ -259,7 +259,7 @@ export class Approver__getApplicationResultValue0Struct extends ethereum.Tuple {
   }
 }
 
-export class Approver__getApplicationResultValue0AttributesStruct extends ethereum.Tuple {
+export class Approver__getApplicationAtResultValue0AttributesStruct extends ethereum.Tuple {
   get country(): string {
     return this[0].toString();
   }
@@ -429,24 +429,26 @@ export class Approver extends ethereum.SmartContract {
     );
   }
 
-  getApplication(index: BigInt): Approver__getApplicationResultValue0Struct {
+  getApplicationAt(
+    index: BigInt
+  ): Approver__getApplicationAtResultValue0Struct {
     let result = super.call(
-      "getApplication",
-      "getApplication(uint256):((uint256,address,string,string,string,(string,string,string,uint256),uint8))",
+      "getApplicationAt",
+      "getApplicationAt(uint256):((uint256,address,string,string,string,(string,string,string,uint256),uint8))",
       [ethereum.Value.fromUnsignedBigInt(index)]
     );
 
-    return changetype<Approver__getApplicationResultValue0Struct>(
+    return changetype<Approver__getApplicationAtResultValue0Struct>(
       result[0].toTuple()
     );
   }
 
-  try_getApplication(
+  try_getApplicationAt(
     index: BigInt
-  ): ethereum.CallResult<Approver__getApplicationResultValue0Struct> {
+  ): ethereum.CallResult<Approver__getApplicationAtResultValue0Struct> {
     let result = super.tryCall(
-      "getApplication",
-      "getApplication(uint256):((uint256,address,string,string,string,(string,string,string,uint256),uint8))",
+      "getApplicationAt",
+      "getApplicationAt(uint256):((uint256,address,string,string,string,(string,string,string,uint256),uint8))",
       [ethereum.Value.fromUnsignedBigInt(index)]
     );
     if (result.reverted) {
@@ -454,7 +456,9 @@ export class Approver extends ethereum.SmartContract {
     }
     let value = result.value;
     return ethereum.CallResult.fromValue(
-      changetype<Approver__getApplicationResultValue0Struct>(value[0].toTuple())
+      changetype<Approver__getApplicationAtResultValue0Struct>(
+        value[0].toTuple()
+      )
     );
   }
 

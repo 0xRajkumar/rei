@@ -1,5 +1,5 @@
 import { useEffect, ChangeEvent, useState } from "react";
-import ApproverAbi from "../constants/Approver.json";
+import ApproverAbi from "../constants/abis/Approver.json";
 import {
   Center,
   Link,
@@ -23,8 +23,8 @@ import type { NextPage } from "next";
 import { useQuery, gql } from "@apollo/client";
 import { GET_USER_APPLICATIONS } from "../graphql/subgraph";
 import { useAccount, useContract, useSigner } from "wagmi";
-
-const pendingApplication: NextPage = () => {
+import { ApproverContractAddress } from "../constants/addresses";
+const createapplication: NextPage = () => {
   const { address: userAddress, isConnected, connector } = useAccount();
 
   const [applicationForm, setApplicationForm] = useState<{
@@ -58,7 +58,7 @@ const pendingApplication: NextPage = () => {
   const { data: signer, isError, isLoading } = useSigner();
 
   const ApproverContract = useContract({
-    addressOrName: "0x6bf33781dF546c961A3Fef7fAD87Ce41d3C574dE",
+    addressOrName: ApproverContractAddress,
     contractInterface: ApproverAbi,
     signerOrProvider: signer,
   });
@@ -107,20 +107,21 @@ const pendingApplication: NextPage = () => {
         }
       );
       await tx.wait();
-      setApplicationForm({
-        name: "",
-        description: "",
-        imageURI: "",
-        country: "",
-        city: "",
-        gpsCoordinates: "",
-        surfaceAreaInMTRs: 0,
-      });
+      // setApplicationForm({
+      //   name: "",
+      //   description: "",
+      //   imageURI: "",
+      //   country: "",
+      //   city: "",
+      //   gpsCoordinates: "",
+      //   surfaceAreaInMTRs: 0,
+      // });
       refetch({ address: userAddress });
     } catch (err) {
       console.log(err);
     }
   }
+
   console.log(createdByUser);
   console.log(loading, userAddress);
   console.log(error);
@@ -129,7 +130,7 @@ const pendingApplication: NextPage = () => {
       refetch({ address: userAddress.toLocaleLowerCase() });
     }
   }, [userAddress]);
-  const applications = loading ? null : createdByUser.users[0].applications;
+  const applications = loading ? null : createdByUser.users[0]?.applications;
   return (
     <Box>
       <Box>
@@ -243,8 +244,7 @@ const pendingApplication: NextPage = () => {
           {loading ? (
             <Heading textShadow="2px 2px #0987A0">Loading Data</Heading>
           ) : (
-            typeof window !== undefined &&
-            applications.map((data: any, index: number) => {
+            applications?.map((data: any, index: number) => {
               const {
                 applicationNumber,
                 name,
@@ -338,4 +338,4 @@ const pendingApplication: NextPage = () => {
   );
 };
 
-export default pendingApplication;
+export default createapplication;
