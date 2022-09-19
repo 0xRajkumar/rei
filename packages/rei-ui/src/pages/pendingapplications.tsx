@@ -26,8 +26,15 @@ const pendingApplication: NextPage = () => {
   if (loading) return <p>Loading...</p>;
   const applications = pendingUsers?.withStatuses[0].applications;
   return (
+    <>
+    <HStack my={"2em"} justify={"center"}>
+      <Heading as={"h1"}  fontSize={"4xl"} textAlign={"center"}>
+        All pending applications
+      </Heading>
+
+    </HStack>
     <Center>
-      <Stack flexDirection="row" flexWrap="wrap" gap="4" align={'start'}>
+      <Stack flexDirection="row" flexWrap="wrap" gap="4" justify="center" m={"auto"} align={'start'}>
         {loading ? (
           <Heading textShadow="2px 2px #0987A0">Loading Data</Heading>
         ) : (
@@ -43,11 +50,12 @@ const pendingApplication: NextPage = () => {
             } = data;
             const applicantAddress = applicant.id;
             return (
-              <Center py={"0px"} mt={"0px"} border='1px' borderColor='gray.200' key={index}>
+              <>
+              <Center py={"0px"} mt={"0px!important"} border='1px' borderColor='gray.200' key={index}>
                 <Box
                   role={"group"}
-                  p={6}
-                  maxW={"330px"}
+                  p={0}
+                  maxW={{base:"330px"}}
                   w={"full"}
                   bg={"white"}
                   boxShadow={"sm"}
@@ -55,39 +63,17 @@ const pendingApplication: NextPage = () => {
                   pos={"relative"}
                   zIndex={1}
                 >
-                  <Box
-                    rounded={"md"}
-                    mt={"0px"}
-                    pos={"relative"}
-                    height={"230px"}
-                    _after={{
-                      transition: "all .3s ease",
-                      content: '""',
-                      w: "full",
-                      h: "full",
-                      pos: "absolute",
-                      top: 0,
-                      left: 0,
-                      backgroundImage: `url(${imageURI})`,
-                      filter: "blur(15px)",
-                      zIndex: -1,
-                    }}
-                    _groupHover={{
-                      _after: {
-                        filter: "blur(20px)",
-                      },
-                    }}
-                  >
+                  
                     <Image
-                      rounded={"lg"}
-                      height={230}
-                      width={282}
+                      roundedTop={"lg"}
+                      height={"full"}
+                      width={"full"}
                       objectFit={"cover"}
                       src={imageURI}
                       alt="Property Image"
                     />
-                  </Box>
-                  <Stack pt={10} align={"center"}>
+                  
+                  <Stack p={6} pt={5} align={"center"}>
                     
                     <Heading
                       fontSize={"2xl"}
@@ -95,13 +81,13 @@ const pendingApplication: NextPage = () => {
                       fontWeight={500}
                       textTransform={"uppercase"}
                     >
-                      {name} with applicationNumber {applicationNumber}
+                      {name} with application Number {applicationNumber}
                     </Heading>
                     <Text
                       color={"gray.500"}
-                      fontSize={"sm"}
-                      my={2}
-                      noOfLines={[4, 4, 3]}
+                      fontSize={"small"}
+                      my={"2em"}
+                      
                     >
                       {description}
                       
@@ -120,11 +106,15 @@ const pendingApplication: NextPage = () => {
                   </Stack>
                 </Box>
               </Center>
+              
+              
+              </>
             );
           })
         )}
       </Stack>
     </Center>
+    </>
   );
 };
 

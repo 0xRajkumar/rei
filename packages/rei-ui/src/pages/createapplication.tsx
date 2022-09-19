@@ -261,7 +261,7 @@ const createapplication: NextPage = () => {
           </TabPanel>
           <TabPanel>
             <Box minH={"100vh"} mx="auto" bg={"gray.50"} py={12}>
-              <Heading as={"h2"}  fontSize={"4xl"} textAlign={"center"}>Your Created Applications</Heading>
+              <Heading as={"h2"}  fontSize={"4xl"} textAlign={"center"}>{userAddress ? "Your Created Applications" : "Please connect your wallet"}</Heading>
               <Stack flexDirection="row" flexWrap="wrap" gap="2">
                 {loading ? (
                   <Heading textShadow="2px 2px #0987A0">Loading Data</Heading>
@@ -280,155 +280,62 @@ const createapplication: NextPage = () => {
                     const status = applicationStatus.id;
                     return (
                     <>
-                      <Center py={"0px"} mt={"0px"} border='1px' borderColor='gray.200' key={index}>
-                      <Box
-                        role={"group"}
-                        p={6}
-                        maxW={"330px"}
-                        w={"full"}
-                        bg={"white"}
-                        boxShadow={"sm"}
-                        rounded={"md"}
-                        pos={"relative"}
-                        zIndex={1}
-                      >
-                        <Box
-                          rounded={"md"}
-                          mt={"0px"}
-                          pos={"relative"}
-                          height={"230px"}
-                          _after={{
-                            transition: "all .3s ease",
-                            content: '""',
-                            w: "full",
-                            h: "full",
-                            pos: "absolute",
-                            top: 0,
-                            left: 0,
-                            backgroundImage: `url(${imageURI})`,
-                            filter: "blur(15px)",
-                            zIndex: -1,
-                          }}
-                          _groupHover={{
-                            _after: {
-                              filter: "blur(20px)",
-                            },
-                          }}
-                        >
-                          <Image
-                            rounded={"lg"}
-                            height={230}
-                            width={282}
-                            objectFit={"cover"}
-                            src={imageURI}
-                            alt="Property Image"
-                          />
-                        </Box>
-                        <Stack pt={10} align={"center"}>
-                          
-                          <Heading
-                            fontSize={"2xl"}
-                            fontFamily={"body"}
-                            fontWeight={500}
-                            textTransform={"uppercase"}
-                          >
-                            {name} with applicationNumber {applicationNumber}
-                          </Heading>
-                          <Text
-                            color={"gray.500"}
-                            fontSize={"sm"}
-                            my={2}
-                            noOfLines={[4, 4, 3]}
-                          >
-                            {description}
-                            
-                          </Text>
-                          <VStack w={"full"} p={"0px"}  align={"start"}>
-                            
-                            <HStack gap={1} justify="start">
-                            <FaFlag />
-                            <Text color={"gray.600"}>country: {country}</Text> 
-                            </HStack>
-                            <HStack gap={1} justify="start">
-                            <FaMapMarkedAlt />
-                            <Text color={"gray.600"} >Location: {gpsCoordinates}</Text>
-                            </HStack>
-                          </VStack>
-                        </Stack>
-                      </Box>
-                    </Center>
-                      {/*<Center py={12} key={index}>
+                      <Center py={"0px"} mt={"0px!important"} border='1px' borderColor='gray.200' key={index}>
                         <Box
                           role={"group"}
-                          p={6}
-                          maxW={"330px"}
+                          p={0}
+                          maxW={{base:"330px"}}
                           w={"full"}
                           bg={"white"}
-                          boxShadow={"2xl"}
-                          rounded={"lg"}
+                          boxShadow={"sm"}
+                          rounded={"md"}
                           pos={"relative"}
                           zIndex={1}
                         >
-                          <Box
-                            rounded={"lg"}
-                            mt={-12}
-                            pos={"relative"}
-                            height={"230px"}
-                            _after={{
-                              transition: "all .3s ease",
-                              content: '""',
-                              w: "full",
-                              h: "full",
-                              pos: "absolute",
-                              top: 5,
-                              left: 0,
-                              backgroundImage: `url(${imageURI})`,
-                              filter: "blur(15px)",
-                              zIndex: -1,
-                            }}
-                            _groupHover={{
-                              _after: {
-                                filter: "blur(20px)",
-                              },
-                            }}
-                          >
+                          
                             <Image
-                              rounded={"lg"}
-                              height={230}
-                              width={282}
+                              roundedTop={"lg"}
+                              height={"full"}
+                              width={"full"}
                               objectFit={"cover"}
                               src={imageURI}
-                              alt="Nothing here"
+                              alt="Property Image"
                             />
-                          </Box>
-                          <Stack pt={10} align={"center"}>
-                            <Text
-                              color={"gray.500"}
-                              fontSize={"sm"}
-                              textTransform={"uppercase"}
-                            >
-                              {name} with applicationNumber {applicationNumber}
-                            </Text>
+                          
+                          <Stack p={6} pt={5} align={"center"}>
+                            
                             <Heading
                               fontSize={"2xl"}
                               fontFamily={"body"}
                               fontWeight={500}
+                              textTransform={"uppercase"}
+                            >
+                              {name} with application Number {applicationNumber}
+                            </Heading>
+                            <Text
+                              color={"gray.500"}
+                              fontSize={"small"}
+                              my={"2em"}
+                              
                             >
                               {description}
-                            </Heading>
-                            <Stack direction={"column"} align={"center"}>
-                              <Text color={"gray.600"}>status = {status}</Text>
-                              <Text color={"gray.600"}>country = {country}</Text>
-                              <Text color={"gray.600"}>
-                                gps Location = {gpsCoordinates}
-                              </Text>
-                              <Text color={"gray.600"}>
-                                surfaceAreaInMTRs = {surfaceAreaInMTRs}
-                              </Text>
-                            </Stack>
+                              
+                            </Text>
+                            <VStack w={"full"} p={"0px"}  align={"start"}>
+                              
+                              <HStack gap={1} justify="start">
+                              <FaFlag />
+                              <Text color={"gray.600"}>country: {country}</Text> 
+                              </HStack>
+                              <HStack gap={1} justify="start">
+                              <FaMapMarkedAlt />
+                              <Text color={"gray.600"} >Location: {gpsCoordinates}</Text>
+                              </HStack>
+                            </VStack>
                           </Stack>
                         </Box>
-                        </Center> */}
+                      </Center>
+                      
                       </>
                     );
                   })
