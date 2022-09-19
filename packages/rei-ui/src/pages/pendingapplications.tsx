@@ -8,7 +8,9 @@ import {
   Box,
   Image,
   Stack,
+  HStack,
 } from "@chakra-ui/react";
+import { FaMapMarkedAlt, FaFlag} from "react-icons/fa";
 import type { NextPage } from "next";
 import { useQuery, gql } from "@apollo/client";
 import { GET_PENDING_APPLICATIONS } from "../graphql/subgraph";
@@ -19,17 +21,17 @@ const pendingApplication: NextPage = () => {
     data: pendingUsers,
   } = useQuery(GET_PENDING_APPLICATIONS);
   console.log(
-    loading ? "Loading" : pendingUsers.withStatuses[0].applications[0]
+    loading ? "Loading" : pendingUsers?.withStatuses[0].applications[0]
   );
   if (loading) return <p>Loading...</p>;
-  const applications = pendingUsers.withStatuses[0].applications;
+  const applications = pendingUsers?.withStatuses[0].applications;
   return (
     <Center>
-      <Stack flexDirection="row" flexWrap="wrap" gap="2">
+      <Stack flexDirection="row" flexWrap="wrap" gap="4" align={'start'}>
         {loading ? (
           <Heading textShadow="2px 2px #0987A0">Loading Data</Heading>
         ) : (
-          applications.map((data: any, index: number) => {
+          applications?.map((data: any, index: number) => {
             const {
               applicationNumber,
               name,
@@ -41,21 +43,21 @@ const pendingApplication: NextPage = () => {
             } = data;
             const applicantAddress = applicant.id;
             return (
-              <Center py={12} key={index}>
+              <Center py={"0px"} mt={"0px"} border='1px' borderColor='gray.200' key={index}>
                 <Box
                   role={"group"}
                   p={6}
                   maxW={"330px"}
                   w={"full"}
                   bg={"white"}
-                  boxShadow={"2xl"}
-                  rounded={"lg"}
+                  boxShadow={"sm"}
+                  rounded={"md"}
                   pos={"relative"}
                   zIndex={1}
                 >
                   <Box
-                    rounded={"lg"}
-                    mt={-12}
+                    rounded={"md"}
+                    mt={"0px"}
                     pos={"relative"}
                     height={"230px"}
                     _after={{
@@ -64,7 +66,7 @@ const pendingApplication: NextPage = () => {
                       w: "full",
                       h: "full",
                       pos: "absolute",
-                      top: 5,
+                      top: 0,
                       left: 0,
                       backgroundImage: `url(${imageURI})`,
                       filter: "blur(15px)",
@@ -82,30 +84,39 @@ const pendingApplication: NextPage = () => {
                       width={282}
                       objectFit={"cover"}
                       src={imageURI}
-                      alt="Nothing here"
+                      alt="Property Image"
                     />
                   </Box>
                   <Stack pt={10} align={"center"}>
-                    <Text
-                      color={"gray.500"}
-                      fontSize={"sm"}
-                      textTransform={"uppercase"}
-                    >
-                      {name} with applicationNumber {applicationNumber}
-                    </Text>
+                    
                     <Heading
                       fontSize={"2xl"}
                       fontFamily={"body"}
                       fontWeight={500}
+                      textTransform={"uppercase"}
+                    >
+                      {name} with applicationNumber {applicationNumber}
+                    </Heading>
+                    <Text
+                      color={"gray.500"}
+                      fontSize={"sm"}
+                      my={2}
+                      noOfLines={[4, 4, 3]}
                     >
                       {description}
-                    </Heading>
-                    <Stack direction={"row"} align={"center"}>
-                      <Text color={"gray.600"}>country = {country}</Text>
-                      <Text color={"gray.600"}>
-                        gps Location = {gpsCoordinates}
-                      </Text>
-                    </Stack>
+                      
+                    </Text>
+                    <VStack w={"full"} p={"0px"}  align={"start"}>
+                      
+                      <HStack gap={1} justify="start">
+                      <FaFlag />
+                      <Text color={"gray.600"}>country: {country}</Text> 
+                      </HStack>
+                      <HStack gap={1} justify="start">
+                      <FaMapMarkedAlt />
+                      <Text color={"gray.600"} >Location: {gpsCoordinates}</Text>
+                      </HStack>
+                    </VStack>
                   </Stack>
                 </Box>
               </Center>
