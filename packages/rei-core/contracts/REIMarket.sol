@@ -275,4 +275,8 @@ contract REIMarket is Ownable {
             totalFraction;
         selectedLended.numberOfInvesters.decrement();
     }
+
+    function setFractionaliserContract(address fractionaliser) external {
+        FractionaliserContract = Fractionaliser(fractionaliser);
+    }
 }

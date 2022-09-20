@@ -115,11 +115,27 @@ export interface FractionaliserInterface extends utils.Interface {
   ): Result;
 
   events: {
+    "Fractionalised(uint256,address,address,uint256,uint256,address)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
   };
 
+  getEvent(nameOrSignatureOrTopic: "Fractionalised"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
 }
+
+export type FractionalisedEvent = TypedEvent<
+  [BigNumber, string, string, BigNumber, BigNumber, string],
+  {
+    fractionalisedId: BigNumber;
+    fractionaliser: string;
+    fractionalisedNftAddress: string;
+    fractionQuantity: BigNumber;
+    tokenId: BigNumber;
+    NFTContractAddress: string;
+  }
+>;
+
+export type FractionalisedEventFilter = TypedEventFilter<FractionalisedEvent>;
 
 export type OwnershipTransferredEvent = TypedEvent<
   [string, string],
@@ -296,6 +312,23 @@ export interface Fractionaliser extends BaseContract {
   };
 
   filters: {
+    "Fractionalised(uint256,address,address,uint256,uint256,address)"(
+      fractionalisedId?: BigNumberish | null,
+      fractionaliser?: string | null,
+      fractionalisedNftAddress?: string | null,
+      fractionQuantity?: null,
+      tokenId?: null,
+      NFTContractAddress?: null
+    ): FractionalisedEventFilter;
+    Fractionalised(
+      fractionalisedId?: BigNumberish | null,
+      fractionaliser?: string | null,
+      fractionalisedNftAddress?: string | null,
+      fractionQuantity?: null,
+      tokenId?: null,
+      NFTContractAddress?: null
+    ): FractionalisedEventFilter;
+
     "OwnershipTransferred(address,address)"(
       previousOwner?: string | null,
       newOwner?: string | null

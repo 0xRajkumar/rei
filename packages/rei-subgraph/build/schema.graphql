@@ -47,3 +47,28 @@ type TokenUser @entity {
   id: ID!
   tokens: [Token!]! @derivedFrom(field: "owner")
 }
+
+# event Fractionalised(
+#     uint256 indexed fractionalisedId,
+#     address indexed fractionaliser,
+#     address indexed fractionalisedNftAddress,
+#     uint256 fractionQuantity,
+#     uint256 tokenId,
+#     address NFTContractAddress
+# );
+
+type Fractionalised @entity {
+  id: ID!
+  fractionalisedId: BigInt!
+  fractionaliser: UserFractionalised!
+  fractionalisedNftAddress: Bytes!
+  fractionQuantity: BigInt!
+  tokenId: BigInt!
+  tokenURI: String!
+  NFTContractAddress: Bytes!
+}
+
+type UserFractionalised @entity {
+  id: ID!
+  fractionaliseds: [Fractionalised!]! @derivedFrom(field: "fractionaliser")
+}

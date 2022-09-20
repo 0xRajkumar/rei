@@ -14,6 +14,15 @@ contract Fractionaliser is Ownable {
 
     mapping(uint256 => address) public fractionaliseds;
 
+    event Fractionalised(
+        uint256 indexed fractionalisedId,
+        address indexed fractionaliser,
+        address indexed fractionalisedNftAddress,
+        uint256 fractionQuantity,
+        uint256 tokenId,
+        address NFTContractAddress
+    );
+
     constructor(address _marketplaceAddress, address _reiAddress) {
         marketplaceAddress = _marketplaceAddress;
         reiAddress = _reiAddress;
@@ -47,6 +56,14 @@ contract Fractionaliser is Ownable {
         fractionaliseds[
             totalFractionalised.current()
         ] = fractionalisednftAddress;
+        emit Fractionalised(
+            totalFractionalised.current(),
+            _msgSender(),
+            fractionalisednftAddress,
+            _amount,
+            _tokenId,
+            reiAddress
+        );
         return totalFractionalised.current();
     }
 

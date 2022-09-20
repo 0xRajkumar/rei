@@ -305,3 +305,141 @@ export class TokenUser extends Entity {
     this.set("tokens", Value.fromStringArray(value));
   }
 }
+
+export class Fractionalised extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save Fractionalised entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type Fractionalised must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("Fractionalised", id.toString(), this);
+    }
+  }
+
+  static load(id: string): Fractionalised | null {
+    return changetype<Fractionalised | null>(store.get("Fractionalised", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get fractionalisedId(): BigInt {
+    let value = this.get("fractionalisedId");
+    return value!.toBigInt();
+  }
+
+  set fractionalisedId(value: BigInt) {
+    this.set("fractionalisedId", Value.fromBigInt(value));
+  }
+
+  get fractionaliser(): string {
+    let value = this.get("fractionaliser");
+    return value!.toString();
+  }
+
+  set fractionaliser(value: string) {
+    this.set("fractionaliser", Value.fromString(value));
+  }
+
+  get fractionalisedNftAddress(): Bytes {
+    let value = this.get("fractionalisedNftAddress");
+    return value!.toBytes();
+  }
+
+  set fractionalisedNftAddress(value: Bytes) {
+    this.set("fractionalisedNftAddress", Value.fromBytes(value));
+  }
+
+  get fractionQuantity(): BigInt {
+    let value = this.get("fractionQuantity");
+    return value!.toBigInt();
+  }
+
+  set fractionQuantity(value: BigInt) {
+    this.set("fractionQuantity", Value.fromBigInt(value));
+  }
+
+  get tokenId(): BigInt {
+    let value = this.get("tokenId");
+    return value!.toBigInt();
+  }
+
+  set tokenId(value: BigInt) {
+    this.set("tokenId", Value.fromBigInt(value));
+  }
+
+  get tokenURI(): string {
+    let value = this.get("tokenURI");
+    return value!.toString();
+  }
+
+  set tokenURI(value: string) {
+    this.set("tokenURI", Value.fromString(value));
+  }
+
+  get NFTContractAddress(): Bytes {
+    let value = this.get("NFTContractAddress");
+    return value!.toBytes();
+  }
+
+  set NFTContractAddress(value: Bytes) {
+    this.set("NFTContractAddress", Value.fromBytes(value));
+  }
+}
+
+export class UserFractionalised extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save UserFractionalised entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type UserFractionalised must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("UserFractionalised", id.toString(), this);
+    }
+  }
+
+  static load(id: string): UserFractionalised | null {
+    return changetype<UserFractionalised | null>(
+      store.get("UserFractionalised", id)
+    );
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get fractionaliseds(): Array<string> {
+    let value = this.get("fractionaliseds");
+    return value!.toStringArray();
+  }
+
+  set fractionaliseds(value: Array<string>) {
+    this.set("fractionaliseds", Value.fromStringArray(value));
+  }
+}

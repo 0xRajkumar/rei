@@ -54,3 +54,18 @@ export const GET_USER_TOKENS = gql`
     }
   }
 `;
+export const GET_USER_FRACTIONALISEDS = gql`
+  query GetUserTokens($address: String!) {
+    userFractionaliseds(where: { id: $address }) {
+      id
+      fractionaliseds {
+        fractionalisedId
+        fractionalisedNftAddress
+        tokenId
+        tokenURI
+        NFTContractAddress
+        fractionQuantity
+      }
+    }
+  }
+`;

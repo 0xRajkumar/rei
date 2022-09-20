@@ -6,9 +6,9 @@ dataSources:
     name: Approver
     network: goerli
     source:
-      address: "0xdC774004f2e576a5a0669c5d7eDBA3E4518d3553"
+      address: "0x811E83827612D1631b817185Ae96797b9EF3fa48"
       abi: Approver
-      startBlock: 7619985
+      startBlock: 7627090
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -29,9 +29,9 @@ dataSources:
     name: REI
     network: goerli
     source:
-      address: "0x2c3d194c45A6dcf3bF2B0f3a7E14f8E1eF50BD48"
+      address: "0xebb243dcB08a4A5e47767a0e59f92F94aF7c365b"
       abi: REI
-      startBlock: 7619985
+      startBlock: 7627090
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -46,3 +46,27 @@ dataSources:
         - event: Transfer(indexed address,indexed address,indexed uint256)
           handler: handleTransfer
       file: ./src/rei.ts
+  - kind: ethereum
+    name: Fractionaliser
+    network: goerli
+    source:
+      address: "0x5339779ecE9073cB5F02761fCB10eCEf94656C36"
+      abi: Fractionaliser
+      startBlock: 7627090
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - Fractionalised
+        - UserFractionalised
+      abis:
+        - name: Fractionaliser
+          file: ./abis/Fractionaliser.json
+        - name: REI
+          file: ./abis/REI.json
+      eventHandlers:
+        - event: Fractionalised(indexed uint256,indexed address,indexed
+            address,uint256,uint256,address)
+          handler: handleFractionalised
+      file: ./src/fractionaliser.ts

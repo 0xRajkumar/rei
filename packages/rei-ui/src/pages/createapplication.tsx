@@ -140,21 +140,19 @@ const createapplication: NextPage = () => {
   return (
     <Box>
       <HStack my={"4"} justify={"center"}>
-        <Heading as={"h1"}  fontSize={"4xl"} textAlign={"center"}>
+        <Heading as={"h1"} fontSize={"4xl"} textAlign={"center"}>
           Apply to list your properties
         </Heading>
-
       </HStack>
-       
-      <Tabs mt={'4em'} isFitted variant='enclosed'>
-        <TabList mb='1em'>
+
+      <Tabs mt={"4em"} isFitted variant="enclosed">
+        <TabList mb="1em">
           <Tab fontSize={"2xl"}>Create a new application</Tab>
           <Tab fontSize={"2xl"}>All created applications</Tab>
         </TabList>
         <TabPanels>
           <TabPanel>
             <Box>
-              
               <Box minH={"100vh"} mx="auto" bg={"gray.50"}>
                 <Stack
                   spacing={8}
@@ -261,7 +259,11 @@ const createapplication: NextPage = () => {
           </TabPanel>
           <TabPanel>
             <Box minH={"100vh"} mx="auto" bg={"gray.50"} py={12}>
-              <Heading as={"h2"}  fontSize={"4xl"} textAlign={"center"}>{userAddress ? "Your Created Applications" : "Please connect your wallet"}</Heading>
+              <Heading as={"h2"} fontSize={"4xl"} textAlign={"center"}>
+                {userAddress
+                  ? "Your Created Applications"
+                  : "Please connect your wallet"}
+              </Heading>
               <Stack flexDirection="row" flexWrap="wrap" gap="2">
                 {loading ? (
                   <Heading textShadow="2px 2px #0987A0">Loading Data</Heading>
@@ -279,20 +281,25 @@ const createapplication: NextPage = () => {
                     } = data;
                     const status = applicationStatus.id;
                     return (
-                    <>
-                      <Center py={"0px"} mt={"0px!important"} border='1px' borderColor='gray.200' key={index}>
-                        <Box
-                          role={"group"}
-                          p={0}
-                          maxW={{base:"330px"}}
-                          w={"full"}
-                          bg={"white"}
-                          boxShadow={"sm"}
-                          rounded={"md"}
-                          pos={"relative"}
-                          zIndex={1}
+                      <>
+                        <Center
+                          py={"0px"}
+                          mt={"0px!important"}
+                          border="1px"
+                          borderColor="gray.200"
+                          key={index}
                         >
-                          
+                          <Box
+                            role={"group"}
+                            p={0}
+                            maxW={{ base: "330px" }}
+                            w={"full"}
+                            bg={"white"}
+                            boxShadow={"sm"}
+                            rounded={"md"}
+                            pos={"relative"}
+                            zIndex={1}
+                          >
                             <Image
                               roundedTop={"lg"}
                               height={"full"}
@@ -301,41 +308,41 @@ const createapplication: NextPage = () => {
                               src={imageURI}
                               alt="Property Image"
                             />
-                          
-                          <Stack p={6} pt={5} align={"center"}>
-                            
-                            <Heading
-                              fontSize={"2xl"}
-                              fontFamily={"body"}
-                              fontWeight={500}
-                              textTransform={"uppercase"}
-                            >
-                              {name} with application Number {applicationNumber}
-                            </Heading>
-                            <Text
-                              color={"gray.500"}
-                              fontSize={"small"}
-                              my={"2em"}
-                              
-                            >
-                              {description}
-                              
-                            </Text>
-                            <VStack w={"full"} p={"0px"}  align={"start"}>
-                              
-                              <HStack gap={1} justify="start">
-                              <FaFlag />
-                              <Text color={"gray.600"}>country: {country}</Text> 
-                              </HStack>
-                              <HStack gap={1} justify="start">
-                              <FaMapMarkedAlt />
-                              <Text color={"gray.600"} >Location: {gpsCoordinates}</Text>
-                              </HStack>
-                            </VStack>
-                          </Stack>
-                        </Box>
-                      </Center>
-                      
+
+                            <Stack p={6} pt={5} align={"center"}>
+                              <Heading
+                                fontSize={"2xl"}
+                                fontFamily={"body"}
+                                fontWeight={500}
+                                textTransform={"uppercase"}
+                              >
+                                {name} with application Number{" "}
+                                {applicationNumber}
+                              </Heading>
+                              <Text
+                                color={"gray.500"}
+                                fontSize={"small"}
+                                my={"2em"}
+                              >
+                                {description}
+                              </Text>
+                              <VStack w={"full"} p={"0px"} align={"start"}>
+                                <HStack gap={1} justify="start">
+                                  <FaFlag />
+                                  <Text color={"gray.600"}>
+                                    country: {country}
+                                  </Text>
+                                </HStack>
+                                <HStack gap={1} justify="start">
+                                  <FaMapMarkedAlt />
+                                  <Text color={"gray.600"}>
+                                    Location: {gpsCoordinates}
+                                  </Text>
+                                </HStack>
+                              </VStack>
+                            </Stack>
+                          </Box>
+                        </Center>
                       </>
                     );
                   })
@@ -345,8 +352,6 @@ const createapplication: NextPage = () => {
           </TabPanel>
         </TabPanels>
       </Tabs>
-      
-      
     </Box>
   );
 };

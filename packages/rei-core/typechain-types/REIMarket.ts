@@ -27,6 +27,7 @@ export interface REIMarketInterface extends utils.Interface {
     "relaxationPeriodForlonee()": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "repay(uint256)": FunctionFragment;
+    "setFractionaliserContract(address)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
     "withdrawBeforeFunded(uint256,uint256)": FunctionFragment;
     "withdrawLoan(uint256)": FunctionFragment;
@@ -61,6 +62,10 @@ export interface REIMarketInterface extends utils.Interface {
   ): string;
   encodeFunctionData(functionFragment: "repay", values: [BigNumberish]): string;
   encodeFunctionData(
+    functionFragment: "setFractionaliserContract",
+    values: [string]
+  ): string;
+  encodeFunctionData(
     functionFragment: "transferOwnership",
     values: [string]
   ): string;
@@ -92,6 +97,10 @@ export interface REIMarketInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "repay", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "setFractionaliserContract",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "transferOwnership",
     data: BytesLike
@@ -181,6 +190,11 @@ export interface REIMarket extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    setFractionaliserContract(
+      fractionaliser: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     transferOwnership(
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -231,6 +245,11 @@ export interface REIMarket extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  setFractionaliserContract(
+    fractionaliser: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   transferOwnership(
     newOwner: string,
     overrides?: Overrides & { from?: string | Promise<string> }
@@ -276,6 +295,11 @@ export interface REIMarket extends BaseContract {
 
     repay(
       lendingNumber: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
+    setFractionaliserContract(
+      fractionaliser: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -341,6 +365,11 @@ export interface REIMarket extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    setFractionaliserContract(
+      fractionaliser: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     transferOwnership(
       newOwner: string,
       overrides?: Overrides & { from?: string | Promise<string> }
@@ -391,6 +420,11 @@ export interface REIMarket extends BaseContract {
 
     repay(
       lendingNumber: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    setFractionaliserContract(
+      fractionaliser: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

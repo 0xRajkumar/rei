@@ -1,10 +1,13 @@
 {
   "goerli": {
     "Approver": {
-      "address": "0x9D5AfD5ec2448F3E6721f259845281Af0C96902A"
+      "address": "0xdC774004f2e576a5a0669c5d7eDBA3E4518d3553"
     },
     "REI": {
-      "address": "0x8A3b937c015bC0F873d6d6E710b3Dc21e8E24E86"
+      "address": "0x2c3d194c45A6dcf3bF2B0f3a7E14f8E1eF50BD48"
+    },
+    "Fractionaliser": {
+      "address": "0xD664A5638454e165539a584eA4099E551533c068"
     }
   }
 }
