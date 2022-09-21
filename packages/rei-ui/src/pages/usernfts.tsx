@@ -70,6 +70,7 @@ const usernfts: NextPage = () => {
       dataArr.map(async (data: any) => {
         const tokenData = await fetch(data.tokenURI);
         const token = await tokenData.json();
+        console.log({ ...token, ...data }, "OkOK");
         return { ...token, ...data };
       })
     );
@@ -101,6 +102,7 @@ const usernfts: NextPage = () => {
         });
     }
   }, [userFractionliseds]);
+  console.log(userTokens, "Oh" ?? "");
   return (
     <Box>
       <Box>
@@ -112,7 +114,7 @@ const usernfts: NextPage = () => {
             userTokens?.map((data: any, index: number) => {
               const {
                 image,
-                tokenId,
+                tokenID,
                 description,
                 attributes: { SurfaceArea, GPSCoordinates, City, Country },
               } = data;
@@ -167,7 +169,7 @@ const usernfts: NextPage = () => {
                         fontSize={"sm"}
                         textTransform={"uppercase"}
                       >
-                        tokenId = {tokenId}
+                        tokenId = {tokenID}
                       </Text>
                       <Heading
                         fontSize={"2xl"}

@@ -11,6 +11,56 @@ import {
   BigDecimal
 } from "@graphprotocol/graph-ts";
 
+export class ApproverAccess extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save ApproverAccess entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type ApproverAccess must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("ApproverAccess", id.toString(), this);
+    }
+  }
+
+  static load(id: string): ApproverAccess | null {
+    return changetype<ApproverAccess | null>(store.get("ApproverAccess", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get user(): Bytes {
+    let value = this.get("user");
+    return value!.toBytes();
+  }
+
+  set user(value: Bytes) {
+    this.set("user", Value.fromBytes(value));
+  }
+
+  get bool(): boolean {
+    let value = this.get("bool");
+    return value!.toBoolean();
+  }
+
+  set bool(value: boolean) {
+    this.set("bool", Value.fromBoolean(value));
+  }
+}
+
 export class Application extends Entity {
   constructor(id: string) {
     super();
@@ -94,6 +144,15 @@ export class Application extends Entity {
 
   set country(value: string) {
     this.set("country", Value.fromString(value));
+  }
+
+  get city(): string {
+    let value = this.get("city");
+    return value!.toString();
+  }
+
+  set city(value: string) {
+    this.set("city", Value.fromString(value));
   }
 
   get gpsCoordinates(): string {

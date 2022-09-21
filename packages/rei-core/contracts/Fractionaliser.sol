@@ -40,6 +40,7 @@ contract Fractionaliser is Ownable {
             _symbol,
             reiAddress,
             _tokenId,
+            _msgSender(),
             _amount,
             marketplaceAddress
         );

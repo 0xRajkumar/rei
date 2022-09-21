@@ -18,9 +18,8 @@ import { createAccessSetEvent } from "./approver-utils"
 describe("Describe entity assertions", () => {
   beforeAll(() => {
     let _user = Address.fromString("0x0000000000000000000000000000000000000001")
-    let _access = "Example string value"
     let _enabled = "boolean Not implemented"
-    let newAccessSetEvent = createAccessSetEvent(_user, _access, _enabled)
+    let newAccessSetEvent = createAccessSetEvent(_user, _enabled)
     handleAccessSet(newAccessSetEvent)
   })
 
@@ -40,12 +39,6 @@ describe("Describe entity assertions", () => {
       "0xa16081f360e3847006db660bae1c6d1b2e17ec2a-1",
       "_user",
       "0x0000000000000000000000000000000000000001"
-    )
-    assert.fieldEquals(
-      "AccessSet",
-      "0xa16081f360e3847006db660bae1c6d1b2e17ec2a-1",
-      "_access",
-      "Example string value"
     )
     assert.fieldEquals(
       "AccessSet",

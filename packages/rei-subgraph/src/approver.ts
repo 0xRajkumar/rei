@@ -1,33 +1,19 @@
 import {
   DecisionTaken as DecisionTakenEvent,
   NewApplicationCreated as NewApplicationCreatedEvent,
+  AccessSet as AccessSetEvent,
   Approver as ApproverContract,
 } from "../generated/Approver/Approver";
-import { Application, WithStatus, User } from "../generated/schema";
 import {
-  ipfs,
-  json,
-  BigInt,
-  ethereum,
-  Bytes,
-  bigInt,
-} from "@graphprotocol/graph-ts";
+  Application,
+  WithStatus,
+  User,
+  ApproverAccess,
+} from "../generated/schema";
 export function handleNewApplicationCreated(
   event: NewApplicationCreatedEvent
 ): void {
   let application = new Application(event.params.applicationNumber.toString());
-  // type Application @entity {
-  //   id: ID!
-  //   applicationNumber: BigInt!
-  //   applicant: Bytes!
-  //   name: String!
-  //   description: String!
-  //   imageURI: String!
-  //   country: String!
-  //   gpsCoordinates: String!
-  //   surfaceAreaInMTRs: BigInt!
-  //   applicationStatus: WithStatus!
-  // }
   application.applicationNumber = event.params.applicationNumber;
   application.applicant = event.params.applicant.toHexString();
   application.name = event.params.name;
@@ -37,20 +23,7 @@ export function handleNewApplicationCreated(
   application.gpsCoordinates = event.params.gpsCoordinates;
   application.surfaceAreaInMTRs = event.params.surfaceAreaInMTRs;
   application.applicationStatus = event.params.applicationStatus.toString();
-  // let approverContract = ApproverContract.bind(event.address);
-  // approverContract.getApllicationAt(event.params.applicationNumber);
-  // entity.applicant = approverContract.getApllicationAt(
-  //   event.params.applicationNumber
-  // ).applicant;
-  // entity.applicationStatus = approverContract
-  //   .getApllicationAt(event.params.applicationNumber)
-  //   .applicationStatus.toString();
-  // entity.description = approverContract
-  //   .getApllicationAt(event.params.applicationNumber)
-  //   .description.toString();
-  // entity.imageURI = approverContract
-  //   .getApllicationAt(event.params.applicationNumber)
-  //   .imageURI.toString();
+  application.city = event.params.city;
   application.save();
   let withstatus = new WithStatus(event.params.applicationStatus.toString());
   withstatus.save();
@@ -64,4 +37,11 @@ export function handleDecisionTaken(event: DecisionTakenEvent): void {
   application.save();
   let withstatus = new WithStatus(event.params.decision.toString());
   withstatus.save();
+}
+
+export function handleAccessSet(event: AccessSetEvent): void {
+  const userAccess = new ApproverAccess(event.params._user.toHexString());
+  userAccess.bool = event.params._enabled;
+  userAccess.user = event.params._user;
+  userAccess.save();
 }

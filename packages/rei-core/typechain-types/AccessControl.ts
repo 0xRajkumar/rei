@@ -66,7 +66,7 @@ export interface AccessControlInterface extends utils.Interface {
   ): Result;
 
   events: {
-    "AccessSet(address,string,bool)": EventFragment;
+    "AccessSet(address,bool)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
   };
 
@@ -75,8 +75,8 @@ export interface AccessControlInterface extends utils.Interface {
 }
 
 export type AccessSetEvent = TypedEvent<
-  [string, string, boolean],
-  { _user: string; _access: string; _enabled: boolean }
+  [string, boolean],
+  { _user: string; _enabled: boolean }
 >;
 
 export type AccessSetEventFilter = TypedEventFilter<AccessSetEvent>;
@@ -194,16 +194,11 @@ export interface AccessControl extends BaseContract {
   };
 
   filters: {
-    "AccessSet(address,string,bool)"(
+    "AccessSet(address,bool)"(
       _user?: null,
-      _access?: null,
       _enabled?: null
     ): AccessSetEventFilter;
-    AccessSet(
-      _user?: null,
-      _access?: null,
-      _enabled?: null
-    ): AccessSetEventFilter;
+    AccessSet(_user?: null, _enabled?: null): AccessSetEventFilter;
 
     "OwnershipTransferred(address,address)"(
       previousOwner?: string | null,

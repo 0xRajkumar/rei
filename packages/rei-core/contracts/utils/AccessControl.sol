@@ -7,12 +7,12 @@ import '@openzeppelin/contracts/utils/Context.sol';
 abstract contract AccessControl is Ownable {
     mapping(address => bool) private _approvers;
 
-    event AccessSet(address _user, string _access, bool _enabled);
+    event AccessSet(address _user, bool _enabled);
 
     function setApprover(address approver, bool enabled) public onlyOwner {
         require(approver != address(0), 'Invalid Approver Address');
         _approvers[approver] = enabled;
-        emit AccessSet(approver, 'APPROVER', enabled);
+        emit AccessSet(approver, enabled);
     }
 
     function setApprovers(address[] calldata approvers, bool enabled)

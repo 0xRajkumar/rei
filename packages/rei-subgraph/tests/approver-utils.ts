@@ -9,7 +9,6 @@ import {
 
 export function createAccessSetEvent(
   _user: Address,
-  _access: string,
   _enabled: boolean
 ): AccessSet {
   let accessSetEvent = changetype<AccessSet>(newMockEvent())
@@ -18,9 +17,6 @@ export function createAccessSetEvent(
 
   accessSetEvent.parameters.push(
     new ethereum.EventParam("_user", ethereum.Value.fromAddress(_user))
-  )
-  accessSetEvent.parameters.push(
-    new ethereum.EventParam("_access", ethereum.Value.fromString(_access))
   )
   accessSetEvent.parameters.push(
     new ethereum.EventParam("_enabled", ethereum.Value.fromBoolean(_enabled))

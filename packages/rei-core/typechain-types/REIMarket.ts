@@ -115,11 +115,78 @@ export interface REIMarketInterface extends utils.Interface {
   ): Result;
 
   events: {
+    "Applied(uint256,uint256,address,uint256,address,uint256,uint256,uint256,uint8)": EventFragment;
+    "InterestPaid(uint256,uint256,uint256,address,uint256)": EventFragment;
+    "Invested(uint256,uint256,uint256,uint256,uint8,address,uint256)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
+    "Repayed(uint256,uint8)": EventFragment;
+    "WithDrawalLoan(uint256,uint8)": EventFragment;
+    "WithdrawalBeforeFunded(uint256,uint256,uint256,address,uint256)": EventFragment;
   };
 
+  getEvent(nameOrSignatureOrTopic: "Applied"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "InterestPaid"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Invested"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Repayed"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "WithDrawalLoan"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "WithdrawalBeforeFunded"): EventFragment;
 }
+
+export type AppliedEvent = TypedEvent<
+  [
+    BigNumber,
+    BigNumber,
+    string,
+    BigNumber,
+    string,
+    BigNumber,
+    BigNumber,
+    BigNumber,
+    number
+  ],
+  {
+    lendingNumber: BigNumber;
+    fractionalisedId: BigNumber;
+    fractionalisedNftAddress: string;
+    numberOfFractions: BigNumber;
+    Loanee: string;
+    loanAmountPerFraction: BigNumber;
+    interestPerFractionInPercentage: BigNumber;
+    repayByTimeStamp: BigNumber;
+    status: number;
+  }
+>;
+
+export type AppliedEventFilter = TypedEventFilter<AppliedEvent>;
+
+export type InterestPaidEvent = TypedEvent<
+  [BigNumber, BigNumber, BigNumber, string, BigNumber],
+  {
+    lendingNumber: BigNumber;
+    numberOfInvesters: BigNumber;
+    numberOfFractionsInvested: BigNumber;
+    invester: string;
+    amountInvestedByInvester: BigNumber;
+  }
+>;
+
+export type InterestPaidEventFilter = TypedEventFilter<InterestPaidEvent>;
+
+export type InvestedEvent = TypedEvent<
+  [BigNumber, BigNumber, BigNumber, BigNumber, number, string, BigNumber],
+  {
+    lendingNumber: BigNumber;
+    numberOfFractionsInvested: BigNumber;
+    numberOfInvesters: BigNumber;
+    startedAt: BigNumber;
+    status: number;
+    invester: string;
+    amountInvestedByInvester: BigNumber;
+  }
+>;
+
+export type InvestedEventFilter = TypedEventFilter<InvestedEvent>;
 
 export type OwnershipTransferredEvent = TypedEvent<
   [string, string],
@@ -128,6 +195,34 @@ export type OwnershipTransferredEvent = TypedEvent<
 
 export type OwnershipTransferredEventFilter =
   TypedEventFilter<OwnershipTransferredEvent>;
+
+export type RepayedEvent = TypedEvent<
+  [BigNumber, number],
+  { lendingNumber: BigNumber; status: number }
+>;
+
+export type RepayedEventFilter = TypedEventFilter<RepayedEvent>;
+
+export type WithDrawalLoanEvent = TypedEvent<
+  [BigNumber, number],
+  { lendingNumber: BigNumber; status: number }
+>;
+
+export type WithDrawalLoanEventFilter = TypedEventFilter<WithDrawalLoanEvent>;
+
+export type WithdrawalBeforeFundedEvent = TypedEvent<
+  [BigNumber, BigNumber, BigNumber, string, BigNumber],
+  {
+    lendingNumber: BigNumber;
+    numberOfFractionsInvested: BigNumber;
+    numberOfInvesters: BigNumber;
+    invester: string;
+    amountInvestedByInvester: BigNumber;
+  }
+>;
+
+export type WithdrawalBeforeFundedEventFilter =
+  TypedEventFilter<WithdrawalBeforeFundedEvent>;
 
 export interface REIMarket extends BaseContract {
   contractName: "REIMarket";
@@ -321,6 +416,63 @@ export interface REIMarket extends BaseContract {
   };
 
   filters: {
+    "Applied(uint256,uint256,address,uint256,address,uint256,uint256,uint256,uint8)"(
+      lendingNumber?: null,
+      fractionalisedId?: null,
+      fractionalisedNftAddress?: null,
+      numberOfFractions?: null,
+      Loanee?: null,
+      loanAmountPerFraction?: null,
+      interestPerFractionInPercentage?: null,
+      repayByTimeStamp?: null,
+      status?: null
+    ): AppliedEventFilter;
+    Applied(
+      lendingNumber?: null,
+      fractionalisedId?: null,
+      fractionalisedNftAddress?: null,
+      numberOfFractions?: null,
+      Loanee?: null,
+      loanAmountPerFraction?: null,
+      interestPerFractionInPercentage?: null,
+      repayByTimeStamp?: null,
+      status?: null
+    ): AppliedEventFilter;
+
+    "InterestPaid(uint256,uint256,uint256,address,uint256)"(
+      lendingNumber?: null,
+      numberOfInvesters?: null,
+      numberOfFractionsInvested?: null,
+      invester?: null,
+      amountInvestedByInvester?: null
+    ): InterestPaidEventFilter;
+    InterestPaid(
+      lendingNumber?: null,
+      numberOfInvesters?: null,
+      numberOfFractionsInvested?: null,
+      invester?: null,
+      amountInvestedByInvester?: null
+    ): InterestPaidEventFilter;
+
+    "Invested(uint256,uint256,uint256,uint256,uint8,address,uint256)"(
+      lendingNumber?: null,
+      numberOfFractionsInvested?: null,
+      numberOfInvesters?: null,
+      startedAt?: null,
+      status?: null,
+      invester?: null,
+      amountInvestedByInvester?: null
+    ): InvestedEventFilter;
+    Invested(
+      lendingNumber?: null,
+      numberOfFractionsInvested?: null,
+      numberOfInvesters?: null,
+      startedAt?: null,
+      status?: null,
+      invester?: null,
+      amountInvestedByInvester?: null
+    ): InvestedEventFilter;
+
     "OwnershipTransferred(address,address)"(
       previousOwner?: string | null,
       newOwner?: string | null
@@ -329,6 +481,36 @@ export interface REIMarket extends BaseContract {
       previousOwner?: string | null,
       newOwner?: string | null
     ): OwnershipTransferredEventFilter;
+
+    "Repayed(uint256,uint8)"(
+      lendingNumber?: null,
+      status?: null
+    ): RepayedEventFilter;
+    Repayed(lendingNumber?: null, status?: null): RepayedEventFilter;
+
+    "WithDrawalLoan(uint256,uint8)"(
+      lendingNumber?: null,
+      status?: null
+    ): WithDrawalLoanEventFilter;
+    WithDrawalLoan(
+      lendingNumber?: null,
+      status?: null
+    ): WithDrawalLoanEventFilter;
+
+    "WithdrawalBeforeFunded(uint256,uint256,uint256,address,uint256)"(
+      lendingNumber?: null,
+      numberOfFractionsInvested?: null,
+      numberOfInvesters?: null,
+      invester?: null,
+      amountInvestedByInvester?: null
+    ): WithdrawalBeforeFundedEventFilter;
+    WithdrawalBeforeFunded(
+      lendingNumber?: null,
+      numberOfFractionsInvested?: null,
+      numberOfInvesters?: null,
+      invester?: null,
+      amountInvestedByInvester?: null
+    ): WithdrawalBeforeFundedEventFilter;
   };
 
   estimateGas: {

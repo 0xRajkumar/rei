@@ -27,12 +27,8 @@ export class AccessSet__Params {
     return this._event.parameters[0].value.toAddress();
   }
 
-  get _access(): string {
-    return this._event.parameters[1].value.toString();
-  }
-
   get _enabled(): boolean {
-    return this._event.parameters[2].value.toBoolean();
+    return this._event.parameters[1].value.toBoolean();
   }
 }
 

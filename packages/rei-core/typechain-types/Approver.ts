@@ -206,7 +206,7 @@ export interface ApproverInterface extends utils.Interface {
   ): Result;
 
   events: {
-    "AccessSet(address,string,bool)": EventFragment;
+    "AccessSet(address,bool)": EventFragment;
     "DecisionTaken(uint256,address,uint8)": EventFragment;
     "NewApplicationCreated(uint256,address,string,string,string,string,string,string,uint256,uint8)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
@@ -219,8 +219,8 @@ export interface ApproverInterface extends utils.Interface {
 }
 
 export type AccessSetEvent = TypedEvent<
-  [string, string, boolean],
-  { _user: string; _access: string; _enabled: boolean }
+  [string, boolean],
+  { _user: string; _enabled: boolean }
 >;
 
 export type AccessSetEventFilter = TypedEventFilter<AccessSetEvent>;
@@ -573,16 +573,11 @@ export interface Approver extends BaseContract {
   };
 
   filters: {
-    "AccessSet(address,string,bool)"(
+    "AccessSet(address,bool)"(
       _user?: null,
-      _access?: null,
       _enabled?: null
     ): AccessSetEventFilter;
-    AccessSet(
-      _user?: null,
-      _access?: null,
-      _enabled?: null
-    ): AccessSetEventFilter;
+    AccessSet(_user?: null, _enabled?: null): AccessSetEventFilter;
 
     "DecisionTaken(uint256,address,uint8)"(
       applicationNumber?: BigNumberish | null,

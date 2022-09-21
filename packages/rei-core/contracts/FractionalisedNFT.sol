@@ -17,13 +17,18 @@ contract FractionalisedNFT is ERC20, ERC721Holder {
         string memory _symbol,
         address reiAddress,
         uint256 _tokenId,
+        address to,
         uint256 _amount,
         address _marketplaceAddress
     ) ERC20(_name, _symbol) {
         rei = REI(reiAddress);
         tokenId = _tokenId;
-        _mint(_msgSender(), _amount);
+        _mint(to, _amount);
         marketplaceAddress = _marketplaceAddress;
+    }
+
+    function decimals() public view override returns (uint8) {
+        return 1;
     }
 
     function unfractionlise() public returns (bool) {

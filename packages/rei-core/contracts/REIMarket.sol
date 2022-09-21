@@ -40,6 +40,56 @@ contract REIMarket is Ownable {
         uint256 startedAt;
         LendStatus status;
     }
+    // uint256 fractionalisedId;
+    // address fractionalisedNftAddress;
+    // uint256 numberOfFractions;
+    // uint256 numberOfFractionsInvested;
+    // address payable Loanee;
+    // Counters.Counter numberOfInvesters;
+    // mapping(address => uint256) InvestmentsByInvesters;
+    // uint256 LoanAmountPerFraction;
+    // uint256 InterestPerFractionInPercentage;
+    // uint256 repayByTimeStamp;
+    // uint256 startedAt;
+    // LendStatus status;
+
+    // type Fractionalised @entity {
+    //   id: ID!
+    //   fractionalisedId: BigInt!
+    //   fractionaliser: UserFractionalised!
+    //   fractionalisedNftAddress: Bytes!
+    //   fractionQuantity: BigInt!
+    //   tokenId: BigInt!
+    //   tokenURI: String!
+    //   NFTContractAddress: Bytes!
+    // }
+    event Applied(
+        uint256 lendingNumber,
+        uint256 fractionalisedId,
+        address fractionalisedNftAddress,
+        uint256 numberOfFractions,
+        address Loanee,
+        uint256 loanAmountPerFraction,
+        uint256 interestPerFractionInPercentage,
+        uint256 repayByTimeStamp,
+        LendStatus status
+    );
+    // event Applied(
+    //     uint256 lendingNumber,
+    //     uint256 fractionalisedId,
+    //     address fractionalisedNftAddress,
+    //     uint256 numberOfFractions,
+    //     uint256 numberOfFractionsInvested,
+    //     address Loanee,
+    //     uint256 numberOfInvesters,
+    //     uint256 loanAmountPerFraction,
+    //     uint256 interestPerFractionInPercentage,
+    //     uint256 repayByTimeStamp,
+    //     uint256 startedAt,
+    //     LendStatus status,
+    //     address invester,
+    //     uint256 amountInvestedByInvester
+    // );
 
     mapping(uint256 => LendForLoan) LendedForLoans;
 
@@ -52,7 +102,7 @@ contract REIMarket is Ownable {
     ) public {
         require(
             _fractionalisedId <= FractionaliserContract.totalFractionalised(),
-            'Invalid'
+            'Invalid _fractionalisedId'
         );
         address _fractionalisedNftAddress = FractionaliserContract
             .getAddressOfFractionisedId(_fractionalisedId);
@@ -60,12 +110,12 @@ contract REIMarket is Ownable {
             FractionalisedNFT(_fractionalisedNftAddress).balanceOf(
                 _msgSender()
             ) >= _numberOfFractions,
-            'Invalid'
+            'Invalid  balanceOf'
         );
 
         require(
             _loanAmountPerFraction > 0 && _interestPerFractionInPercentage > 0,
-            'Invalid'
+            'Invalid _loanAmountPerFraction'
         );
 
         require(
@@ -94,7 +144,49 @@ contract REIMarket is Ownable {
             .InterestPerFractionInPercentage = _interestPerFractionInPercentage;
         lended.repayByTimeStamp = repayByTimeStamp;
         lended.status = LendStatus.Created;
+        //         event Applied(
+        //     uint256 lendingNumber,
+        //     uint256 fractionalisedId,
+        //     uint256 numberOfFractions,
+        //     address Loanee,
+        //     uint256 loanAmountPerFraction,
+        //     uint256 interestPerFractionInPercentage,
+        //     uint256 repayByTimeStamp,
+        //     LendStatus status
+        // );
+        //         event Applied(
+        //     uint256 lendingNumber,
+        //     uint256 fractionalisedId,
+        //     uint256 fractionalisedNftAddress,
+        //     uint256 numberOfFractions,
+        //     address Loanee,
+        //     uint256 loanAmountPerFraction,
+        //     uint256 interestPerFractionInPercentage,
+        //     uint256 repayByTimeStamp,
+        //     LendStatus status
+        // );
+        emit Applied(
+            NumberOfLended.current(),
+            _fractionalisedId,
+            _fractionalisedNftAddress,
+            _numberOfFractions,
+            lended.Loanee,
+            _loanAmountPerFraction,
+            _interestPerFractionInPercentage,
+            repayByTimeStamp,
+            LendStatus.Created
+        );
     }
+
+    event Invested(
+        uint256 lendingNumber,
+        uint256 numberOfFractionsInvested,
+        uint256 numberOfInvesters,
+        uint256 startedAt,
+        LendStatus status,
+        address invester,
+        uint256 amountInvestedByInvester
+    );
 
     function invest(uint256 lendingNumber, uint256 _numberOfFraction) public {
         require(lendingNumber <= NumberOfLended.current(), '');
@@ -125,9 +217,10 @@ contract REIMarket is Ownable {
                 _msgSender(),
                 _numberOfFraction
             );
-        selectedLended.numberOfFractionsInvested =
-            selectedLended.numberOfFractionsInvested +
-            _numberOfFraction;
+        uint256 totalNumberOfFractionInvested = selectedLended
+            .numberOfFractionsInvested + _numberOfFraction;
+        selectedLended
+            .numberOfFractionsInvested = totalNumberOfFractionInvested;
         if (selectedLended.InvestmentsByInvesters[_msgSender()] == 0) {
             selectedLended.numberOfInvesters.increment();
         }
@@ -141,7 +234,24 @@ contract REIMarket is Ownable {
             selectedLended.status = LendStatus.Funded;
             selectedLended.startedAt = block.timestamp;
         }
+        emit Invested(
+            lendingNumber,
+            totalNumberOfFractionInvested,
+            selectedLended.numberOfInvesters.current(),
+            selectedLended.startedAt,
+            selectedLended.status,
+            _msgSender(),
+            selectedLended.InvestmentsByInvesters[_msgSender()]
+        );
     }
+
+    event WithdrawalBeforeFunded(
+        uint256 lendingNumber,
+        uint256 numberOfFractionsInvested,
+        uint256 numberOfInvesters,
+        address invester,
+        uint256 amountInvestedByInvester
+    );
 
     function withdrawBeforeFunded(
         uint256 lendingNumber,
@@ -185,7 +295,16 @@ contract REIMarket is Ownable {
         if (selectedLended.InvestmentsByInvesters[_msgSender()] == 0) {
             selectedLended.numberOfInvesters.decrement();
         }
+        emit WithdrawalBeforeFunded(
+            lendingNumber,
+            selectedLended.numberOfFractionsInvested,
+            selectedLended.numberOfInvesters.current(),
+            _msgSender(),
+            selectedLended.InvestmentsByInvesters[_msgSender()]
+        );
     }
+
+    event WithDrawalLoan(uint256 lendingNumber, LendStatus status);
 
     function withdrawLoan(uint256 lendingNumber) public {
         require(lendingNumber <= NumberOfLended.current(), '');
@@ -199,7 +318,10 @@ contract REIMarket is Ownable {
             selectedLended.LoanAmountPerFraction *
                 selectedLended.numberOfFractions
         );
+        emit WithDrawalLoan(lendingNumber, LendStatus.Taken);
     }
+
+    event Repayed(uint256 lendingNumber, LendStatus status);
 
     function repay(uint256 lendingNumber) public {
         require(lendingNumber <= NumberOfLended.current(), '');
@@ -230,7 +352,16 @@ contract REIMarket is Ownable {
             totalPerFraction * selectedLended.numberOfFractions
         );
         selectedLended.status = LendStatus.Repayed;
+        emit Repayed(lendingNumber, LendStatus.Repayed);
     }
+
+    event InterestPaid(
+        uint256 lendingNumber,
+        uint256 numberOfInvesters,
+        uint256 numberOfFractionsInvested,
+        address invester,
+        uint256 amountInvestedByInvester
+    );
 
     function getBackInvestmentWithInterest(uint256 lendingNumber) public {
         require(lendingNumber <= NumberOfLended.current(), '');
@@ -274,6 +405,13 @@ contract REIMarket is Ownable {
             selectedLended.numberOfFractionsInvested -
             totalFraction;
         selectedLended.numberOfInvesters.decrement();
+        emit InterestPaid(
+            lendingNumber,
+            selectedLended.numberOfInvesters.current(),
+            selectedLended.numberOfFractionsInvested,
+            _msgSender(),
+            0
+        );
     }
 
     function setFractionaliserContract(address fractionaliser) external {

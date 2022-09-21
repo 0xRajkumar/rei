@@ -18,12 +18,6 @@ const _abi = [
       },
       {
         indexed: false,
-        internalType: "string",
-        name: "_access",
-        type: "string",
-      },
-      {
-        indexed: false,
         internalType: "bool",
         name: "_enabled",
         type: "bool",

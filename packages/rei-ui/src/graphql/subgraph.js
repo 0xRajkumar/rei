@@ -13,6 +13,8 @@ export const GET_PENDING_APPLICATIONS = gql`
         description
         imageURI
         country
+        surfaceAreaInMTRs
+        city
         gpsCoordinates
         applicationStatus {
           id
@@ -55,7 +57,7 @@ export const GET_USER_TOKENS = gql`
   }
 `;
 export const GET_USER_FRACTIONALISEDS = gql`
-  query GetUserTokens($address: String!) {
+  query GetUserFractionaliseds($address: String!) {
     userFractionaliseds(where: { id: $address }) {
       id
       fractionaliseds {
@@ -66,6 +68,16 @@ export const GET_USER_FRACTIONALISEDS = gql`
         NFTContractAddress
         fractionQuantity
       }
+    }
+  }
+`;
+
+export const GET_APPROVER_ACCESS = gql`
+  query GetApproverAccess($address: String!) {
+    approverAccesses(where: { id: $address }) {
+      id
+      user
+      bool
     }
   }
 `;

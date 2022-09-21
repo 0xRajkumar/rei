@@ -6,9 +6,9 @@ dataSources:
     name: Approver
     network: goerli
     source:
-      address: "0x811E83827612D1631b817185Ae96797b9EF3fa48"
+      address: "0x5C1fd183056f84dd79784Db85C609904E7241775"
       abi: Approver
-      startBlock: 7627090
+      startBlock: 7634614
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -16,6 +16,7 @@ dataSources:
       entities:
         - Application
         - WithStatus
+        - ApproverAccess
       abis:
         - name: Approver
           file: ./abis/Approver.json
@@ -24,14 +25,16 @@ dataSources:
           handler: handleDecisionTaken
         - event: NewApplicationCreated(indexed uint256,indexed address,string,string,string,string,string,string,uint256,uint8)
           handler: handleNewApplicationCreated
+        - event: AccessSet(address,bool)
+          handler: handleAccessSet
       file: ./src/approver.ts
   - kind: ethereum
     name: REI
     network: goerli
     source:
-      address: "0xebb243dcB08a4A5e47767a0e59f92F94aF7c365b"
+      address: "0x377434b028439c1EB46091424276eF493c47EB35"
       abi: REI
-      startBlock: 7627090
+      startBlock: 7634614
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -50,9 +53,9 @@ dataSources:
     name: Fractionaliser
     network: goerli
     source:
-      address: "0x5339779ecE9073cB5F02761fCB10eCEf94656C36"
+      address: "0x2Cf1AD6B34bf8f8202e5c0ab2Ff7368C82920389"
       abi: Fractionaliser
-      startBlock: 7627090
+      startBlock: 7634614
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6

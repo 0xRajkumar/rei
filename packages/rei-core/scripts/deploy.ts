@@ -16,12 +16,20 @@ async function main() {
     console.log('REI deployed to ', rei.address);
     console.log('Approver deployed to ', approver.address);
     const Fractionaliser = await ethers.getContractFactory('Fractionaliser');
-    const fractionaliser = await Fractionaliser.deploy(
+    const REIMarket = await ethers.getContractFactory('REIMarket');
+    const reimarket = await REIMarket.deploy(
         '0x0000000000000000000000000000000000000000',
+        '0x77baa6A171e5084A9e7683B1F6658Bf330bf0011'
+    );
+    await reimarket.deployed();
+    const fractionaliser = await Fractionaliser.deploy(
+        reimarket.address,
         rei.address
     );
     await fractionaliser.deployed();
+    await reimarket.setFractionaliserContract(fractionaliser.address);
     console.log('Fractionaliser deployed to ', fractionaliser.address);
+    console.log('reimarket deployed to ', reimarket.address);
     const data = {
         name: 'Eiffel Tower',
         description:
@@ -60,6 +68,18 @@ async function main() {
     await atx.wait();
     const n = await fractionaliser.fractionalise('Testing', 'Testing', 1, 10);
     await n.wait();
+
+    const fractionaliserdnftAddress =
+        await fractionaliser.getAddressOfFractionisedId(1);
+    // const FractionalisedNFT = await ethers.getContractFactory(
+    //     'FractionalisedNFT'
+    // );
+    // const FractionalisedNFTContract = FractionalisedNFT.attach(
+    //     fractionaliserdnftAddress
+    // );
+    // FractionalisedNFTContract.approve(reimarket.address, 10);
+    // const laontransaction = await reimarket.applyForLoan(1, 10, 10, 100, 1000);
+    // await laontransaction.wait();
 }
 
 main().catch((error) => {

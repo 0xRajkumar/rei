@@ -122,15 +122,12 @@ const createapplication: NextPage = () => {
       //   gpsCoordinates: "",
       //   surfaceAreaInMTRs: 0,
       // });
-      refetch({ address: userAddress });
+      refetch({ address: userAddress?.toLocaleLowerCase() });
     } catch (err) {
       console.log(err);
     }
   }
 
-  console.log(createdByUser);
-  console.log(loading, userAddress);
-  console.log(error);
   useEffect(() => {
     if (userAddress !== undefined) {
       refetch({ address: userAddress.toLocaleLowerCase() });

@@ -1,3 +1,3 @@
-export const REIContractAddress = "0xebb243dcB08a4A5e47767a0e59f92F94aF7c365b";
+export const REIContractAddress = "0x377434b028439c1EB46091424276eF493c47EB35";
 export const ApproverContractAddress =
-  "0x811E83827612D1631b817185Ae96797b9EF3fa48";
+  "0x5C1fd183056f84dd79784Db85C609904E7241775";

@@ -40,7 +40,7 @@ const client = createClient({
   webSocketProvider,
 });
 const clientApollo = new ApolloClient({
-  uri: "https://api.studio.thegraph.com/query/34823/reitesting1/0.46",
+  uri: "https://api.studio.thegraph.com/query/34823/reitesting1/0.72",
   cache: new InMemoryCache(),
 });
 function MyApp({ Component, pageProps }: AppProps) {
