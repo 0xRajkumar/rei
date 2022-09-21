@@ -11,6 +11,7 @@ import {
   HStack,
 } from "@chakra-ui/react";
 import { FaMapMarkedAlt, FaFlag} from "react-icons/fa";
+import PropertyCards from "../components/cards/PropertyCards";
 import type { NextPage } from "next";
 import { useQuery, gql } from "@apollo/client";
 import { GET_PENDING_APPLICATIONS } from "../graphql/subgraph";
@@ -34,7 +35,7 @@ const pendingApplication: NextPage = () => {
 
     </HStack>
     <Center>
-      <Stack flexDirection="row" flexWrap="wrap" gap="4" justify="center" m={"auto"} align={'start'}>
+      <Stack flexDirection="row" flexWrap="wrap" gap="4" justify="center" m={"auto"} mb={'2em'} align={'start'}>
         {loading ? (
           <Heading textShadow="2px 2px #0987A0">Loading Data</Heading>
         ) : (
@@ -51,7 +52,17 @@ const pendingApplication: NextPage = () => {
             const applicantAddress = applicant.id;
             return (
               <>
-              <Center py={"0px"} mt={"0px!important"} border='1px' borderColor='gray.200' key={index}>
+              <PropertyCards
+                key={index}
+                imageURI={imageURI}
+                name={name}
+                applicationNumber={applicationNumber}
+                description={description}
+                country={country}
+                gpsCoordinates={gpsCoordinates}
+
+              />
+              {/* <Center py={"0px"} mt={"0px!important"} border='1px' borderColor='gray.200' key={index}>
                 <Box
                   role={"group"}
                   p={0}
@@ -105,7 +116,7 @@ const pendingApplication: NextPage = () => {
                     </VStack>
                   </Stack>
                 </Box>
-              </Center>
+              </Center> */}
               
               
               </>

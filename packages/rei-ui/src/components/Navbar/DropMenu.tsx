@@ -19,17 +19,19 @@ import {
 import { useAccount, useConnect, useDisconnect } from "wagmi";
 import { FaCopy, FaRegCopy } from "react-icons/fa";
 import Toasts from '../toasts/Toasts';
+import Link from "next/link";
 
 const DropMenu = () => {
   const { address, isConnected, connector } = useAccount();
   const { hasCopied, onCopy } = useClipboard(address ?? "");
 
   const { disconnect } = useDisconnect();
+  
   return (
     <>
       <Menu>
         <MenuButton>
-          <Avatar name="Dan Abrahmov" src="https://bit.ly/dan-abramov" />
+          <Avatar name={`${address?.toString().slice(40, )} ${address?.toString().slice(41, )}`} />
         </MenuButton>
         <Portal>
           <MenuList>
@@ -44,7 +46,9 @@ const DropMenu = () => {
                 </div>
               </Flex>
             </MenuItem>
-
+            <Link href="/usernfts">
+            <MenuItem>Your NFTs</MenuItem>
+            </Link>
             <MenuItem onClick={() => disconnect()}>Logout</MenuItem>
           </MenuList>
         </Portal>

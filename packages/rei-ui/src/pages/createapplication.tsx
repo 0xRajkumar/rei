@@ -30,6 +30,7 @@ import { GET_USER_APPLICATIONS } from "../graphql/subgraph";
 import { useAccount, useContract, useSigner } from "wagmi";
 import { ApproverContractAddress } from "../constants/addresses";
 import { FaFlag, FaMapMarkedAlt } from "react-icons/fa";
+import PropertyCards from "../components/cards/PropertyCards";
 const createapplication: NextPage = () => {
   const { address: userAddress, isConnected, connector } = useAccount();
 
@@ -282,7 +283,17 @@ const createapplication: NextPage = () => {
                     const status = applicationStatus.id;
                     return (
                       <>
-                        <Center
+                      <PropertyCards
+                        key={index}
+                        imageURI={imageURI}
+                        name={name}
+                        applicationNumber={applicationNumber}
+                        description={description}
+                        country={country}
+                        gpsCoordinates={gpsCoordinates}
+
+                      />
+                        {/* <Center
                           py={"0px"}
                           mt={"0px!important"}
                           border="1px"
@@ -342,7 +353,7 @@ const createapplication: NextPage = () => {
                               </VStack>
                             </Stack>
                           </Box>
-                        </Center>
+                        </Center> */}
                       </>
                     );
                   })
