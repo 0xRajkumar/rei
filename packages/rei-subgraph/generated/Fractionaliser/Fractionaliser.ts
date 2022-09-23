@@ -48,16 +48,16 @@ export class Fractionalised__Params {
   }
 }
 
-export class FractionaliserOwnershipTransferred extends ethereum.Event {
-  get params(): FractionaliserOwnershipTransferred__Params {
-    return new FractionaliserOwnershipTransferred__Params(this);
+export class OwnershipTransferred extends ethereum.Event {
+  get params(): OwnershipTransferred__Params {
+    return new OwnershipTransferred__Params(this);
   }
 }
 
-export class FractionaliserOwnershipTransferred__Params {
-  _event: FractionaliserOwnershipTransferred;
+export class OwnershipTransferred__Params {
+  _event: OwnershipTransferred;
 
-  constructor(event: FractionaliserOwnershipTransferred) {
+  constructor(event: OwnershipTransferred) {
     this._event = event;
   }
 

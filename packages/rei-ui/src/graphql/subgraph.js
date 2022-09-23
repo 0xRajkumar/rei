@@ -56,6 +56,7 @@ export const GET_USER_TOKENS = gql`
     }
   }
 `;
+
 export const GET_USER_FRACTIONALISEDS = gql`
   query GetUserFractionaliseds($address: String!) {
     userFractionaliseds(where: { id: $address }) {
@@ -71,6 +72,15 @@ export const GET_USER_FRACTIONALISEDS = gql`
     }
   }
 `;
+export const GET_USER_FRACTIONALISEDS_WITH_FRACTIONALISEDID = gql`
+  query GetUserFractionalisedsWithId($id: BigInt!) {
+    fractionaliseds(where: { fractionalisedId: $id }) {
+      fractionalisedId
+      tokenId
+      tokenURI
+    }
+  }
+`;
 
 export const GET_APPROVER_ACCESS = gql`
   query GetApproverAccess($address: String!) {
@@ -78,6 +88,50 @@ export const GET_APPROVER_ACCESS = gql`
       id
       user
       bool
+    }
+  }
+`;
+export const GET_LENDED_FOR_LOANS = gql`
+  query GetLendedForLoans {
+    lendedForLoans(where: { status: 0 }) {
+      investers {
+        invester {
+          id
+        }
+      }
+      id
+      lendingNumber
+      fractionalisedId
+      fractionalisedNftAddress
+      numberOfFractions
+      numberOfFractionsInvested
+      Loanee
+      status
+    }
+  }
+`;
+
+export const GET_LENDED_BY_USER = gql`
+  query GetLendedByUser($address: String!) {
+    lendedForLoans(where: { Loanee: $address }) {
+      lendingNumber
+      status
+      Loanee
+      lendingNumber
+      fractionalisedId
+      fractionalisedNftAddress
+      numberOfFractions
+      numberOfFractionsInvested
+      numberOfInvesters
+      loanAmountPerFraction
+      interestPerFractionInPercentage
+      repayByTimeStamp
+      startedAt
+      investers {
+        invester {
+          id
+        }
+      }
     }
   }
 `;

@@ -62,16 +62,16 @@ export class ApprovalForAll__Params {
   }
 }
 
-export class REIOwnershipTransferred extends ethereum.Event {
-  get params(): REIOwnershipTransferred__Params {
-    return new REIOwnershipTransferred__Params(this);
+export class OwnershipTransferred extends ethereum.Event {
+  get params(): OwnershipTransferred__Params {
+    return new OwnershipTransferred__Params(this);
   }
 }
 
-export class REIOwnershipTransferred__Params {
-  _event: REIOwnershipTransferred;
+export class OwnershipTransferred__Params {
+  _event: OwnershipTransferred;
 
-  constructor(event: REIOwnershipTransferred) {
+  constructor(event: OwnershipTransferred) {
     this._event = event;
   }
 

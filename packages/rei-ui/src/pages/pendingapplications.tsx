@@ -279,14 +279,6 @@ const pendingApplication: NextPage = () => {
                               w={"full"}
                               colorScheme="blue"
                               mr={3}
-                              //                           applicationNumber: Number,
-                              // name: String,
-                              // description: String,
-                              // image: String,
-                              // country: String,
-                              // city: String,
-                              // gpscoordinates: String,
-                              // surfaceArea: Number
                               onClick={() => {
                                 handleDecision(
                                   applicationNumber,
@@ -302,7 +294,6 @@ const pendingApplication: NextPage = () => {
                             >
                               Save
                             </Button>
-                            {/* <Button onClick={onApproveClose}>Cancel</Button> */}
                           </ModalFooter>
                         </ModalContent>
                       </Modal>

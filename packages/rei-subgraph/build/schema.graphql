@@ -1,8 +1,3 @@
-type ApproverAccess @entity {
-  id: ID!
-  user: Bytes!
-  bool: Boolean!
-}
 type Application @entity {
   id: ID!
   applicationNumber: BigInt!
@@ -53,4 +48,103 @@ type Fractionalised @entity {
 type UserFractionalised @entity {
   id: ID!
   fractionaliseds: [Fractionalised!]! @derivedFrom(field: "fractionaliser")
+}
+
+# type Applied @entity {
+#   id: ID!
+#   lendingNumber: BigInt! # uint256
+#   fractionalisedId: BigInt! # uint256
+#   numberOfFractions: BigInt! # uint256
+#   Loanee: Bytes! # address
+#   loanAmountPerFraction: BigInt! # uint256
+#   interestPerFractionInPercentage: BigInt! # uint256
+#   repayByTimeStamp: BigInt! # uint256
+#   status: Int! # uint8
+# }
+
+# type InterestPaid @entity {
+#   id: ID!
+#   lendingNumber: BigInt! # uint256
+#   numberOfInvesters: BigInt! # uint256
+#   numberOfFractionsInvested: BigInt! # uint256
+#   invester: Bytes! # address
+#   amountInvestedByInvester: BigInt! # uint256
+# }
+
+type LendedForLoan @entity {
+  id: ID!
+  lendingNumber: BigInt! # uint256
+  fractionalisedId: BigInt! # uint256
+  fractionalisedNftAddress: Bytes! # address
+  numberOfFractions: BigInt! # uint256
+  numberOfFractionsInvested: BigInt! # uint256
+  Loanee: Bytes! # address
+  numberOfInvesters: BigInt! # uint256
+  loanAmountPerFraction: BigInt! # uint256
+  interestPerFractionInPercentage: BigInt! # uint256
+  repayByTimeStamp: BigInt! # uint256
+  startedAt: BigInt! # uint256
+  status: Int! # uint8
+  investers: [InvesterLendedForLoan!]! @derivedFrom(field: "lendedforloan") # address
+}
+
+type Invester @entity {
+  id: ID! #invester addreaa
+  invester: LendedForLoan! #invester addreaa
+  lendedforlaons: [InvesterLendedForLoan!]! @derivedFrom(field: "invester")
+}
+
+type InvesterLendedForLoan @entity {
+  id: ID!
+  amount: BigInt!
+  invester: Invester!
+  lendedforloan: LendedForLoan!
+}
+# type Investment @entity {5
+#   id: ID!
+#   lendingNummber: Invester!
+#   amount: BigInt!
+# }
+
+# type Invested @entity {
+#   id: ID!
+#   lendingNumber: BigInt! # uint256
+#   numberOfFractionsInvested: BigInt! # uint256
+#   numberOfInvesters: BigInt! # uint256
+#   startedAt: BigInt! # uint256
+#   status: Int! # uint8
+#   invester: Bytes! # address
+#   amountInvestedByInvester: BigInt! # uint256
+# }
+
+# type REIMarketOwnershipTransferred @entity {
+#   id: ID!
+#   previousOwner: Bytes! # address
+#   newOwner: Bytes! # address
+# }
+
+# type Repayed @entity {
+#   id: ID!
+#   lendingNumber: BigInt! # uint256
+#   status: Int! # uint8
+# }
+
+# type WithDrawalLoan @entity {
+#   id: ID!
+#   lendingNumber: BigInt! # uint256
+#   status: Int! # uint8
+# }
+
+# type WithdrawalBeforeFunded @entity {
+#   id: ID!
+#   lendingNumber: BigInt! # uint256
+#   numberOfFractionsInvested: BigInt! # uint256
+#   numberOfInvesters: BigInt! # uint256
+#   invester: Bytes! # address
+#   amountInvestedByInvester: BigInt! # uint256
+# }
+type ApproverAccess @entity {
+  id: ID!
+  user: Bytes!
+  bool: Boolean!
 }

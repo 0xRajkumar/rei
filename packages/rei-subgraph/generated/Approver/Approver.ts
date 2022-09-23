@@ -112,16 +112,16 @@ export class NewApplicationCreated__Params {
   }
 }
 
-export class OwnershipTransferred extends ethereum.Event {
-  get params(): OwnershipTransferred__Params {
-    return new OwnershipTransferred__Params(this);
+export class ContractOwnershipTransferred extends ethereum.Event {
+  get params(): ContractOwnershipTransferred__Params {
+    return new ContractOwnershipTransferred__Params(this);
   }
 }
 
-export class OwnershipTransferred__Params {
-  _event: OwnershipTransferred;
+export class ContractOwnershipTransferred__Params {
+  _event: ContractOwnershipTransferred;
 
-  constructor(event: OwnershipTransferred) {
+  constructor(event: ContractOwnershipTransferred) {
     this._event = event;
   }
 

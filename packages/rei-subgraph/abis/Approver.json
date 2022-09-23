@@ -133,7 +133,7 @@
         "type": "address"
       }
     ],
-    "name": "OwnershipTransferred",
+    "name": "ContractOwnershipTransferred",
     "type": "event"
   },
   {

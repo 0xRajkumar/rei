@@ -86,7 +86,7 @@
         "type": "address"
       }
     ],
-    "name": "REIOwnershipTransferred",
+    "name": "OwnershipTransferred",
     "type": "event"
   },
   {

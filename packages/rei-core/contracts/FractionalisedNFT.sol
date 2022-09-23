@@ -27,7 +27,7 @@ contract FractionalisedNFT is ERC20, ERC721Holder {
         marketplaceAddress = _marketplaceAddress;
     }
 
-    function decimals() public view override returns (uint8) {
+    function decimals() public pure override returns (uint8) {
         return 1;
     }
 

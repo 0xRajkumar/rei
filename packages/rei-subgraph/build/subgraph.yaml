@@ -3,12 +3,33 @@ schema:
   file: schema.graphql
 dataSources:
   - kind: ethereum
+    name: REI
+    network: goerli
+    source:
+      address: "0xBa8a212DF43A696a5a97Ff6d3B543b5Ab5566a0F"
+      abi: REI
+      startBlock: 7645224
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - Token
+        - TokenUser
+      abis:
+        - name: REI
+          file: REI\abis\REI.json
+      eventHandlers:
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleTransfer
+      file: REI\REI.wasm
+  - kind: ethereum
     name: Approver
     network: goerli
     source:
-      address: "0x5C1fd183056f84dd79784Db85C609904E7241775"
+      address: "0x3DebD41C5e03672445cf24B3e1e9fc5dcb0ac33a"
       abi: Approver
-      startBlock: 7634614
+      startBlock: 7645224
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -30,33 +51,12 @@ dataSources:
           handler: handleAccessSet
       file: Approver\Approver.wasm
   - kind: ethereum
-    name: REI
-    network: goerli
-    source:
-      address: "0x377434b028439c1EB46091424276eF493c47EB35"
-      abi: REI
-      startBlock: 7634614
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.6
-      language: wasm/assemblyscript
-      entities:
-        - Token
-        - TokenUser
-      abis:
-        - name: REI
-          file: REI\abis\REI.json
-      eventHandlers:
-        - event: Transfer(indexed address,indexed address,indexed uint256)
-          handler: handleTransfer
-      file: REI\REI.wasm
-  - kind: ethereum
     name: Fractionaliser
     network: goerli
     source:
-      address: "0x2Cf1AD6B34bf8f8202e5c0ab2Ff7368C82920389"
+      address: "0x6f5352E5f6155abd2153C02f21F8D696D77462B3"
       abi: Fractionaliser
-      startBlock: 7634614
+      startBlock: 7645224
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -74,3 +74,27 @@ dataSources:
             address,uint256,uint256,address)
           handler: handleFractionalised
       file: Fractionaliser\Fractionaliser.wasm
+  - kind: ethereum
+    name: REIMarket
+    network: goerli
+    source:
+      address: "0x92d53B683e1774bfA1923F6cfdD78299FAED474C"
+      abi: REIMarket
+      startBlock: 7645224
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - LendedForLoan
+        - Invester
+        - InvesterLendedForLoan
+      abis:
+        - name: REIMarket
+          file: REIMarket\abis\REIMarket.json
+      eventHandlers:
+        - event: Applied(uint256,uint256,address,uint256,address,uint256,uint256,uint256,uint8)
+          handler: handleApplied
+        - event: Invested(uint256,uint256,uint256,uint256,uint8,address,uint256)
+          handler: handleInvested
+      file: REIMarket\REIMarket.wasm

@@ -12,11 +12,18 @@ contract REIMarket is Ownable {
     Counters.Counter NumberOfLended;
     Fractionaliser FractionaliserContract;
     IERC20 USDTContract;
+    address public USDTAddress;
     uint256 public relaxationPeriodForlonee;
 
     constructor(address fractionaliser, address usdtAddress) {
         FractionaliserContract = Fractionaliser(fractionaliser);
         USDTContract = IERC20(usdtAddress);
+        USDTAddress = usdtAddress;
+    }
+
+    function updateUSDT(address usdtAddress) public {
+        USDTContract = IERC20(usdtAddress);
+        USDTAddress = usdtAddress;
     }
 
     enum LendStatus {
@@ -74,22 +81,6 @@ contract REIMarket is Ownable {
         uint256 repayByTimeStamp,
         LendStatus status
     );
-    // event Applied(
-    //     uint256 lendingNumber,
-    //     uint256 fractionalisedId,
-    //     address fractionalisedNftAddress,
-    //     uint256 numberOfFractions,
-    //     uint256 numberOfFractionsInvested,
-    //     address Loanee,
-    //     uint256 numberOfInvesters,
-    //     uint256 loanAmountPerFraction,
-    //     uint256 interestPerFractionInPercentage,
-    //     uint256 repayByTimeStamp,
-    //     uint256 startedAt,
-    //     LendStatus status,
-    //     address invester,
-    //     uint256 amountInvestedByInvester
-    // );
 
     mapping(uint256 => LendForLoan) LendedForLoans;
 
@@ -103,6 +94,10 @@ contract REIMarket is Ownable {
         require(
             _fractionalisedId <= FractionaliserContract.totalFractionalised(),
             'Invalid _fractionalisedId'
+        );
+        require(
+            _numberOfFractions > 0,
+            'Number of Fraction should be more than zero'
         );
         address _fractionalisedNftAddress = FractionaliserContract
             .getAddressOfFractionisedId(_fractionalisedId);
@@ -144,27 +139,6 @@ contract REIMarket is Ownable {
             .InterestPerFractionInPercentage = _interestPerFractionInPercentage;
         lended.repayByTimeStamp = repayByTimeStamp;
         lended.status = LendStatus.Created;
-        //         event Applied(
-        //     uint256 lendingNumber,
-        //     uint256 fractionalisedId,
-        //     uint256 numberOfFractions,
-        //     address Loanee,
-        //     uint256 loanAmountPerFraction,
-        //     uint256 interestPerFractionInPercentage,
-        //     uint256 repayByTimeStamp,
-        //     LendStatus status
-        // );
-        //         event Applied(
-        //     uint256 lendingNumber,
-        //     uint256 fractionalisedId,
-        //     uint256 fractionalisedNftAddress,
-        //     uint256 numberOfFractions,
-        //     address Loanee,
-        //     uint256 loanAmountPerFraction,
-        //     uint256 interestPerFractionInPercentage,
-        //     uint256 repayByTimeStamp,
-        //     LendStatus status
-        // );
         emit Applied(
             NumberOfLended.current(),
             _fractionalisedId,
@@ -197,26 +171,21 @@ contract REIMarket is Ownable {
                     selectedLended.numberOfFractionsInvested,
             ''
         );
+        uint256 totalLoan = selectedLended.LoanAmountPerFraction *
+            _numberOfFraction;
         require(
-            USDTContract.balanceOf(_msgSender()) >=
-                selectedLended.LoanAmountPerFraction * _numberOfFraction,
-            ''
+            USDTContract.balanceOf(_msgSender()) >= totalLoan,
+            'Low balance'
         );
         require(
-            USDTContract.allowance(_msgSender(), address(this)) >=
-                selectedLended.LoanAmountPerFraction * _numberOfFraction,
-            ''
+            USDTContract.allowance(_msgSender(), address(this)) >= totalLoan,
+            'insufficient allowance'
         );
-        USDTContract.transferFrom(
+        USDTContract.transferFrom(_msgSender(), address(this), totalLoan);
+        FractionalisedNFT(selectedLended.fractionalisedNftAddress).transfer(
             _msgSender(),
-            address(this),
-            selectedLended.LoanAmountPerFraction * _numberOfFraction
+            _numberOfFraction
         );
-        FractionalisedNFT(selectedLended.fractionalisedNftAddress).transferFrom(
-                address(this),
-                _msgSender(),
-                _numberOfFraction
-            );
         uint256 totalNumberOfFractionInvested = selectedLended
             .numberOfFractionsInvested + _numberOfFraction;
         selectedLended

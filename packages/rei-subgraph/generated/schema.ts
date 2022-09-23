@@ -11,56 +11,6 @@ import {
   BigDecimal
 } from "@graphprotocol/graph-ts";
 
-export class ApproverAccess extends Entity {
-  constructor(id: string) {
-    super();
-    this.set("id", Value.fromString(id));
-  }
-
-  save(): void {
-    let id = this.get("id");
-    assert(id != null, "Cannot save ApproverAccess entity without an ID");
-    if (id) {
-      assert(
-        id.kind == ValueKind.STRING,
-        `Entities of type ApproverAccess must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
-      );
-      store.set("ApproverAccess", id.toString(), this);
-    }
-  }
-
-  static load(id: string): ApproverAccess | null {
-    return changetype<ApproverAccess | null>(store.get("ApproverAccess", id));
-  }
-
-  get id(): string {
-    let value = this.get("id");
-    return value!.toString();
-  }
-
-  set id(value: string) {
-    this.set("id", Value.fromString(value));
-  }
-
-  get user(): Bytes {
-    let value = this.get("user");
-    return value!.toBytes();
-  }
-
-  set user(value: Bytes) {
-    this.set("user", Value.fromBytes(value));
-  }
-
-  get bool(): boolean {
-    let value = this.get("bool");
-    return value!.toBoolean();
-  }
-
-  set bool(value: boolean) {
-    this.set("bool", Value.fromBoolean(value));
-  }
-}
-
 export class Application extends Entity {
   constructor(id: string) {
     super();
@@ -500,5 +450,318 @@ export class UserFractionalised extends Entity {
 
   set fractionaliseds(value: Array<string>) {
     this.set("fractionaliseds", Value.fromStringArray(value));
+  }
+}
+
+export class LendedForLoan extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save LendedForLoan entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type LendedForLoan must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("LendedForLoan", id.toString(), this);
+    }
+  }
+
+  static load(id: string): LendedForLoan | null {
+    return changetype<LendedForLoan | null>(store.get("LendedForLoan", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get lendingNumber(): BigInt {
+    let value = this.get("lendingNumber");
+    return value!.toBigInt();
+  }
+
+  set lendingNumber(value: BigInt) {
+    this.set("lendingNumber", Value.fromBigInt(value));
+  }
+
+  get fractionalisedId(): BigInt {
+    let value = this.get("fractionalisedId");
+    return value!.toBigInt();
+  }
+
+  set fractionalisedId(value: BigInt) {
+    this.set("fractionalisedId", Value.fromBigInt(value));
+  }
+
+  get fractionalisedNftAddress(): Bytes {
+    let value = this.get("fractionalisedNftAddress");
+    return value!.toBytes();
+  }
+
+  set fractionalisedNftAddress(value: Bytes) {
+    this.set("fractionalisedNftAddress", Value.fromBytes(value));
+  }
+
+  get numberOfFractions(): BigInt {
+    let value = this.get("numberOfFractions");
+    return value!.toBigInt();
+  }
+
+  set numberOfFractions(value: BigInt) {
+    this.set("numberOfFractions", Value.fromBigInt(value));
+  }
+
+  get numberOfFractionsInvested(): BigInt {
+    let value = this.get("numberOfFractionsInvested");
+    return value!.toBigInt();
+  }
+
+  set numberOfFractionsInvested(value: BigInt) {
+    this.set("numberOfFractionsInvested", Value.fromBigInt(value));
+  }
+
+  get Loanee(): Bytes {
+    let value = this.get("Loanee");
+    return value!.toBytes();
+  }
+
+  set Loanee(value: Bytes) {
+    this.set("Loanee", Value.fromBytes(value));
+  }
+
+  get numberOfInvesters(): BigInt {
+    let value = this.get("numberOfInvesters");
+    return value!.toBigInt();
+  }
+
+  set numberOfInvesters(value: BigInt) {
+    this.set("numberOfInvesters", Value.fromBigInt(value));
+  }
+
+  get loanAmountPerFraction(): BigInt {
+    let value = this.get("loanAmountPerFraction");
+    return value!.toBigInt();
+  }
+
+  set loanAmountPerFraction(value: BigInt) {
+    this.set("loanAmountPerFraction", Value.fromBigInt(value));
+  }
+
+  get interestPerFractionInPercentage(): BigInt {
+    let value = this.get("interestPerFractionInPercentage");
+    return value!.toBigInt();
+  }
+
+  set interestPerFractionInPercentage(value: BigInt) {
+    this.set("interestPerFractionInPercentage", Value.fromBigInt(value));
+  }
+
+  get repayByTimeStamp(): BigInt {
+    let value = this.get("repayByTimeStamp");
+    return value!.toBigInt();
+  }
+
+  set repayByTimeStamp(value: BigInt) {
+    this.set("repayByTimeStamp", Value.fromBigInt(value));
+  }
+
+  get startedAt(): BigInt {
+    let value = this.get("startedAt");
+    return value!.toBigInt();
+  }
+
+  set startedAt(value: BigInt) {
+    this.set("startedAt", Value.fromBigInt(value));
+  }
+
+  get status(): i32 {
+    let value = this.get("status");
+    return value!.toI32();
+  }
+
+  set status(value: i32) {
+    this.set("status", Value.fromI32(value));
+  }
+
+  get investers(): Array<string> {
+    let value = this.get("investers");
+    return value!.toStringArray();
+  }
+
+  set investers(value: Array<string>) {
+    this.set("investers", Value.fromStringArray(value));
+  }
+}
+
+export class Invester extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save Invester entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type Invester must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("Invester", id.toString(), this);
+    }
+  }
+
+  static load(id: string): Invester | null {
+    return changetype<Invester | null>(store.get("Invester", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get invester(): string {
+    let value = this.get("invester");
+    return value!.toString();
+  }
+
+  set invester(value: string) {
+    this.set("invester", Value.fromString(value));
+  }
+
+  get lendedforlaons(): Array<string> {
+    let value = this.get("lendedforlaons");
+    return value!.toStringArray();
+  }
+
+  set lendedforlaons(value: Array<string>) {
+    this.set("lendedforlaons", Value.fromStringArray(value));
+  }
+}
+
+export class InvesterLendedForLoan extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(
+      id != null,
+      "Cannot save InvesterLendedForLoan entity without an ID"
+    );
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type InvesterLendedForLoan must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("InvesterLendedForLoan", id.toString(), this);
+    }
+  }
+
+  static load(id: string): InvesterLendedForLoan | null {
+    return changetype<InvesterLendedForLoan | null>(
+      store.get("InvesterLendedForLoan", id)
+    );
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get amount(): BigInt {
+    let value = this.get("amount");
+    return value!.toBigInt();
+  }
+
+  set amount(value: BigInt) {
+    this.set("amount", Value.fromBigInt(value));
+  }
+
+  get invester(): string {
+    let value = this.get("invester");
+    return value!.toString();
+  }
+
+  set invester(value: string) {
+    this.set("invester", Value.fromString(value));
+  }
+
+  get lendedforloan(): string {
+    let value = this.get("lendedforloan");
+    return value!.toString();
+  }
+
+  set lendedforloan(value: string) {
+    this.set("lendedforloan", Value.fromString(value));
+  }
+}
+
+export class ApproverAccess extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save ApproverAccess entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type ApproverAccess must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("ApproverAccess", id.toString(), this);
+    }
+  }
+
+  static load(id: string): ApproverAccess | null {
+    return changetype<ApproverAccess | null>(store.get("ApproverAccess", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get user(): Bytes {
+    let value = this.get("user");
+    return value!.toBytes();
+  }
+
+  set user(value: Bytes) {
+    this.set("user", Value.fromBytes(value));
+  }
+
+  get bool(): boolean {
+    let value = this.get("bool");
+    return value!.toBoolean();
+  }
+
+  set bool(value: boolean) {
+    this.set("bool", Value.fromBoolean(value));
   }
 }

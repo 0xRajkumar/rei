@@ -30,13 +30,13 @@ import { GET_USER_APPLICATIONS } from "../graphql/subgraph";
 import { useAccount, useContract, useSigner } from "wagmi";
 import { ApproverContractAddress } from "../constants/addresses";
 import { FaFlag, FaMapMarkedAlt } from "react-icons/fa";
+import { Web3Storage } from "web3.storage";
 const createapplication: NextPage = () => {
   const { address: userAddress, isConnected, connector } = useAccount();
-
+  const [imageURI, setimageURI] = useState<string | null>(null);
   const [applicationForm, setApplicationForm] = useState<{
     name: string;
     description: string;
-    imageURI: string;
     country: string;
     city: string;
     gpsCoordinates: string;
@@ -44,7 +44,6 @@ const createapplication: NextPage = () => {
   }>({
     name: "",
     description: "",
-    imageURI: "",
     country: "",
     city: "",
     gpsCoordinates: "",
@@ -76,13 +75,38 @@ const createapplication: NextPage = () => {
       return { ...preData, [name]: value };
     });
   }
+  const key: any =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDNkNWIxODg4MGZCRDNlODFmMThjMTgwMTUxRUJhMzU0RERCNzk2MDQiLCJpc3MiOiJ3ZWIzLXN0b3JhZ2UiLCJpYXQiOjE2NjM3NzYwNTYzNTAsIm5hbWUiOiJSRUkifQ.MCkF8eYXgLAgMLVbLwOeabvEUrltjkXD5Vw81RCfsGY";
+  const web3storage = new Web3Storage({ token: key });
   console.log(applicationForm);
 
+  async function handleImage(e: any) {
+    const target = e.target;
+    try {
+      const file = target.files[0];
+      const name =
+        applicationForm.name === "" || applicationForm.name === undefined
+          ? "default"
+          : applicationForm.name;
+      const newfile = new File([file], name, {
+        type: file.type,
+        lastModified: file.lastModified,
+      });
+      const metadata = new File(
+        [JSON.stringify({ name: name })],
+        "metadata.json"
+      );
+      const path = await web3storage.put([newfile, metadata]);
+      const url: string = `https://ipfs.io/ipfs/${path}/${name}`;
+      setimageURI(url);
+    } catch (error) {
+      console.log("Error uploading file: ", error);
+    }
+  }
   async function handleApplicationSubmit() {
     const {
       name,
       description,
-      imageURI,
       country,
       city,
       gpsCoordinates,
@@ -113,15 +137,15 @@ const createapplication: NextPage = () => {
         }
       );
       await tx.wait();
-      // setApplicationForm({
-      //   name: "",
-      //   description: "",
-      //   imageURI: "",
-      //   country: "",
-      //   city: "",
-      //   gpsCoordinates: "",
-      //   surfaceAreaInMTRs: 0,
-      // });
+      setApplicationForm({
+        name: "",
+        description: "",
+        country: "",
+        city: "",
+        gpsCoordinates: "",
+        surfaceAreaInMTRs: 0,
+      });
+      setimageURI("");
       refetch({ address: userAddress?.toLocaleLowerCase() });
     } catch (err) {
       console.log(err);
@@ -196,9 +220,11 @@ const createapplication: NextPage = () => {
                       <FormControl id="imageURI" isRequired>
                         <FormLabel>ImageURI</FormLabel>
                         <Input
-                          onChange={handleApplicationForm}
-                          name="imageURI"
-                          type="text"
+                          borderColor="black"
+                          maxW="60"
+                          p="1"
+                          type="file"
+                          onChange={handleImage}
                         />
                       </FormControl>
                       <FormControl id="country" isRequired>

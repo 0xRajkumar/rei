@@ -1,6 +1,7 @@
 import { ethers } from 'hardhat';
 
 async function main() {
+    //FIRST deploying all contract :
     const REI = await ethers.getContractFactory('REI');
     const rei = await REI.deploy(
         'Real Estate Investment',
@@ -11,25 +12,37 @@ async function main() {
     const Approver = await ethers.getContractFactory('Approver');
     const approver = await Approver.deploy(rei.address);
     await approver.deployed();
-    const tx = await rei.setApproverContract(approver.address);
-    await tx.wait();
-    console.log('REI deployed to ', rei.address);
-    console.log('Approver deployed to ', approver.address);
-    const Fractionaliser = await ethers.getContractFactory('Fractionaliser');
+    const settingApproverInREI = await rei.setApproverContract(
+        approver.address
+    );
+    await settingApproverInREI.wait();
+
+    const ERC20Contract = await ethers.getContractFactory('ERC20Contract');
+    const erc20contract = await ERC20Contract.deploy();
+    await erc20contract.deployed();
+
     const REIMarket = await ethers.getContractFactory('REIMarket');
     const reimarket = await REIMarket.deploy(
         '0x0000000000000000000000000000000000000000',
-        '0x77baa6A171e5084A9e7683B1F6658Bf330bf0011'
+        erc20contract.address
     );
     await reimarket.deployed();
+
+    const Fractionaliser = await ethers.getContractFactory('Fractionaliser');
     const fractionaliser = await Fractionaliser.deploy(
         reimarket.address,
         rei.address
     );
     await fractionaliser.deployed();
     await reimarket.setFractionaliserContract(fractionaliser.address);
+
+    console.log('REI deployed to ', rei.address);
+    console.log('Approver deployed to ', approver.address);
     console.log('Fractionaliser deployed to ', fractionaliser.address);
     console.log('reimarket deployed to ', reimarket.address);
+    console.log('ERC20', erc20contract.address);
+
+    //Applying for APPLICATION
     const data = {
         name: 'Eiffel Tower',
         description:
@@ -41,8 +54,8 @@ async function main() {
         gpsCoordinates: 'Heaven',
         surfaceAreaInMTRs: 1000
     };
-    for (let i = 0; i < 3; i++) {
-        const newtx = await approver.applyForApproval(
+    for (let i = 0; i < 5; i++) {
+        const applyingtx = await approver.applyForApproval(
             data.name,
             data.description,
             data.imageURI,
@@ -51,35 +64,73 @@ async function main() {
             data.gpsCoordinates,
             data.surfaceAreaInMTRs
         );
-        await newtx.wait();
+        await applyingtx.wait();
     }
-    await approver.applicationDecision(
+    const decisiontx1 = await approver.applicationDecision(
         1,
         1,
         'QmQkmca3w46SfipJPkVVuaHyw44KjsPVitoRWWfnFCAF6b'
     );
-    const decisiontsx = await approver.applicationDecision(
+    await decisiontx1.wait();
+    const decisiontx2 = await approver.applicationDecision(
         2,
         1,
         'QmQkmca3w46SfipJPkVVuaHyw44KjsPVitoRWWfnFCAF6b'
     );
-    await decisiontsx.wait();
-    const atx = await rei.approve(fractionaliser.address, 1);
-    await atx.wait();
-    const n = await fractionaliser.fractionalise('Testing', 'Testing', 1, 10);
-    await n.wait();
-
-    const fractionaliserdnftAddress =
+    await decisiontx2.wait();
+    const decisiontx3 = await approver.applicationDecision(
+        3,
+        1,
+        'QmQkmca3w46SfipJPkVVuaHyw44KjsPVitoRWWfnFCAF6b'
+    );
+    await decisiontx3.wait();
+    const atx1 = await rei.approve(fractionaliser.address, 1);
+    await atx1.wait();
+    const atx2 = await rei.approve(fractionaliser.address, 2);
+    await atx2.wait();
+    const fractionalising1 = await fractionaliser.fractionalise(
+        'Testing',
+        'Testing',
+        1,
+        10
+    );
+    await fractionalising1.wait();
+    const fractionalising2 = await fractionaliser.fractionalise(
+        'Testing',
+        'Testing',
+        2,
+        10
+    );
+    await fractionalising2.wait();
+    const fractionaliserdnftAddress1 =
         await fractionaliser.getAddressOfFractionisedId(1);
-    // const FractionalisedNFT = await ethers.getContractFactory(
-    //     'FractionalisedNFT'
+    const FractionalisedNFT = await ethers.getContractFactory(
+        'FractionalisedNFT'
+    );
+    const FractionalisedNFTContract1 = FractionalisedNFT.attach(
+        fractionaliserdnftAddress1
+    );
+
+    // const fractionaliserdnftAddress2 =
+    // await fractionaliser.getAddressOfFractionisedId(2);
+    // const FractionalisedNFTContract2 = FractionalisedNFT.attach(
+    // fractionaliserdnftAddress2
     // );
-    // const FractionalisedNFTContract = FractionalisedNFT.attach(
-    //     fractionaliserdnftAddress
-    // );
-    // FractionalisedNFTContract.approve(reimarket.address, 10);
-    // const laontransaction = await reimarket.applyForLoan(1, 10, 10, 100, 1000);
-    // await laontransaction.wait();
+    const aftx1 = await FractionalisedNFTContract1.approve(
+        reimarket.address,
+        10
+    );
+    await aftx1.wait();
+    // const da2 = await FractionalisedNFTContract2.approve(reimarket.address, 10);
+    // await da2.wait();
+    const laontransaction1 = await reimarket.applyForLoan(1, 10, 10, 100, 1000);
+    await laontransaction1.wait();
+    // const laontransaction2 = await reimarket.applyForLoan(2, 10, 10, 100, 1000);
+    // await laontransaction2.wait();
+    const aptx = await erc20contract.approve(reimarket.address, 1000000);
+    await aptx.wait();
+    const itx = await reimarket.invest(1, 4);
+    await itx.wait();
 }
 
 main().catch((error) => {

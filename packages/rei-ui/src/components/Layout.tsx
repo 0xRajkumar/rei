@@ -1,29 +1,22 @@
-import {
-  Box,
-} from "@chakra-ui/react";
-
+import { Box } from "@chakra-ui/react";
 
 import React, { useState, useEffect } from "react";
 
-import Footer from './Footer';
+import Footer from "./Footer";
 import Navbar from "./Navbar/Navbar";
 
 const Layout = function ({ children }: { children: React.ReactNode }) {
-
-const [isSSR, setIsSSR] = useState(true);
-
+  const [isSSR, setIsSSR] = useState(true);
 
   useEffect(() => {
     setIsSSR(false);
   }, []);
-  
+
   return (
     <Box>
-      <Navbar/>
+      <Navbar />
       {children}
-      
-
-      <Footer/>
+      <Footer />
     </Box>
   );
 };

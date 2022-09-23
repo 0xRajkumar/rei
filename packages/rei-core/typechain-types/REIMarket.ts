@@ -20,6 +20,7 @@ import { TypedEventFilter, TypedEvent, TypedListener, OnEvent } from "./common";
 export interface REIMarketInterface extends utils.Interface {
   contractName: "REIMarket";
   functions: {
+    "USDTAddress()": FunctionFragment;
     "applyForLoan(uint256,uint256,uint256,uint256,uint256)": FunctionFragment;
     "getBackInvestmentWithInterest(uint256)": FunctionFragment;
     "invest(uint256,uint256)": FunctionFragment;
@@ -29,10 +30,15 @@ export interface REIMarketInterface extends utils.Interface {
     "repay(uint256)": FunctionFragment;
     "setFractionaliserContract(address)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
+    "updateUSDT(address)": FunctionFragment;
     "withdrawBeforeFunded(uint256,uint256)": FunctionFragment;
     "withdrawLoan(uint256)": FunctionFragment;
   };
 
+  encodeFunctionData(
+    functionFragment: "USDTAddress",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "applyForLoan",
     values: [
@@ -69,6 +75,7 @@ export interface REIMarketInterface extends utils.Interface {
     functionFragment: "transferOwnership",
     values: [string]
   ): string;
+  encodeFunctionData(functionFragment: "updateUSDT", values: [string]): string;
   encodeFunctionData(
     functionFragment: "withdrawBeforeFunded",
     values: [BigNumberish, BigNumberish]
@@ -78,6 +85,10 @@ export interface REIMarketInterface extends utils.Interface {
     values: [BigNumberish]
   ): string;
 
+  decodeFunctionResult(
+    functionFragment: "USDTAddress",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "applyForLoan",
     data: BytesLike
@@ -105,6 +116,7 @@ export interface REIMarketInterface extends utils.Interface {
     functionFragment: "transferOwnership",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "updateUSDT", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "withdrawBeforeFunded",
     data: BytesLike
@@ -252,6 +264,8 @@ export interface REIMarket extends BaseContract {
   removeListener: OnEvent<this>;
 
   functions: {
+    USDTAddress(overrides?: CallOverrides): Promise<[string]>;
+
     applyForLoan(
       _fractionalisedId: BigNumberish,
       _numberOfFractions: BigNumberish,
@@ -295,6 +309,11 @@ export interface REIMarket extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    updateUSDT(
+      usdtAddress: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     withdrawBeforeFunded(
       lendingNumber: BigNumberish,
       _numberOfFraction: BigNumberish,
@@ -306,6 +325,8 @@ export interface REIMarket extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
   };
+
+  USDTAddress(overrides?: CallOverrides): Promise<string>;
 
   applyForLoan(
     _fractionalisedId: BigNumberish,
@@ -350,6 +371,11 @@ export interface REIMarket extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  updateUSDT(
+    usdtAddress: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   withdrawBeforeFunded(
     lendingNumber: BigNumberish,
     _numberOfFraction: BigNumberish,
@@ -362,6 +388,8 @@ export interface REIMarket extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
+    USDTAddress(overrides?: CallOverrides): Promise<string>;
+
     applyForLoan(
       _fractionalisedId: BigNumberish,
       _numberOfFractions: BigNumberish,
@@ -402,6 +430,8 @@ export interface REIMarket extends BaseContract {
       newOwner: string,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    updateUSDT(usdtAddress: string, overrides?: CallOverrides): Promise<void>;
 
     withdrawBeforeFunded(
       lendingNumber: BigNumberish,
@@ -514,6 +544,8 @@ export interface REIMarket extends BaseContract {
   };
 
   estimateGas: {
+    USDTAddress(overrides?: CallOverrides): Promise<BigNumber>;
+
     applyForLoan(
       _fractionalisedId: BigNumberish,
       _numberOfFractions: BigNumberish,
@@ -557,6 +589,11 @@ export interface REIMarket extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    updateUSDT(
+      usdtAddress: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     withdrawBeforeFunded(
       lendingNumber: BigNumberish,
       _numberOfFraction: BigNumberish,
@@ -570,6 +607,8 @@ export interface REIMarket extends BaseContract {
   };
 
   populateTransaction: {
+    USDTAddress(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     applyForLoan(
       _fractionalisedId: BigNumberish,
       _numberOfFractions: BigNumberish,
@@ -612,6 +651,11 @@ export interface REIMarket extends BaseContract {
 
     transferOwnership(
       newOwner: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    updateUSDT(
+      usdtAddress: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

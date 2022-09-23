@@ -3,6 +3,7 @@
 /* eslint-disable */
 export type { Ownable } from "./Ownable";
 export type { ERC20 } from "./ERC20";
+export type { ERC20Burnable } from "./ERC20Burnable";
 export type { IERC20Metadata } from "./IERC20Metadata";
 export type { IERC20 } from "./IERC20";
 export type { ERC721 } from "./ERC721";
@@ -15,6 +16,7 @@ export type { ERC721Holder } from "./ERC721Holder";
 export type { ERC165 } from "./ERC165";
 export type { IERC165 } from "./IERC165";
 export type { Approver } from "./Approver";
+export type { ERC20Contract } from "./ERC20Contract";
 export type { FractionalisedNFT } from "./FractionalisedNFT";
 export type { Fractionaliser } from "./Fractionaliser";
 export type { REI } from "./REI";
@@ -23,6 +25,7 @@ export type { AccessControl } from "./AccessControl";
 
 export { Ownable__factory } from "./factories/Ownable__factory";
 export { ERC20__factory } from "./factories/ERC20__factory";
+export { ERC20Burnable__factory } from "./factories/ERC20Burnable__factory";
 export { IERC20Metadata__factory } from "./factories/IERC20Metadata__factory";
 export { IERC20__factory } from "./factories/IERC20__factory";
 export { ERC721__factory } from "./factories/ERC721__factory";
@@ -35,6 +38,7 @@ export { ERC721Holder__factory } from "./factories/ERC721Holder__factory";
 export { ERC165__factory } from "./factories/ERC165__factory";
 export { IERC165__factory } from "./factories/IERC165__factory";
 export { Approver__factory } from "./factories/Approver__factory";
+export { ERC20Contract__factory } from "./factories/ERC20Contract__factory";
 export { FractionalisedNFT__factory } from "./factories/FractionalisedNFT__factory";
 export { Fractionaliser__factory } from "./factories/Fractionaliser__factory";
 export { REI__factory } from "./factories/REI__factory";

@@ -1,8 +1,8 @@
 import {
   Transfer as TransferEvent,
   REI as REIContract,
-} from "../generated/REI/REI";
-import { Token, TokenUser } from "../generated/schema";
+} from '../generated/REI/REI';
+import { Token, TokenUser } from '../generated/schema';
 
 export function handleTransfer(event: TransferEvent): void {
   let token = Token.load(event.params.tokenId.toString());
