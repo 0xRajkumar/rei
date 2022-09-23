@@ -129,7 +129,7 @@ async function main() {
     // await laontransaction2.wait();
     const aptx = await erc20contract.approve(reimarket.address, 1000000);
     await aptx.wait();
-    const itx = await reimarket.invest(1, 4);
+    const itx = await reimarket.invest(1, 8);
     await itx.wait();
 }
 

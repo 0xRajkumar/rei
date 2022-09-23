@@ -13,11 +13,13 @@ const Layout = function ({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <Box>
-      <Navbar />
-      {children}
-      <Footer />
-    </Box>
+    !isSSR && (
+      <Box>
+        <Navbar />
+        {children}
+        <Footer />
+      </Box>
+    )
   );
 };
 

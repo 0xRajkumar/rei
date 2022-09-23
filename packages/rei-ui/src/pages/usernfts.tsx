@@ -42,6 +42,7 @@ import {
   GET_USER_TOKENS,
   GET_USER_FRACTIONALISEDS,
   GET_LENDED_FOR_LOANS,
+  GET_INVESTED_LENDS,
 } from "../graphql/subgraph";
 import { useAccount, useContract, useSigner } from "wagmi";
 import {
@@ -51,6 +52,7 @@ import {
 } from "../constants/addresses";
 import FractionalNFT from "../components/FractionalNFT";
 import LendedItem from "../components/LendedItem";
+import InvestedInItem from "../components/InvestedInItem";
 const usernfts: NextPage = () => {
   const [isFractionaliserApproved, setisFractionaliserApproved] =
     useState(false);
@@ -95,11 +97,30 @@ const usernfts: NextPage = () => {
       address: userAddress?.toLocaleLowerCase(),
     },
   });
+  const {
+    loading: loadingUserInvestedLends,
+    error: errorUserInvestedLends,
+    data: UserInvestedLends,
+    refetch: refetchUserInvestedLends,
+  } = useQuery(GET_INVESTED_LENDS, {
+    variables: {
+      id: userAddress?.toLocaleLowerCase(),
+    },
+  });
+  const investedIn = loadingUserInvestedLends
+    ? null
+    : UserInvestedLends.invester.lendedforlaons;
+  console.log(
+    loadingUserInvestedLends
+      ? "None"
+      : UserInvestedLends.invester.lendedforlaons
+  );
   useEffect(() => {
     if (userAddress !== undefined) {
       refetchUserNfts({ address: userAddress?.toLocaleLowerCase() });
       refetchUserFractionalised({ address: userAddress?.toLocaleLowerCase() });
       refetchUserLended({ address: userAddress?.toLocaleLowerCase() });
+      refetchUserInvestedLends({ id: userAddress?.toLocaleLowerCase() });
     }
   }, [userAddress]);
   const tokens = loadingUserNfts ? null : userNfts?.tokenUsers[0]?.tokens;
@@ -107,10 +128,6 @@ const usernfts: NextPage = () => {
     ? null
     : userFractionaliseds?.userFractionaliseds[0]?.fractionaliseds;
   const userLendeds = loadingUserLended ? null : userLended.lendedForLoans;
-  console.log(loadingUserLended ? "" : userLended.lendedForLoans);
-  // const userlendeds = loadingUserLended
-  //   ? null
-  //   : userLended?.userFractionaliseds[0]?.fractionaliseds;
 
   const FractionaliserContract = useContract({
     addressOrName: FractionaliserContractAddress,
@@ -223,7 +240,7 @@ const usernfts: NextPage = () => {
                 attributes: { SurfaceArea, GPSCoordinates, City, Country },
               } = data;
               return (
-                <>
+                <Box>
                   <Center py={12} key={index}>
                     <Box
                       role={"group"}
@@ -352,7 +369,7 @@ const usernfts: NextPage = () => {
                       </ModalFooter>
                     </ModalContent>
                   </Modal>
-                </>
+                </Box>
               );
             })
           )}
@@ -362,9 +379,7 @@ const usernfts: NextPage = () => {
         <Heading>Your Frationalised NFTs</Heading>
         <Stack flexDirection="row" flexWrap="wrap" gap="2">
           {loadingUserFractionalised ? (
-            <Heading textShadow="2px 2px #0987A0">
-              loadingUserFractionalised Data
-            </Heading>
+            <Heading textShadow="2px 2px #0987A0">DID Fractions</Heading>
           ) : (
             userFractionlisedsData?.map((data: any, index: number) => {
               return <FractionalNFT data={data} key={index} />;
@@ -373,14 +388,35 @@ const usernfts: NextPage = () => {
         </Stack>
       </Box>
       <Box>
+        <Heading as={"h1"} fontSize={"4xl"} textAlign={"center"}>
+          Lended For Loans
+        </Heading>
         {loadingUserLended ? (
           <Heading as={"h1"} fontSize={"4xl"} textAlign={"center"}>
-            All pending applications
+            loadingUserLended
           </Heading>
         ) : (
-          userLendeds?.map((data: any, index: any) => {
-            return <LendedItem data={data} key={index} />;
-          })
+          <Flex flexDirection="row" flexWrap="wrap" gap="3">
+            {userLendeds?.map((data: any, index: any) => {
+              return <LendedItem data={data} key={index} />;
+            })}
+          </Flex>
+        )}
+      </Box>
+      <Box>
+        <Heading as={"h1"} fontSize={"4xl"} textAlign={"center"}>
+          Invested IN
+        </Heading>
+        {loadingUserInvestedLends ? (
+          <Heading as={"h1"} fontSize={"4xl"} textAlign={"center"}>
+            loadingUserInvestedLends
+          </Heading>
+        ) : (
+          <Flex flexDirection="row" flexWrap="wrap" gap="3">
+            {investedIn?.map((data: any, index: any) => {
+              return <InvestedInItem data={data.lendedforloan} key={index} />;
+            })}
+          </Flex>
         )}
       </Box>
     </Box>

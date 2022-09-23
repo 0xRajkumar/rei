@@ -135,3 +135,34 @@ export const GET_LENDED_BY_USER = gql`
     }
   }
 `;
+
+export const GET_INVESTED_LENDS = gql`
+  query GetLendedLends($id: String!) {
+    invester(id: $id) {
+      id
+      lendedforlaons {
+        amount
+        lendedforloan {
+          lendingNumber
+          status
+          Loanee
+          lendingNumber
+          fractionalisedId
+          fractionalisedNftAddress
+          numberOfFractions
+          numberOfFractionsInvested
+          numberOfInvesters
+          loanAmountPerFraction
+          interestPerFractionInPercentage
+          repayByTimeStamp
+          startedAt
+          investers {
+            invester {
+              id
+            }
+          }
+        }
+      }
+    }
+  }
+`;
