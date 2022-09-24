@@ -6,9 +6,9 @@ dataSources:
     name: REI
     network: goerli
     source:
-      address: "0xBa8a212DF43A696a5a97Ff6d3B543b5Ab5566a0F"
+      address: "0x773Ea21c2858FA806349dcE7598655091985B3B4"
       abi: REI
-      startBlock: 7645224
+      startBlock: 7649995
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -27,9 +27,9 @@ dataSources:
     name: Approver
     network: goerli
     source:
-      address: "0x3DebD41C5e03672445cf24B3e1e9fc5dcb0ac33a"
+      address: "0xDA5C1a3c6a4089F207085078116b4d9C9Dd3fEA5"
       abi: Approver
-      startBlock: 7645224
+      startBlock: 7649995
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -53,9 +53,9 @@ dataSources:
     name: Fractionaliser
     network: goerli
     source:
-      address: "0x6f5352E5f6155abd2153C02f21F8D696D77462B3"
+      address: "0x5D4A57322d95096B8aE94E50b78eF5AA54B010B3"
       abi: Fractionaliser
-      startBlock: 7645224
+      startBlock: 7649995
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -77,9 +77,9 @@ dataSources:
     name: REIMarket
     network: goerli
     source:
-      address: "0x92d53B683e1774bfA1923F6cfdD78299FAED474C"
+      address: "0x7412758B281C0D6Cc4256430d5faD31d9AfE6605"
       abi: REIMarket
-      startBlock: 7645224
+      startBlock: 7649995
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -96,4 +96,12 @@ dataSources:
           handler: handleApplied
         - event: Invested(uint256,uint256,uint256,uint256,uint8,address,uint256)
           handler: handleInvested
+        - event: InterestPaid(uint256,uint256,uint256,address,uint256)
+          handler: handleInterestPaid
+        - event: Repayed(uint256,uint8)
+          handler: handleRepayed
+        - event: WithDrawalLoan(uint256,uint8)
+          handler: handleWithDrawalLoan
+        - event: WithdrawalBeforeFunded(uint256,uint256,uint256,address,uint256)
+          handler: handleWithdrawalBeforeFunded
       file: ./src/rei-market.ts

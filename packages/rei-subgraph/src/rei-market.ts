@@ -8,6 +8,10 @@ import {
 import {
   Applied as AppliedEvent,
   Invested as InvestedEvent,
+  WithdrawalBeforeFunded as WithdrawalBeforeFundedEvent,
+  Repayed as RepayedEvent,
+  WithDrawalLoan as WithDrawalLoanEvent,
+  InterestPaid as InterestPaidEvent,
 } from "../generated/REIMarket/REIMarket";
 import {
   Invester,
@@ -71,18 +75,65 @@ export function handleInvested(event: InvestedEvent): void {
   invester.save();
   lended.save();
 }
+export function handleWithdrawalBeforeFunded(
+  event: WithdrawalBeforeFundedEvent
+): void {
+  const investerlendedforloans = InvesterLendedForLoan.load(
+    event.params.invester
+      .concat(
+        Bytes.fromByteArray(ByteArray.fromBigInt(event.params.lendingNumber))
+      )
+      .toString()
+  );
+  if (investerlendedforloans) {
+    investerlendedforloans.amount = event.params.amountInvestedByInvester;
+    investerlendedforloans.invester = event.params.invester.toHexString();
+    investerlendedforloans.save();
+  }
+  const invester = Invester.load(event.params.invester.toHexString());
+  if (invester) {
+    invester.invester = event.params.invester.toHexString();
+    invester.save();
+  }
+  let lended = LendedForLoan.load(event.params.lendingNumber.toString());
+  if (lended) {
+    lended.numberOfInvesters = event.params.numberOfInvesters;
+    lended.numberOfFractionsInvested = event.params.numberOfFractionsInvested;
+    lended.save();
+  }
+}
 
-// investers: [Invester!]! @derivedFrom(field: "invester") # address
-// }
+export function handleRepay(event: RepayedEvent): void {
+  let lended = LendedForLoan.load(event.params.lendingNumber.toString());
+  if (lended) {
+    lended.status = event.params.status;
+    lended.save();
+  }
+}
+export function handleWithDrawalLoan(event: WithDrawalLoanEvent): void {
+  let lended = LendedForLoan.load(event.params.lendingNumber.toString());
+  if (lended) {
+    lended.status = event.params.status;
+    lended.save();
+  }
+}
 
-// type Invester @entity {
-//   id: ID! #invester addreaa
-//   invester: LendedForLoan! #invester addreaa
-//   investments: [Investment!] @derivedFrom(field: "lendingNummber")
-// }
-
-// type Investment @entity {
-//   id: ID!
-//   lendingNummber: Invester!
-//   amount: BigInt!
-// }
+export function handleInterestPaid(event: InterestPaidEvent): void {
+  let lended = LendedForLoan.load(event.params.lendingNumber.toString());
+  if (lended) {
+    lended.numberOfInvesters = event.params.numberOfInvesters;
+    lended.numberOfFractionsInvested = event.params.numberOfFractionsInvested;
+    lended.save();
+  }
+  const investerlendedforloans = InvesterLendedForLoan.load(
+    event.params.invester
+      .concat(
+        Bytes.fromByteArray(ByteArray.fromBigInt(event.params.lendingNumber))
+      )
+      .toString()
+  );
+  if (investerlendedforloans) {
+    investerlendedforloans.amount = event.params.amountInvestedByInvester;
+    investerlendedforloans.save();
+  }
+}

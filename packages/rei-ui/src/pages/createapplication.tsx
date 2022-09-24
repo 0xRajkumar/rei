@@ -362,6 +362,18 @@ const createapplication: NextPage = () => {
                                     Location: {gpsCoordinates}
                                   </Text>
                                 </HStack>
+                                <HStack gap={1} justify="start">
+                                  <FaMapMarkedAlt />
+                                  <Text color={"gray.600"}>
+                                    surfaceAreaInMTRs: {surfaceAreaInMTRs}
+                                  </Text>
+                                </HStack>
+                                <HStack gap={1} justify="start">
+                                  <FaMapMarkedAlt />
+                                  <Text color={"gray.600"}>
+                                    status: {status}
+                                  </Text>
+                                </HStack>
                               </VStack>
                             </Stack>
                           </Box>

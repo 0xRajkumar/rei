@@ -122,13 +122,17 @@ const pendingApplication: NextPage = () => {
     const nft = { name, description, image, attributes };
     const buffer = Buffer.from(JSON.stringify(nft));
     const files = [new File([buffer], `${applicationNumber}.json`)];
-    const cid = await web3storage.put(files);
-    console.log("🚀 ~ file: pendingapplications.tsx ~ line 137 ~ cid", cid);
-    ApproverContract.applicationDecision(
-      applicationNumber,
-      approval,
-      `${cid}/${applicationNumber}.json`
-    );
+    try {
+      const cid = await web3storage.put(files);
+      console.log("🚀 ~ file: pendingapplications.tsx ~ line 137 ~ cid", cid);
+      await ApproverContract.applicationDecision(
+        applicationNumber,
+        approval,
+        `${cid}/${applicationNumber}.json`
+      );
+    } catch (err) {
+      console.log("🚀 ~ file: pendingapplications.tsx ~ line 128 ~ err", err);
+    }
   }
   return (
     <>
@@ -229,7 +233,7 @@ const pendingApplication: NextPage = () => {
                             </VStack>
                             {access && (
                               <Button onClick={onApproveOpen}>
-                                Open Modal
+                                Do approve{" "}
                               </Button>
                             )}
                           </Stack>

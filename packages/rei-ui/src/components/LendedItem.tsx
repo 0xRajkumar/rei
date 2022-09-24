@@ -39,6 +39,7 @@ import { ethers } from "ethers";
 import { GET_USER_FRACTIONALISEDS_WITH_FRACTIONALISEDID } from "../graphql/subgraph";
 import { useQuery } from "@apollo/client";
 function LendedItem({ data, key }: any) {
+  const [isApproved, setisApproved] = useState(false);
   const [investingInNumberOfFraction, setinvestingInNumberOfFraction] =
     useState(0);
   const { data: signer } = useSigner();
@@ -96,6 +97,35 @@ function LendedItem({ data, key }: any) {
       fetchtokendetails(fractionalisedNFT);
     }
   }, [fractionalisedNFT]);
+  async function handleREIApprove() {
+    const approvetx = await USDTContract.approve(
+      REIContractAddress,
+      "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+    );
+    await approvetx.wait();
+    setisApproved(true);
+  }
+
+  async function isREIApprovesFORUSDT() {
+    const amount = await USDTContract.allowance(
+      userAddress,
+      REIContractAddress
+    );
+    if (amount !== "0") {
+      setisApproved(true);
+    }
+  }
+  async function handlerepay() {
+    const repaytx = await REIMarketContract.repay(lendingNumber);
+    await repaytx.wait();
+  }
+  async function withdrawLoan() {
+    const wltx = await REIMarketContract.withdrawLoan(lendingNumber);
+    await wltx.wait();
+  }
+  useEffect(() => {
+    isREIApprovesFORUSDT();
+  }, [userAddress]);
   return (
     <>
       {tokenDetail && (
@@ -149,7 +179,8 @@ function LendedItem({ data, key }: any) {
                 fontSize={"sm"}
                 textTransform={"uppercase"}
               >
-                tokenId = {tokenDetail?.tokenId}
+                tokenId = {tokenDetail?.tokenId} <br />
+                status = {status}
               </Text>
               <Heading fontSize={"2xl"} fontFamily={"body"} fontWeight={500}>
                 {tokenDetail?.description}
@@ -183,6 +214,20 @@ function LendedItem({ data, key }: any) {
                   numberOfFractionsInvested = {numberOfFractionsInvested}
                 </Text>
               </Stack>
+              {status === 2 && (
+                <>
+                  isApproved ?
+                  <Button onClick={handlerepay}>Get Back NFT</Button>:
+                  <Button onClick={handleREIApprove}>Approve</Button>
+                </>
+              )}
+              {status === 1 && (
+                <>
+                  isApproved ?
+                  <Button onClick={withdrawLoan}>Withdraw Loan</Button>:
+                  <Button onClick={handleREIApprove}>Approve</Button>
+                </>
+              )}
             </Stack>
           </Box>
         </Center>

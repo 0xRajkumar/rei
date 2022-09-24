@@ -109,11 +109,11 @@ const usernfts: NextPage = () => {
   });
   const investedIn = loadingUserInvestedLends
     ? null
-    : UserInvestedLends.invester.lendedforlaons;
+    : UserInvestedLends?.invester?.lendedforlaons;
   console.log(
     loadingUserInvestedLends
       ? "None"
-      : UserInvestedLends.invester.lendedforlaons
+      : UserInvestedLends?.invester?.lendedforlaons
   );
   useEffect(() => {
     if (userAddress !== undefined) {
@@ -127,7 +127,7 @@ const usernfts: NextPage = () => {
   const userFractionliseds = loadingUserFractionalised
     ? null
     : userFractionaliseds?.userFractionaliseds[0]?.fractionaliseds;
-  const userLendeds = loadingUserLended ? null : userLended.lendedForLoans;
+  const userLendeds = loadingUserLended ? null : userLended?.lendedForLoans;
 
   const FractionaliserContract = useContract({
     addressOrName: FractionaliserContractAddress,
@@ -414,7 +414,13 @@ const usernfts: NextPage = () => {
         ) : (
           <Flex flexDirection="row" flexWrap="wrap" gap="3">
             {investedIn?.map((data: any, index: any) => {
-              return <InvestedInItem data={data.lendedforloan} key={index} />;
+              return (
+                <InvestedInItem
+                  data={data.lendedforloan}
+                  amountInvested={data.amount}
+                  key={index}
+                />
+              );
             })}
           </Flex>
         )}

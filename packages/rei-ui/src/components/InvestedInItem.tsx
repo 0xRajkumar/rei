@@ -38,13 +38,27 @@ import {
 import { ethers } from "ethers";
 import { GET_USER_FRACTIONALISEDS_WITH_FRACTIONALISEDID } from "../graphql/subgraph";
 import { useQuery } from "@apollo/client";
-function InvestedInItem({ data, key }: any) {
+function InvestedInItem({ data, amountInvested, key }: any) {
   const [investingInNumberOfFraction, setinvestingInNumberOfFraction] =
     useState(0);
   const { data: signer } = useSigner();
   const USDTContract = useContract({
     addressOrName: USDTAddress,
     contractInterface: ERC20Abi,
+    signerOrProvider: signer,
+  });
+  const {
+    status,
+    numberOfFractionsInvested,
+    numberOfFractions,
+    lendingNumber,
+    fractionalisedNftAddress,
+    fractionalisedId,
+    Loanee,
+  } = data;
+  const FractionalisedNFTContract = useContract({
+    addressOrName: fractionalisedNftAddress,
+    contractInterface: FractionalisedNFTAbi,
     signerOrProvider: signer,
   });
   const REIMarketContract = useContract({
@@ -61,15 +75,7 @@ function InvestedInItem({ data, key }: any) {
   } = useDisclosure();
   const initialRef = React.useRef(null);
   const finalRef = React.useRef(null);
-  const {
-    status,
-    numberOfFractionsInvested,
-    numberOfFractions,
-    lendingNumber,
-    fractionalisedNftAddress,
-    fractionalisedId,
-    Loanee,
-  } = data;
+
   const [tokenDetail, settokenDetail] = useState<any>(null);
   const {
     loading: loadingfractionalised,
@@ -88,6 +94,24 @@ function InvestedInItem({ data, key }: any) {
     settokenDetail({ ...tokenDatainJson, tokenId: data.tokenId });
   }
 
+  async function handleREIApprove() {
+    const approvetx = await FractionalisedNFTContract.approve(
+      REIMarketContractAddress,
+      numberOfFractions
+    );
+    await approvetx.wait();
+    setisReiContractApproved(true);
+  }
+
+  async function isREIApprovesFORUSDT() {
+    const amount = await USDTContract.allowance(
+      userAddress,
+      REIMarketContractAddress
+    );
+    if (amount == numberOfFractions) {
+      setisReiContractApproved(true);
+    }
+  }
   const fractionalisedNFT = loadingfractionalised
     ? null
     : fractionalised.fractionaliseds[0];
@@ -96,6 +120,15 @@ function InvestedInItem({ data, key }: any) {
       fetchtokendetails(fractionalisedNFT);
     }
   }, [fractionalisedNFT]);
+  useEffect(() => {
+    isREIApprovesFORUSDT();
+  }, [userAddress]);
+  async function handleWithdrawInvestment() {
+    await REIMarketContract.withdrawBeforeFunded(lendingNumber, amountInvested);
+  }
+  async function handleGetBackInvestmentWithInterest() {
+    await REIMarketContract.getBackInvestmentWithInterest(lendingNumber);
+  }
   return (
     <>
       {tokenDetail && (
@@ -149,7 +182,9 @@ function InvestedInItem({ data, key }: any) {
                 fontSize={"sm"}
                 textTransform={"uppercase"}
               >
-                tokenId = {tokenDetail?.tokenId}
+                tokenId = {tokenDetail?.tokenId} <br />
+                amountInvested = {amountInvested} <br />
+                status = {status}
               </Text>
               <Heading fontSize={"2xl"} fontFamily={"body"} fontWeight={500}>
                 {tokenDetail?.description}
@@ -183,6 +218,28 @@ function InvestedInItem({ data, key }: any) {
                   numberOfFractionsInvested = {numberOfFractionsInvested}
                 </Text>
               </Stack>
+              {status === 0 && (
+                <>
+                  {isReiContractApproved ? (
+                    <Button onClick={handleWithdrawInvestment}>
+                      withdrawBeforeFunded
+                    </Button>
+                  ) : (
+                    <Button onClick={handleREIApprove}>Approve</Button>
+                  )}
+                </>
+              )}
+              {(status === 3 || status === 4) && (
+                <>
+                  {isReiContractApproved ? (
+                    <Button onClick={handleGetBackInvestmentWithInterest}>
+                      withdrawBeforeFunded
+                    </Button>
+                  ) : (
+                    <Button onClick={handleREIApprove}>Approve</Button>
+                  )}
+                </>
+              )}
             </Stack>
           </Box>
         </Center>

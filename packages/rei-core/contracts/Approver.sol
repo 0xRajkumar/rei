@@ -112,7 +112,7 @@ contract Approver is AccessControl {
         Application storage application = Applications[applicationNumber];
         require(
             application.applicationStatus == ApplicationStatus.Pending,
-            'application is not in pending state'
+            'Application is not in pending state'
         );
         require(
             status != ApplicationStatus.Pending,
@@ -191,7 +191,7 @@ contract Approver is AccessControl {
         view
         returns (Application memory)
     {
-        require(numberOfApplications.current() >= index, 'not exist');
+        require(numberOfApplications.current() >= index, 'Not exist');
         return Applications[index];
     }
 
