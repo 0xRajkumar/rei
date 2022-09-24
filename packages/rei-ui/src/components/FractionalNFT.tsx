@@ -18,7 +18,7 @@ import {
   Text,
   useDisclosure,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import FractionalisedNFTAbi from "../constants/abis/FraactionalisedNFT.json";
 import FractionaliserAbi from "../constants/abis/Fractionaliser.json";
 import REIMarketAbi from "../constants/abis/REIMarket.json";
@@ -52,7 +52,9 @@ function FractionalNFT({ data, key }: any) {
   } = useDisclosure();
 
   const { data: singer } = useSigner();
-  const [isREIContractApproves, setIsREIContractApproves] = useState(false);
+  const { address: userAddress } = useAccount();
+  const [isREIMarketContractApproves, setisREIMarketContractApproves] =
+    useState(false);
   const FractionaliserContract = useContract({
     addressOrName: FractionaliserContractAddress,
     contractInterface: FractionaliserAbi,
@@ -76,7 +78,24 @@ function FractionalNFT({ data, key }: any) {
       fractionQuantity
     );
     await approvetx.wait();
-    setIsREIContractApproves(true);
+    setisREIMarketContractApproves(true);
+  }
+
+  async function isREIMarketApproved() {
+    const FractionalisedNFTAddress =
+      FractionaliserContract.getAddressOfFractionisedId(fractionalisedId);
+    const FractionalisedNFTContract = new ethers.Contract(
+      FractionalisedNFTAddress,
+      FractionalisedNFTAbi,
+      singer ?? undefined
+    );
+    const approvesFor = await FractionalisedNFTContract.allowance(
+      userAddress,
+      REIMarketContractAddress
+    );
+    if (approvesFor.toString() == fractionQuantity) {
+      setisREIMarketContractApproves(true);
+    }
   }
   async function handleApplyForLoan() {
     const { loanAmount, interest, time } = loanForm;
@@ -107,6 +126,10 @@ function FractionalNFT({ data, key }: any) {
       return { ...preData, [name]: value };
     });
   }
+  useEffect(() => {
+    isREIMarketApproved();
+  }, [userAddress]);
+
   return (
     <Center py={12} key={key}>
       <Box
@@ -180,7 +203,7 @@ function FractionalNFT({ data, key }: any) {
           <>
             {fractionQuantity > 0 && (
               <>
-                {isREIContractApproves ? (
+                {isREIMarketContractApproves ? (
                   <Button onClick={onApplyFormOpen}>Apply For Loan</Button>
                 ) : (
                   <Button onClick={handleAppproveReiMarket}>Approve</Button>

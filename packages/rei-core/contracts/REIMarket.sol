@@ -267,8 +267,7 @@ contract REIMarket is Ownable {
             'Only loanee can withdraw'
         );
         selectedLended.status = LendStatus.Taken;
-        USDTContract.transferFrom(
-            address(this),
+        USDTContract.transfer(
             _msgSender(),
             selectedLended.LoanAmountPerFraction *
                 selectedLended.numberOfFractions
@@ -285,7 +284,11 @@ contract REIMarket is Ownable {
         );
         LendForLoan storage selectedLended = LendedForLoans[lendingNumber];
         require(
-            selectedLended.repayByTimeStamp + selectedLended.startedAt >=
+            selectedLended.status == LendStatus.Taken,
+            'Status should be repayed'
+        );
+        require(
+            selectedLended.repayByTimeStamp + selectedLended.startedAt <=
                 block.timestamp,
             'Repay time is not completed'
         );
@@ -293,13 +296,12 @@ contract REIMarket is Ownable {
         if (
             selectedLended.repayByTimeStamp +
                 selectedLended.startedAt +
-                relaxationPeriodForlonee >=
+                relaxationPeriodForlonee <=
             block.timestamp
         ) {
             selectedLended.liquidator = _msgSender();
             selectedLended.status = LendStatus.Liquidated;
         }
-        require(selectedLended.status == LendStatus.Taken);
         uint256 loanPerFraction = selectedLended.LoanAmountPerFraction;
         uint256 interestPerFraction = (selectedLended.LoanAmountPerFraction *
             selectedLended.InterestPerFractionInPercentage) / 10000;
@@ -336,7 +338,11 @@ contract REIMarket is Ownable {
             'Wrong lending number'
         );
         LendForLoan storage selectedLended = LendedForLoans[lendingNumber];
-        require(selectedLended.status == LendStatus.Repayed, 'Not yet repayed');
+        require(
+            selectedLended.status == LendStatus.Repayed ||
+                selectedLended.status == LendStatus.Liquidated,
+            'Not yet repayed'
+        );
         uint256 loanPerFraction = selectedLended.LoanAmountPerFraction;
         uint256 interestPerFraction = (selectedLended.LoanAmountPerFraction *
             selectedLended.InterestPerFractionInPercentage) / 10000;
@@ -372,7 +378,7 @@ contract REIMarket is Ownable {
                     totalFraction
                 );
         }
-        USDTContract.transferFrom(address(this), _msgSender(), totalNeedToPay);
+        USDTContract.transfer(_msgSender(), totalNeedToPay);
         selectedLended.InvestmentsByInvesters[_msgSender()] = 0;
         selectedLended.numberOfFractionsInvested =
             selectedLended.numberOfFractionsInvested -

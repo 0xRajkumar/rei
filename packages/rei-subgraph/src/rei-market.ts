@@ -103,7 +103,7 @@ export function handleWithdrawalBeforeFunded(
   }
 }
 
-export function handleRepay(event: RepayedEvent): void {
+export function handleRepayed(event: RepayedEvent): void {
   let lended = LendedForLoan.load(event.params.lendingNumber.toString());
   if (lended) {
     lended.status = event.params.status;

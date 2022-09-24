@@ -71,6 +71,10 @@ function LendedItem({ data, key }: any) {
     fractionalisedId,
     Loanee,
   } = data;
+  console.log(
+    "🚀 ~ file: LendedItem.tsx ~ line 74 ~ LendedItem ~ status",
+    status
+  );
   const [tokenDetail, settokenDetail] = useState<any>(null);
   const {
     loading: loadingfractionalised,
@@ -99,7 +103,7 @@ function LendedItem({ data, key }: any) {
   }, [fractionalisedNFT]);
   async function handleREIApprove() {
     const approvetx = await USDTContract.approve(
-      REIContractAddress,
+      REIMarketContractAddress,
       "115792089237316195423570985008687907853269984665640564039457584007913129639935"
     );
     await approvetx.wait();
@@ -109,15 +113,25 @@ function LendedItem({ data, key }: any) {
   async function isREIApprovesFORUSDT() {
     const amount = await USDTContract.allowance(
       userAddress,
-      REIContractAddress
+      REIMarketContractAddress
     );
-    if (amount !== "0") {
+    if (
+      amount.toString() ==
+      "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+    ) {
       setisApproved(true);
     }
   }
   async function handlerepay() {
-    const repaytx = await REIMarketContract.repay(lendingNumber);
-    await repaytx.wait();
+    try {
+      const repaytx = await REIMarketContract.repay(lendingNumber);
+      await repaytx.wait();
+    } catch (err) {
+      console.log(
+        "🚀 ~ file: LendedItem.tsx ~ line 125 ~ handlerepay ~ err",
+        err
+      );
+    }
   }
   async function withdrawLoan() {
     const wltx = await REIMarketContract.withdrawLoan(lendingNumber);
@@ -216,17 +230,15 @@ function LendedItem({ data, key }: any) {
               </Stack>
               {status === 2 && (
                 <>
-                  isApproved ?
-                  <Button onClick={handlerepay}>Get Back NFT</Button>:
-                  <Button onClick={handleREIApprove}>Approve</Button>
+                  {isApproved ? (
+                    <Button onClick={handlerepay}>Get Back NFT</Button>
+                  ) : (
+                    <Button onClick={handleREIApprove}>Approve</Button>
+                  )}
                 </>
               )}
               {status === 1 && (
-                <>
-                  isApproved ?
-                  <Button onClick={withdrawLoan}>Withdraw Loan</Button>:
-                  <Button onClick={handleREIApprove}>Approve</Button>
-                </>
+                <Button onClick={withdrawLoan}>Withdraw Loan</Button>
               )}
             </Stack>
           </Box>

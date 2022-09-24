@@ -81,7 +81,7 @@ const pendingApplication: NextPage = () => {
   console.log(
     loadingApproverAccess ? "" : ApproverAccess?.approverAccesses[0]?.bool
   );
-  const applications = pendingUsers?.withStatuses[0].applications;
+  const applications = pendingUsers?.withStatuses[0]?.applications;
   const access = loadingApproverAccess
     ? null
     : ApproverAccess?.approverAccesses[0]?.bool;

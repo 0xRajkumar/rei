@@ -53,7 +53,8 @@ function MarketItem({ data, key }: any) {
     signerOrProvider: signer,
   });
   const { address: userAddress } = useAccount();
-  const [isReiContractApproved, setisReiContractApproved] = useState(false);
+  const [isReiContractApproved, setisReiMarketContractApproved] =
+    useState(false);
   const {
     isOpen: isInvestOpen,
     onOpen: onInvestOpen,
@@ -90,11 +91,11 @@ function MarketItem({ data, key }: any) {
 
   async function handleREIApprove() {
     const approvetx = await USDTContract.approve(
-      REIContractAddress,
+      REIMarketContractAddress,
       "115792089237316195423570985008687907853269984665640564039457584007913129639935"
     );
     await approvetx.wait();
-    setisReiContractApproved(true);
+    setisReiMarketContractApproved(true);
   }
 
   const fractionalisedNFT = loadingfractionalised
@@ -103,10 +104,13 @@ function MarketItem({ data, key }: any) {
   async function isREIApprovesFORUSDT() {
     const amount = await USDTContract.allowance(
       userAddress,
-      REIContractAddress
+      REIMarketContractAddress
     );
-    if (amount !== "0") {
-      setisReiContractApproved(true);
+    if (
+      amount.toString() ==
+      "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+    ) {
+      setisReiMarketContractApproved(true);
     }
   }
   useEffect(() => {
@@ -125,6 +129,7 @@ function MarketItem({ data, key }: any) {
     );
     await investtx.wait();
   }
+  console.log(isReiContractApproved);
   return (
     <>
       {tokenDetail && (

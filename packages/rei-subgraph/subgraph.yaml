@@ -6,9 +6,9 @@ dataSources:
     name: REI
     network: goerli
     source:
-      address: "0x773Ea21c2858FA806349dcE7598655091985B3B4"
+      address: "0xa14c86a11f1802b63E868620f4C4F6D67F23238E"
       abi: REI
-      startBlock: 7649995
+      startBlock: 7651812
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -27,9 +27,9 @@ dataSources:
     name: Approver
     network: goerli
     source:
-      address: "0xDA5C1a3c6a4089F207085078116b4d9C9Dd3fEA5"
+      address: "0x11ba0F9f9a503eb61A3B559Ed3F36DCF3c92BB25"
       abi: Approver
-      startBlock: 7649995
+      startBlock: 7651812
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -53,9 +53,9 @@ dataSources:
     name: Fractionaliser
     network: goerli
     source:
-      address: "0x5D4A57322d95096B8aE94E50b78eF5AA54B010B3"
+      address: "0xB3A61E8c931B148D4aa0B3b3C89b4175d7eC19cB"
       abi: Fractionaliser
-      startBlock: 7649995
+      startBlock: 7651812
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -77,9 +77,9 @@ dataSources:
     name: REIMarket
     network: goerli
     source:
-      address: "0x7412758B281C0D6Cc4256430d5faD31d9AfE6605"
+      address: "0x533b4117654D2560E6eDE376aeACEF4730585BB4"
       abi: REIMarket
-      startBlock: 7649995
+      startBlock: 7651812
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6

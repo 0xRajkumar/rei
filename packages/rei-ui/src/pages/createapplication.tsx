@@ -7,6 +7,7 @@ import {
   Text,
   Divider,
   VStack,
+  chakra,
   Box,
   Image,
   Stack,
@@ -281,7 +282,7 @@ const createapplication: NextPage = () => {
             </Box>
           </TabPanel>
           <TabPanel>
-            <Box minH={"100vh"} mx="auto" bg={"gray.50"} py={12}>
+            <Box>
               <Heading as={"h2"} fontSize={"4xl"} textAlign={"center"}>
                 {userAddress
                   ? "Your Created Applications"
@@ -298,6 +299,7 @@ const createapplication: NextPage = () => {
                       description,
                       imageURI,
                       country,
+                      city,
                       gpsCoordinates,
                       surfaceAreaInMTRs,
                       applicationStatus,

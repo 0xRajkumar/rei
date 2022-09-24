@@ -43,6 +43,7 @@ import {
   GET_USER_FRACTIONALISEDS,
   GET_LENDED_FOR_LOANS,
   GET_INVESTED_LENDS,
+  GET_LENDED_BY_USER,
 } from "../graphql/subgraph";
 import { useAccount, useContract, useSigner } from "wagmi";
 import {
@@ -92,7 +93,7 @@ const usernfts: NextPage = () => {
     error: errorUserLended,
     data: userLended,
     refetch: refetchUserLended,
-  } = useQuery(GET_LENDED_FOR_LOANS, {
+  } = useQuery(GET_LENDED_BY_USER, {
     variables: {
       address: userAddress?.toLocaleLowerCase(),
     },
@@ -151,6 +152,7 @@ const usernfts: NextPage = () => {
       dataArr.map(async (data: any) => {
         const tokenData = await fetch(data.tokenURI);
         const token = await tokenData.json();
+        console.log(token, "NANAN");
         return { ...token, ...data };
       })
     );
@@ -200,6 +202,10 @@ const usernfts: NextPage = () => {
     if (tokens) {
       fetchtokendetails(tokens)
         .then((userData) => {
+          console.log(
+            "🚀 ~ file: usernfts.tsx ~ line 213 ~ .then ~ userData",
+            userData
+          );
           setUserTokens(userData);
         })
         .catch((err) => {
@@ -221,7 +227,7 @@ const usernfts: NextPage = () => {
   useEffect(() => {
     isFractionaliserContractApproved();
   }, [userAddress, REIContract]);
-
+  console.log(userTokens, "OKKKK");
   return (
     <Box>
       <Box>

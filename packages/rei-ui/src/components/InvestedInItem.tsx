@@ -97,7 +97,7 @@ function InvestedInItem({ data, amountInvested, key }: any) {
   async function handleREIApprove() {
     const approvetx = await FractionalisedNFTContract.approve(
       REIMarketContractAddress,
-      numberOfFractions
+      "115792089237316195423570985008687907853269984665640564039457584007913129639935"
     );
     await approvetx.wait();
     setisReiContractApproved(true);
@@ -108,7 +108,10 @@ function InvestedInItem({ data, amountInvested, key }: any) {
       userAddress,
       REIMarketContractAddress
     );
-    if (amount == numberOfFractions) {
+    if (
+      amount.toString() ==
+      "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+    ) {
       setisReiContractApproved(true);
     }
   }
@@ -218,22 +221,22 @@ function InvestedInItem({ data, amountInvested, key }: any) {
                   numberOfFractionsInvested = {numberOfFractionsInvested}
                 </Text>
               </Stack>
-              {status === 0 && (
+              {status === 0 && amountInvested > 0 && (
                 <>
                   {isReiContractApproved ? (
                     <Button onClick={handleWithdrawInvestment}>
-                      withdrawBeforeFunded
+                      handleWithdrawInvestment
                     </Button>
                   ) : (
                     <Button onClick={handleREIApprove}>Approve</Button>
                   )}
                 </>
               )}
-              {(status === 3 || status === 4) && (
+              {(status === 3 || status === 4) && amountInvested > 0 && (
                 <>
                   {isReiContractApproved ? (
                     <Button onClick={handleGetBackInvestmentWithInterest}>
-                      withdrawBeforeFunded
+                      handleGetBackInvestmentWithInterest
                     </Button>
                   ) : (
                     <Button onClick={handleREIApprove}>Approve</Button>
