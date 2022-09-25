@@ -19,6 +19,7 @@ function market() {
     loading: loadinglendedloans,
     error: errorlendedloans,
     data: lendedloans,
+    refetch: refetchLendedLoans,
   } = useQuery(GET_LENDED_FOR_LOANS);
 
   const lendedForLoans = loadinglendedloans
@@ -39,7 +40,13 @@ function market() {
           </Heading>
         ) : (
           lendedForLoans?.map((data: any, index: any) => {
-            return <MarketItem data={data} key={index} />;
+            return (
+              <MarketItem
+                data={data}
+                key={index}
+                refetch={refetchLendedLoans}
+              />
+            );
           })
         )}
       </Box>

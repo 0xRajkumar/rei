@@ -67,6 +67,7 @@ const pendingApplication: NextPage = () => {
     loading: loadingpendingUsers,
     error: errorpendingUsers,
     data: pendingUsers,
+    refetch: refetchpendingUsers,
   } = useQuery(GET_PENDING_APPLICATIONS);
   const {
     loading: loadingApproverAccess,
@@ -138,11 +139,15 @@ const pendingApplication: NextPage = () => {
       const files = [new File([buffer], `${applicationNumber}.json`)];
       const cid = await web3storage.put(files);
       console.log("🚀 ~ file: pendingapplications.tsx ~ line 137 ~ cid", cid);
-      await ApproverContract.applicationDecision(
+      const tx = await ApproverContract.applicationDecision(
         applicationNumber,
         approval,
         `${cid}/${applicationNumber}.json`
       );
+      await tx.wait();
+      refetchpendingUsers();
+      setapproval(1);
+      onApproveClose();
     } catch (err) {
       toast({ title: "Error: See in console", status: "error" });
       console.log("🚀 ~ file: pendingapplications.tsx ~ line 128 ~ err", err);
@@ -306,67 +311,67 @@ const pendingApplication: NextPage = () => {
                           )}
                         </Box>
                       </Box>
+                      <Modal
+                        initialFocusRef={initialRef}
+                        finalFocusRef={finalRef}
+                        isOpen={isApproveOpen}
+                        onClose={onApproveClose}
+                      >
+                        <ModalOverlay bg="blackAlpha.300" />
+                        <ModalContent>
+                          <ModalHeader>
+                            Application {applicationNumber}
+                          </ModalHeader>
+                          <ModalCloseButton />
+                          <ModalBody pb={6}>
+                            <FormControl as="fieldset">
+                              <FormLabel as="legend">Decision</FormLabel>
+                              <RadioGroup defaultValue="1">
+                                <HStack spacing="24px">
+                                  <Radio
+                                    onChange={(e: any) => {
+                                      setapproval(Number(e.target.value));
+                                    }}
+                                    value={"1"}
+                                  >
+                                    Approve
+                                  </Radio>
+                                  <Radio
+                                    onChange={(e: any) => {
+                                      setapproval(Number(e.target.value));
+                                    }}
+                                    value={"2"}
+                                  >
+                                    Not Approve
+                                  </Radio>
+                                </HStack>
+                              </RadioGroup>
+                            </FormControl>
+                          </ModalBody>
+                          <ModalFooter>
+                            <Button
+                              w={"full"}
+                              colorScheme="linkedin"
+                              mr={3}
+                              onClick={() => {
+                                handleDecision(
+                                  applicationNumber,
+                                  name,
+                                  description,
+                                  imageURI,
+                                  country,
+                                  city,
+                                  gpsCoordinates,
+                                  surfaceAreaInMTRs
+                                );
+                              }}
+                            >
+                              Save
+                            </Button>
+                          </ModalFooter>
+                        </ModalContent>
+                      </Modal>
                     </Box>
-                    <Modal
-                      initialFocusRef={initialRef}
-                      finalFocusRef={finalRef}
-                      isOpen={isApproveOpen}
-                      onClose={onApproveClose}
-                    >
-                      <ModalOverlay />
-                      <ModalContent>
-                        <ModalHeader>
-                          Application {applicationNumber}
-                        </ModalHeader>
-                        <ModalCloseButton />
-                        <ModalBody pb={6}>
-                          <FormControl as="fieldset">
-                            <FormLabel as="legend">Decision</FormLabel>
-                            <RadioGroup defaultValue="1">
-                              <HStack spacing="24px">
-                                <Radio
-                                  onChange={(e: any) => {
-                                    setapproval(Number(e.target.value));
-                                  }}
-                                  value={"1"}
-                                >
-                                  Approve
-                                </Radio>
-                                <Radio
-                                  onChange={(e: any) => {
-                                    setapproval(Number(e.target.value));
-                                  }}
-                                  value={"2"}
-                                >
-                                  Not Approve
-                                </Radio>
-                              </HStack>
-                            </RadioGroup>
-                          </FormControl>
-                        </ModalBody>
-                        <ModalFooter>
-                          <Button
-                            w={"full"}
-                            colorScheme="linkedin"
-                            mr={3}
-                            onClick={() => {
-                              handleDecision(
-                                applicationNumber,
-                                name,
-                                description,
-                                imageURI,
-                                country,
-                                city,
-                                gpsCoordinates,
-                                surfaceAreaInMTRs
-                              );
-                            }}
-                          >
-                            Save
-                          </Button>
-                        </ModalFooter>
-                      </ModalContent>
-                    </Modal>
                   </>
                 );
               })

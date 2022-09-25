@@ -1,26 +1,7 @@
 import {
   Box,
   Button,
-  Center,
-  FormControl,
-  FormLabel,
-  Heading,
   Image,
-  Input,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalFooter,
-  ModalHeader,
-  ModalOverlay,
-  NumberDecrementStepper,
-  NumberIncrementStepper,
-  NumberInput,
-  NumberInputField,
-  NumberInputStepper,
-  Stack,
-  Text,
   useDisclosure,
   chakra,
   Flex,
@@ -43,7 +24,7 @@ import { ethers } from "ethers";
 import { GET_USER_FRACTIONALISEDS_WITH_FRACTIONALISEDID } from "../graphql/subgraph";
 import { useQuery } from "@apollo/client";
 import { GoPrimitiveDot } from "react-icons/go";
-function InvestedInItem({ data, amountInvested, key }: any) {
+function InvestedInItem({ refetch, data, amountInvested, key }: any) {
   const [investingInNumberOfFraction, setinvestingInNumberOfFraction] =
     useState(0);
   const { data: signer } = useSigner();
@@ -157,10 +138,12 @@ function InvestedInItem({ data, amountInvested, key }: any) {
   }, [userAddress]);
   async function handleWithdrawInvestment() {
     try {
-      await REIMarketContract.withdrawBeforeFunded(
+      const tx = await REIMarketContract.withdrawBeforeFunded(
         lendingNumber,
         amountInvested
       );
+      await tx.wait();
+      refetch();
     } catch (error) {
       console.log(
         "🚀 ~ file: InvestedInItem.tsx ~ line 162 ~ handleWithdrawInvestment ~ error",
@@ -171,7 +154,11 @@ function InvestedInItem({ data, amountInvested, key }: any) {
   }
   async function handleGetBackInvestmentWithInterest() {
     try {
-      await REIMarketContract.getBackInvestmentWithInterest(lendingNumber);
+      const tx = await REIMarketContract.getBackInvestmentWithInterest(
+        lendingNumber
+      );
+      await tx.wait();
+      refetch();
     } catch (error) {
       toast({ title: "Error: see in console", status: "error" });
       console.log(

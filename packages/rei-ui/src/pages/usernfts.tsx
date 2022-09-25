@@ -151,15 +151,23 @@ const usernfts: NextPage = () => {
   const initialRef = useRef(null);
   const finalRef = useRef(null);
   async function fetchtokendetails(dataArr: any) {
-    const userData = await Promise.all(
-      dataArr.map(async (data: any) => {
-        const tokenData = await fetch(data.tokenURI);
-        const token = await tokenData.json();
-        console.log(token, "NANAN");
-        return { ...token, ...data };
-      })
-    );
-    return userData;
+    try {
+      const userData = await Promise.all(
+        dataArr.map(async (data: any) => {
+          const tokenData = await fetch(data.tokenURI);
+          const token = await tokenData.json();
+          console.log(token, "NANAN");
+          return { ...token, ...data };
+        })
+      );
+      return userData;
+    } catch (err) {
+      console.log(
+        "🚀 ~ file: usernfts.tsx ~ line 157 ~ fetchtokendetails ~ err",
+        err
+      );
+      toast({ title: "Error: see in console", status: "error" });
+    }
   }
   function handleFractionForm(
     event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -178,13 +186,33 @@ const usernfts: NextPage = () => {
         toast({ title: "Put all value", status: "warning" });
         return;
       }
-      await FractionaliserContract.fractionalise(name, symbol, tokenId, amount);
+      const tx = await FractionaliserContract.fractionalise(
+        name,
+        symbol,
+        tokenId,
+        amount
+      );
+      await tx.wait();
+      refetchUserNfts({ address: userAddress?.toLocaleLowerCase() });
+      refetchUserFractionalised({ address: userAddress?.toLocaleLowerCase() });
+      onFractionClose();
+      setfractionForm({
+        name: "",
+        symbol: "",
+        amount: 0,
+      });
     } catch (err) {
       toast({ title: "Error: See in console", status: "error" });
       console.log(
         "🚀 ~ file: usernfts.tsx ~ line 183 ~ handleFraction ~ err",
         err
       );
+      onFractionClose();
+      setfractionForm({
+        name: "",
+        symbol: "",
+        amount: 0,
+      });
     }
   }
   async function isFractionaliserContractApproved() {
@@ -242,6 +270,10 @@ const usernfts: NextPage = () => {
   useEffect(() => {
     isFractionaliserContractApproved();
   }, [userAddress, REIContract]);
+  function refetchAfterApplyingFOrLoan() {
+    refetchUserFractionalised({ address: userAddress?.toLocaleLowerCase() });
+    refetchUserLended({ address: userAddress?.toLocaleLowerCase() });
+  }
   console.log(userTokens, "OKKKK");
   return (
     <Box>
@@ -450,7 +482,13 @@ const usernfts: NextPage = () => {
             <Heading textShadow="2px 2px #0987A0">DID Fractions</Heading>
           ) : (
             userFractionlisedsData?.map((data: any, index: number) => {
-              return <FractionalNFT data={data} key={index} />;
+              return (
+                <FractionalNFT
+                  refetch={refetchAfterApplyingFOrLoan}
+                  data={data}
+                  key={index}
+                />
+              );
             })
           )}
         </Box>
@@ -472,7 +510,17 @@ const usernfts: NextPage = () => {
             rowGap="4"
           >
             {userLendeds?.map((data: any, index: any) => {
-              return <LendedItem data={data} key={index} />;
+              return (
+                <LendedItem
+                  refetch={() => {
+                    refetchUserLended({
+                      address: userAddress?.toLocaleLowerCase(),
+                    });
+                  }}
+                  data={data}
+                  key={index}
+                />
+              );
             })}
           </Box>
         )}
@@ -496,6 +544,11 @@ const usernfts: NextPage = () => {
             {investedIn?.map((data: any, index: any) => {
               return (
                 <InvestedInItem
+                  refetch={() => {
+                    refetchUserInvestedLends({
+                      id: userAddress?.toLocaleLowerCase(),
+                    });
+                  }}
                   data={data.lendedforloan}
                   amountInvested={data.amount}
                   key={index}

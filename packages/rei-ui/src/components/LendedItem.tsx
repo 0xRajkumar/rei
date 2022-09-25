@@ -43,10 +43,8 @@ import { ethers } from "ethers";
 import { GET_USER_FRACTIONALISEDS_WITH_FRACTIONALISEDID } from "../graphql/subgraph";
 import { useQuery } from "@apollo/client";
 import { GoPrimitiveDot } from "react-icons/go";
-function LendedItem({ data, key }: any) {
+function LendedItem({ refetch, data, key }: any) {
   const [isApproved, setisApproved] = useState(false);
-  const [investingInNumberOfFraction, setinvestingInNumberOfFraction] =
-    useState(0);
   const { data: signer } = useSigner();
   const USDTContract = useContract({
     addressOrName: USDTAddress,
@@ -155,6 +153,7 @@ function LendedItem({ data, key }: any) {
     try {
       const repaytx = await REIMarketContract.repay(lendingNumber);
       await repaytx.wait();
+      refetch();
     } catch (err) {
       toast({ title: "Error: seein console", status: "error" });
       console.log(
@@ -167,6 +166,7 @@ function LendedItem({ data, key }: any) {
     try {
       const wltx = await REIMarketContract.withdrawLoan(lendingNumber);
       await wltx.wait();
+      refetch();
     } catch (err) {
       console.log(
         "🚀 ~ file: LendedItem.tsx ~ line 163 ~ withdrawLoan ~ err",

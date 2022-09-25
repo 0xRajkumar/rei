@@ -43,7 +43,7 @@ import { ethers } from "ethers";
 import { GET_USER_FRACTIONALISEDS_WITH_FRACTIONALISEDID } from "../graphql/subgraph";
 import { useQuery } from "@apollo/client";
 import { GoPrimitiveDot } from "react-icons/go";
-function MarketItem({ data, key }: any) {
+function MarketItem({ data, key, refetch }: any) {
   const [investingInNumberOfFraction, setinvestingInNumberOfFraction] =
     useState(0);
   const { data: signer } = useSigner();
@@ -156,15 +156,16 @@ function MarketItem({ data, key }: any) {
         toast({ title: "Fill all value", status: "warning" });
         return;
       }
-
       const investtx = await REIMarketContract.invest(
         lendingNumber,
         investingInNumberOfFraction
       );
       await investtx.wait();
+      refetch();
+      setinvestingInNumberOfFraction(0);
+      onInvestClose();
     } catch (error) {
       toast({ title: "Error: see in console", status: "error" });
-
       console.log(
         "🚀 ~ file: MarketItem.tsx ~ line 157 ~ handleInvest ~ error",
         error
@@ -335,8 +336,10 @@ function MarketItem({ data, key }: any) {
                 </chakra.span>
               </Flex>
             </Box>
-            <Box>
-              <Button onClick={onInvestOpen}>Invest</Button>
+            <Box mt="4">
+              <Button colorScheme="linkedin" w="full" onClick={onInvestOpen}>
+                Invest
+              </Button>
             </Box>
             <Modal
               initialFocusRef={initialRef}
@@ -367,13 +370,19 @@ function MarketItem({ data, key }: any) {
                 </ModalBody>
                 <ModalFooter>
                   {isReiContractApproved ? (
-                    <Button onClick={handleInvest} colorScheme="blue" mr={3}>
+                    <Button
+                      onClick={handleInvest}
+                      colorScheme="linkedin"
+                      w="full"
+                      mr={3}
+                    >
                       Do invest
                     </Button>
                   ) : (
                     <Button
                       onClick={handleREIApprove}
-                      colorScheme="blue"
+                      colorScheme="linkedin"
+                      w="full"
                       mr={3}
                     >
                       First Approve

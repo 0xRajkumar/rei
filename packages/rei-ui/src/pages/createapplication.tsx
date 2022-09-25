@@ -159,6 +159,15 @@ const createapplication: NextPage = () => {
       refetch({ address: userAddress?.toLocaleLowerCase() });
     } catch (err) {
       toast({ title: "Error: See in console", status: "error" });
+      setApplicationForm({
+        name: "",
+        description: "",
+        country: "",
+        city: "",
+        gpsCoordinates: "",
+        surfaceAreaInMTRs: 0,
+      });
+      setimageURI("");
       console.log(err);
     }
   }
@@ -215,6 +224,7 @@ const createapplication: NextPage = () => {
                       <FormControl id="name" isRequired>
                         <FormLabel>Name</FormLabel>
                         <Input
+                          value={applicationForm.name}
                           onChange={handleApplicationForm}
                           name="name"
                           type="text"
@@ -223,6 +233,7 @@ const createapplication: NextPage = () => {
                       <FormControl id="description" isRequired>
                         <FormLabel>Description</FormLabel>
                         <Input
+                          value={applicationForm.description}
                           onChange={handleApplicationForm}
                           name="description"
                           type="text"
@@ -244,6 +255,7 @@ const createapplication: NextPage = () => {
                       <FormControl id="country" isRequired>
                         <FormLabel>Country</FormLabel>
                         <Input
+                          value={applicationForm.country}
                           onChange={handleApplicationForm}
                           name="country"
                           type="text"
@@ -252,6 +264,7 @@ const createapplication: NextPage = () => {
                       <FormControl id="city" isRequired>
                         <FormLabel>City</FormLabel>
                         <Input
+                          value={applicationForm.city}
                           onChange={handleApplicationForm}
                           name="city"
                           type="text"
@@ -260,6 +273,7 @@ const createapplication: NextPage = () => {
                       <FormControl id="gpsCoordinates" isRequired>
                         <FormLabel>GpsCoordinates</FormLabel>
                         <Input
+                          value={applicationForm.gpsCoordinates}
                           onChange={handleApplicationForm}
                           name="gpsCoordinates"
                           type="text"
@@ -268,12 +282,12 @@ const createapplication: NextPage = () => {
                       <FormControl id="surfaceAreaInMTRs" isRequired>
                         <FormLabel>SurfaceAreaInMTRs</FormLabel>
                         <Input
+                          value={applicationForm.surfaceAreaInMTRs}
                           onChange={handleApplicationForm}
                           name="surfaceAreaInMTRs"
                           type="number"
                         />
                       </FormControl>
-
                       <Stack spacing={10} pt={2}>
                         <Button
                           loadingText="Submitting"

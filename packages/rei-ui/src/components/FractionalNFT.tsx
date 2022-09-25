@@ -33,7 +33,7 @@ import {
 } from "../constants/addresses";
 import { ethers } from "ethers";
 import { GoPrimitiveDot } from "react-icons/go";
-function FractionalNFT({ data, key }: any) {
+function FractionalNFT({ refetch, data, key }: any) {
   const [loanForm, setLoanForm] = useState({
     loanAmount: 0,
     interest: 0,
@@ -148,7 +148,11 @@ function FractionalNFT({ data, key }: any) {
         time
       );
       await applytx.wait();
+      refetch();
+      onApplyFormClose();
+      setLoanForm({ loanAmount: 0, interest: 0, time: 0 });
     } catch (err) {
+      setLoanForm({ loanAmount: 0, interest: 0, time: 0 });
       toast({ title: "Error: see in console", status: "error" });
       console.log(
         "🚀 ~ file: FractionalNFT.tsx ~ line 127 ~ handleApplyForLoan ~ err",
