@@ -1,16 +1,7 @@
 {
-  "goerli": {
+  "mumbai": {
     "REI": {
-      "address": "0x451B91b920ef223696F6AA834EA8c1AdCC39Bb4f"
-    },
-    "Approver": {
-      "address": "0x8D545D1516Aa23cAd0cC187c395D8C34390365aD"
-    },
-    "Fractionaliser": {
-      "address": "0x0E9cca3b02CE9E88E0C04c6Ea0ddE27A8364851a"
-    },
-    "REIMarket": {
-      "address": "0x3429C5CBDAB056DFF4A7f70bA1D5D4969C38E374"
+      "address": "0x8C3F3c6557b3023B7dc49C77029de31CBa833270"
     }
   }
 }

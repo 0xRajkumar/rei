@@ -6,7 +6,7 @@ import { GET_LENDED_FOR_LOANS, GET_USER_TOKENS } from "../graphql/subgraph";
 import { REIContractAddress } from "../constants/addresses";
 import REIAbi from "../constants/abis/REI.json";
 import MarketItem from "../components/MarketItem";
-import { Box, Heading } from "@chakra-ui/react";
+import { Box, Container, Heading } from "@chakra-ui/react";
 function market() {
   const [fractionalisedNFTAddress, setfractionalisedNFTAddress] = useState("");
   const { data: signer } = useSigner();
@@ -26,7 +26,7 @@ function market() {
     ? null
     : lendedloans?.lendedForLoans;
   return (
-    <div>
+    <Container maxW="8xl" py={10}>
       <Box
         justifyContent="left"
         display="flex"
@@ -34,9 +34,13 @@ function market() {
         flexWrap="wrap"
         rowGap="4"
       >
-        {loadinglendedloans ? (
-          <Heading as={"h1"} fontSize={"4xl"} textAlign={"center"}>
-            All pending applications
+        {loadinglendedloans || lendedForLoans?.length === 0 ? (
+          <Heading
+            pb="6"
+            fontWeight="extrabold"
+            fontSize={{ base: "3xl", sm: "6xl", md: "6xl", lg: "7xl" }}
+          >
+            {lendedForLoans?.length === 0 ? "No Item" : "Loading Item..."}
           </Heading>
         ) : (
           lendedForLoans?.map((data: any, index: any) => {
@@ -50,7 +54,7 @@ function market() {
           })
         )}
       </Box>
-    </div>
+    </Container>
   );
 }
 

@@ -43,6 +43,7 @@ import { ethers } from "ethers";
 import { GET_USER_FRACTIONALISEDS_WITH_FRACTIONALISEDID } from "../graphql/subgraph";
 import { useQuery } from "@apollo/client";
 import { GoPrimitiveDot } from "react-icons/go";
+import ShowINSName from "./ShowINSName";
 function MarketItem({ data, key, refetch }: any) {
   const [investingInNumberOfFraction, setinvestingInNumberOfFraction] =
     useState(0);
@@ -75,6 +76,8 @@ function MarketItem({ data, key, refetch }: any) {
     fractionalisedNftAddress,
     fractionalisedId,
     Loanee,
+    loanAmountPerFraction,
+    interestPerFractionInPercentage,
   } = data;
   const [tokenDetail, settokenDetail] = useState<any>(null);
   const {
@@ -161,7 +164,7 @@ function MarketItem({ data, key, refetch }: any) {
         investingInNumberOfFraction
       );
       await investtx.wait();
-      refetch();
+      refetch({});
       setinvestingInNumberOfFraction(0);
       onInvestClose();
     } catch (error) {
@@ -172,6 +175,9 @@ function MarketItem({ data, key, refetch }: any) {
       );
     }
   }
+  const loanPerFractionInEther = ethers.utils.formatEther(
+    loanAmountPerFraction ?? ""
+  );
   return (
     <>
       {tokenDetail && (
@@ -200,8 +206,7 @@ function MarketItem({ data, key, refetch }: any) {
                 justifyContent="space-between"
               >
                 <Flex alignItems="center">
-                  <GoPrimitiveDot height="8" />
-                  <Flex alignItems="center" mx="2">
+                  <Flex alignItems="center">
                     <Link fontWeight="bold" color="gray.700">
                       Token Id
                     </Link>
@@ -240,33 +245,11 @@ function MarketItem({ data, key, refetch }: any) {
                 <GoPrimitiveDot height="8" />
                 <Flex alignItems="center" mx="2">
                   <Link fontWeight="bold" color="gray.700">
-                    Loanee
-                  </Link>
-                </Flex>
-                <chakra.span mx={1} fontSize="sm" color="gray.600">
-                  {Loanee}
-                </chakra.span>
-              </Flex>
-              <Flex alignItems="center">
-                <GoPrimitiveDot height="8" />
-                <Flex alignItems="center" mx="2">
-                  <Link fontWeight="bold" color="gray.700">
                     City
                   </Link>
                 </Flex>
                 <chakra.span mx={1} fontSize="sm" color="gray.600">
                   {tokenDetail?.attributes?.City}
-                </chakra.span>
-              </Flex>
-              <Flex alignItems="center">
-                <GoPrimitiveDot height="8" />
-                <Flex alignItems="center" mx="2">
-                  <Link fontWeight="bold" color="gray.700">
-                    lendingNumber
-                  </Link>
-                </Flex>
-                <chakra.span mx={1} fontSize="sm" color="gray.600">
-                  {lendingNumber}
                 </chakra.span>
               </Flex>
               <Flex alignItems="center">
@@ -290,12 +273,56 @@ function MarketItem({ data, key, refetch }: any) {
                 <chakra.span mx={1} fontSize="sm" color="gray.600">
                   {tokenDetail?.attributes?.SurfaceArea}
                 </chakra.span>
+              </Flex>{" "}
+              <Flex alignItems="center">
+                <GoPrimitiveDot height="8" />
+                <Flex alignItems="center" mx="2">
+                  <Link fontWeight="bold" color="gray.700">
+                    Loanee
+                  </Link>
+                </Flex>
+                <chakra.span mx={1} fontSize="sm" color="gray.600">
+                  <ShowINSName userAddress={Loanee} />
+                </chakra.span>
               </Flex>
               <Flex alignItems="center">
                 <GoPrimitiveDot height="8" />
                 <Flex alignItems="center" mx="2">
                   <Link fontWeight="bold" color="gray.700">
-                    fractionalisedId
+                    Amount per fraction
+                  </Link>
+                </Flex>
+                <chakra.span mx={1} fontSize="sm" color="gray.600">
+                  {loanPerFractionInEther} MATIC
+                </chakra.span>
+              </Flex>
+              <Flex alignItems="center">
+                <GoPrimitiveDot height="8" />
+                <Flex alignItems="center" mx="2">
+                  <Link fontWeight="bold" color="gray.700">
+                    Interest in percentage
+                  </Link>
+                </Flex>
+                <chakra.span mx={1} fontSize="sm" color="gray.600">
+                  {interestPerFractionInPercentage}%
+                </chakra.span>
+              </Flex>
+              <Flex alignItems="center">
+                <GoPrimitiveDot height="8" />
+                <Flex alignItems="center" mx="2">
+                  <Link fontWeight="bold" color="gray.700">
+                    Lending number
+                  </Link>
+                </Flex>
+                <chakra.span mx={1} fontSize="sm" color="gray.600">
+                  {lendingNumber}
+                </chakra.span>
+              </Flex>
+              <Flex alignItems="center">
+                <GoPrimitiveDot height="8" />
+                <Flex alignItems="center" mx="2">
+                  <Link fontWeight="bold" color="gray.700">
+                    Fractionlised ID
                   </Link>
                 </Flex>
                 <chakra.span mx={1} fontSize="sm" color="gray.600">
@@ -306,7 +333,7 @@ function MarketItem({ data, key, refetch }: any) {
                 <GoPrimitiveDot height="8" />
                 <Flex alignItems="center" mx="2">
                   <Link fontWeight="bold" color="gray.700">
-                    numberOfFractions
+                    Number of fraction
                   </Link>
                 </Flex>
                 <chakra.span mx={1} fontSize="sm" color="gray.600">
@@ -317,18 +344,18 @@ function MarketItem({ data, key, refetch }: any) {
                 <GoPrimitiveDot height="8" />
                 <Flex alignItems="center" mx="2">
                   <Link fontWeight="bold" color="gray.700">
-                    fractionalisedNftAddress
+                    Fractionalised nft Address
                   </Link>
                 </Flex>
                 <chakra.span mx={1} fontSize="sm" color="gray.600">
-                  {fractionalisedNftAddress}
+                  <ShowINSName userAddress={fractionalisedNftAddress} />
                 </chakra.span>
               </Flex>
               <Flex alignItems="center">
                 <GoPrimitiveDot height="8" />
                 <Flex alignItems="center" mx="2">
                   <Link fontWeight="bold" color="gray.700">
-                    numberOfFractionsInvested
+                    Number of fractions invested
                   </Link>
                 </Flex>
                 <chakra.span mx={1} fontSize="sm" color="gray.600">
@@ -336,7 +363,7 @@ function MarketItem({ data, key, refetch }: any) {
                 </chakra.span>
               </Flex>
             </Box>
-            <Box mt="4">
+            <Box py="4">
               <Button colorScheme="linkedin" w="full" onClick={onInvestOpen}>
                 Invest
               </Button>
@@ -349,7 +376,7 @@ function MarketItem({ data, key, refetch }: any) {
             >
               <ModalOverlay />
               <ModalContent>
-                <ModalHeader>Create your account</ModalHeader>
+                <ModalHeader>Invest</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody pb={6}>
                   <NumberInput

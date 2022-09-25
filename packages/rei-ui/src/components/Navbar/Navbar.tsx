@@ -118,7 +118,6 @@ const Navbar = () => {
               </Modal>
             </>
           )}
-
           <Navigation />
         </HStack>
       </HStack>

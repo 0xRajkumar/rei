@@ -33,6 +33,7 @@ import {
 } from "../constants/addresses";
 import { ethers } from "ethers";
 import { GoPrimitiveDot } from "react-icons/go";
+import ShowINSName from "./ShowINSName";
 function FractionalNFT({ refetch, data, key }: any) {
   const [loanForm, setLoanForm] = useState({
     loanAmount: 0,
@@ -148,7 +149,7 @@ function FractionalNFT({ refetch, data, key }: any) {
         time
       );
       await applytx.wait();
-      refetch();
+      refetch({});
       onApplyFormClose();
       setLoanForm({ loanAmount: 0, interest: 0, time: 0 });
     } catch (err) {
@@ -277,7 +278,7 @@ function FractionalNFT({ refetch, data, key }: any) {
               <GoPrimitiveDot height="8" />
               <Flex alignItems="center" mx="2">
                 <Link fontWeight="bold" color="gray.700">
-                  fractionalisedId
+                  Fractionalised Id
                 </Link>
               </Flex>
               <chakra.span mx={1} fontSize="sm" color="gray.600">
@@ -288,7 +289,7 @@ function FractionalNFT({ refetch, data, key }: any) {
               <GoPrimitiveDot height="8" />
               <Flex alignItems="center" mx="2">
                 <Link fontWeight="bold" color="gray.700">
-                  fractionQuantity
+                  Fraction Quantity
                 </Link>
               </Flex>
               <chakra.span mx={1} fontSize="sm" color="gray.600">
@@ -299,15 +300,15 @@ function FractionalNFT({ refetch, data, key }: any) {
               <GoPrimitiveDot height="8" />
               <Flex alignItems="center" mx="2">
                 <Link fontWeight="bold" color="gray.700">
-                  fractionalisedNftAddress
+                  Fractionalised nft Address
                 </Link>
               </Flex>
               <chakra.span mx={1} fontSize="sm" color="gray.600">
-                {fractionalisedNftAddress}
+                <ShowINSName userAddress={fractionalisedNftAddress} />
               </chakra.span>
             </Flex>
           </Box>
-          <Box>
+          <Box py="4">
             {fractionQuantity > 0 && (
               <>
                 {isREIMarketContractApproves ? (
@@ -339,7 +340,7 @@ function FractionalNFT({ refetch, data, key }: any) {
       >
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Modal Title</ModalHeader>
+          <ModalHeader>Apply for loan</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <FormControl>
@@ -371,7 +372,13 @@ function FractionalNFT({ refetch, data, key }: any) {
             </FormControl>
           </ModalBody>
           <ModalFooter>
-            <Button onClick={handleApplyForLoan}>Apply</Button>
+            <Button
+              w="full"
+              colorScheme="linkedin"
+              onClick={handleApplyForLoan}
+            >
+              Apply
+            </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>

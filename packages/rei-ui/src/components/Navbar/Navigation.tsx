@@ -145,36 +145,37 @@ const DesktopNav = () => {
 const DesktopSubNav = ({ label, href, subLabel }: NavItem) => {
   return (
     <CLink
-      href={href}
       role={"group"}
       display={"block"}
       p={2}
       rounded={"md"}
       _hover={{ bg: useColorModeValue("green.50", "gray.900") }}
     >
-      <Stack direction={"row"} align={"center"}>
-        <Box>
-          <Text
+      <Link href={href ?? "/"}>
+        <Stack direction={"row"} align={"center"}>
+          <Box>
+            <Text
+              transition={"all .3s ease"}
+              _groupHover={{ color: "green.500" }}
+              fontWeight={500}
+            >
+              {label}
+            </Text>
+            <Text fontSize={"sm"}>{subLabel}</Text>
+          </Box>
+          <Flex
             transition={"all .3s ease"}
-            _groupHover={{ color: "green.500" }}
-            fontWeight={500}
+            transform={"translateX(-10px)"}
+            opacity={0}
+            _groupHover={{ opacity: "100%", transform: "translateX(0)" }}
+            justify={"flex-end"}
+            align={"center"}
+            flex={1}
           >
-            {label}
-          </Text>
-          <Text fontSize={"sm"}>{subLabel}</Text>
-        </Box>
-        <Flex
-          transition={"all .3s ease"}
-          transform={"translateX(-10px)"}
-          opacity={0}
-          _groupHover={{ opacity: "100%", transform: "translateX(0)" }}
-          justify={"flex-end"}
-          align={"center"}
-          flex={1}
-        >
-          <Icon color={"green.400"} w={5} h={5} as={FaChevronRight} />
-        </Flex>
-      </Stack>
+            <Icon color={"green.400"} w={5} h={5} as={FaChevronRight} />
+          </Flex>
+        </Stack>
+      </Link>
     </CLink>
   );
 };
@@ -192,6 +193,14 @@ const NAV_ITEMS: Array<NavItem> = [
     href: "/",
   },
   {
+    label: "Dashboard",
+    href: "/usernfts",
+  },
+  {
+    label: "Market",
+    href: "/market",
+  },
+  {
     label: "Applications",
     children: [
       {
@@ -205,15 +214,6 @@ const NAV_ITEMS: Array<NavItem> = [
         href: "/createapplication",
       },
     ],
-  },
-
-  {
-    label: "About",
-    href: "#",
-  },
-  {
-    label: "FAQs",
-    href: "#",
   },
 ];
 

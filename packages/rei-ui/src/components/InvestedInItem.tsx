@@ -24,15 +24,12 @@ import { ethers } from "ethers";
 import { GET_USER_FRACTIONALISEDS_WITH_FRACTIONALISEDID } from "../graphql/subgraph";
 import { useQuery } from "@apollo/client";
 import { GoPrimitiveDot } from "react-icons/go";
+import ShowINSName from "./ShowINSName";
+import LendingStatus from "./LendingStatus";
 function InvestedInItem({ refetch, data, amountInvested, key }: any) {
   const [investingInNumberOfFraction, setinvestingInNumberOfFraction] =
     useState(0);
   const { data: signer } = useSigner();
-  const USDTContract = useContract({
-    addressOrName: USDTAddress,
-    contractInterface: ERC20Abi,
-    signerOrProvider: signer,
-  });
   const {
     status,
     numberOfFractionsInvested,
@@ -41,6 +38,8 @@ function InvestedInItem({ refetch, data, amountInvested, key }: any) {
     fractionalisedNftAddress,
     fractionalisedId,
     Loanee,
+    loanAmountPerFraction,
+    interestPerFractionInPercentage,
   } = data;
   const FractionalisedNFTContract = useContract({
     addressOrName: fractionalisedNftAddress,
@@ -107,7 +106,7 @@ function InvestedInItem({ refetch, data, amountInvested, key }: any) {
 
   async function isREIApprovesFORUSDT() {
     try {
-      const amount = await USDTContract.allowance(
+      const amount = await FractionalisedNFTContract.allowance(
         userAddress,
         REIMarketContractAddress
       );
@@ -158,7 +157,7 @@ function InvestedInItem({ refetch, data, amountInvested, key }: any) {
         lendingNumber
       );
       await tx.wait();
-      refetch();
+      refetch({});
     } catch (error) {
       toast({ title: "Error: see in console", status: "error" });
       console.log(
@@ -167,6 +166,9 @@ function InvestedInItem({ refetch, data, amountInvested, key }: any) {
       );
     }
   }
+  const loanPerFractionInEther = ethers.utils.formatEther(
+    loanAmountPerFraction ?? ""
+  );
   return (
     <>
       {tokenDetail && (
@@ -234,33 +236,11 @@ function InvestedInItem({ refetch, data, amountInvested, key }: any) {
                 <GoPrimitiveDot height="8" />
                 <Flex alignItems="center" mx="2">
                   <Link fontWeight="bold" color="gray.700">
-                    Loanee
-                  </Link>
-                </Flex>
-                <chakra.span mx={1} fontSize="sm" color="gray.600">
-                  {Loanee}
-                </chakra.span>
-              </Flex>
-              <Flex alignItems="center">
-                <GoPrimitiveDot height="8" />
-                <Flex alignItems="center" mx="2">
-                  <Link fontWeight="bold" color="gray.700">
                     City
                   </Link>
                 </Flex>
                 <chakra.span mx={1} fontSize="sm" color="gray.600">
                   {tokenDetail?.attributes?.City}
-                </chakra.span>
-              </Flex>
-              <Flex alignItems="center">
-                <GoPrimitiveDot height="8" />
-                <Flex alignItems="center" mx="2">
-                  <Link fontWeight="bold" color="gray.700">
-                    lendingNumber
-                  </Link>
-                </Flex>
-                <chakra.span mx={1} fontSize="sm" color="gray.600">
-                  {lendingNumber}
                 </chakra.span>
               </Flex>
               <Flex alignItems="center">
@@ -289,7 +269,51 @@ function InvestedInItem({ refetch, data, amountInvested, key }: any) {
                 <GoPrimitiveDot height="8" />
                 <Flex alignItems="center" mx="2">
                   <Link fontWeight="bold" color="gray.700">
-                    fractionalisedId
+                    Loanee
+                  </Link>
+                </Flex>
+                <chakra.span mx={1} fontSize="sm" color="gray.600">
+                  <ShowINSName userAddress={Loanee} />
+                </chakra.span>
+              </Flex>
+              <Flex alignItems="center">
+                <GoPrimitiveDot height="8" />
+                <Flex alignItems="center" mx="2">
+                  <Link fontWeight="bold" color="gray.700">
+                    Amount per fraction
+                  </Link>
+                </Flex>
+                <chakra.span mx={1} fontSize="sm" color="gray.600">
+                  {loanPerFractionInEther} Matic
+                </chakra.span>
+              </Flex>
+              <Flex alignItems="center">
+                <GoPrimitiveDot height="8" />
+                <Flex alignItems="center" mx="2">
+                  <Link fontWeight="bold" color="gray.700">
+                    Interest in percentage
+                  </Link>
+                </Flex>
+                <chakra.span mx={1} fontSize="sm" color="gray.600">
+                  {interestPerFractionInPercentage}
+                </chakra.span>
+              </Flex>
+              <Flex alignItems="center">
+                <GoPrimitiveDot height="8" />
+                <Flex alignItems="center" mx="2">
+                  <Link fontWeight="bold" color="gray.700">
+                    Lending number
+                  </Link>
+                </Flex>
+                <chakra.span mx={1} fontSize="sm" color="gray.600">
+                  {lendingNumber}
+                </chakra.span>
+              </Flex>
+              <Flex alignItems="center">
+                <GoPrimitiveDot height="8" />
+                <Flex alignItems="center" mx="2">
+                  <Link fontWeight="bold" color="gray.700">
+                    Fractionalised Id
                   </Link>
                 </Flex>
                 <chakra.span mx={1} fontSize="sm" color="gray.600">
@@ -300,7 +324,7 @@ function InvestedInItem({ refetch, data, amountInvested, key }: any) {
                 <GoPrimitiveDot height="8" />
                 <Flex alignItems="center" mx="2">
                   <Link fontWeight="bold" color="gray.700">
-                    numberOfFractions
+                    Number of fraction
                   </Link>
                 </Flex>
                 <chakra.span mx={1} fontSize="sm" color="gray.600">
@@ -311,18 +335,18 @@ function InvestedInItem({ refetch, data, amountInvested, key }: any) {
                 <GoPrimitiveDot height="8" />
                 <Flex alignItems="center" mx="2">
                   <Link fontWeight="bold" color="gray.700">
-                    fractionalisedNftAddress
+                    Fractionalised nft Address
                   </Link>
                 </Flex>
                 <chakra.span mx={1} fontSize="sm" color="gray.600">
-                  {fractionalisedNftAddress}
+                  <ShowINSName userAddress={fractionalisedNftAddress} />
                 </chakra.span>
               </Flex>
               <Flex alignItems="center">
                 <GoPrimitiveDot height="8" />
                 <Flex alignItems="center" mx="2">
                   <Link fontWeight="bold" color="gray.700">
-                    numberOfFractionsInvested
+                    Number of fraction invested
                   </Link>
                 </Flex>
                 <chakra.span mx={1} fontSize="sm" color="gray.600">
@@ -333,22 +357,23 @@ function InvestedInItem({ refetch, data, amountInvested, key }: any) {
                 <GoPrimitiveDot height="8" />
                 <Flex alignItems="center" mx="2">
                   <Link fontWeight="bold" color="gray.700">
-                    status
+                    Amount Invested by you
                   </Link>
                 </Flex>
                 <chakra.span mx={1} fontSize="sm" color="gray.600">
-                  {status}
+                  {amountInvested}
                 </chakra.span>
               </Flex>
               <Flex alignItems="center">
                 <GoPrimitiveDot height="8" />
                 <Flex alignItems="center" mx="2">
                   <Link fontWeight="bold" color="gray.700">
-                    amountInvested
+                    Status
                   </Link>
                 </Flex>
                 <chakra.span mx={1} fontSize="sm" color="gray.600">
-                  {amountInvested}
+                  <LendingStatus status={status} />
+                  {status}
                 </chakra.span>
               </Flex>
             </Box>

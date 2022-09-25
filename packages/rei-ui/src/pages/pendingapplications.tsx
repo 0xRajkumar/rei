@@ -29,6 +29,7 @@ import {
   FormHelperText,
   chakra,
   Flex,
+  Container,
 } from "@chakra-ui/react";
 import { GoPrimitiveDot } from "react-icons/go";
 import type { NextPage } from "next";
@@ -43,6 +44,7 @@ import {
 import { ApproverContractAddress } from "../constants/addresses";
 import ApplicationStatus from "../components/ApplicationStatus";
 import { useToast } from "@chakra-ui/react";
+import ShowINSName from "../components/ShowINSName";
 
 const pendingApplication: NextPage = () => {
   /*
@@ -145,7 +147,7 @@ const pendingApplication: NextPage = () => {
         `${cid}/${applicationNumber}.json`
       );
       await tx.wait();
-      refetchpendingUsers();
+      refetchpendingUsers({});
       setapproval(1);
       onApproveClose();
     } catch (err) {
@@ -154,7 +156,7 @@ const pendingApplication: NextPage = () => {
     }
   }
   return (
-    <>
+    <Container maxW="8xl" py={10}>
       {loadingpendingUsers ? (
         <Box>loadingpendingUsers</Box>
       ) : (
@@ -172,7 +174,12 @@ const pendingApplication: NextPage = () => {
             rowGap="4"
           >
             {loadingpendingUsers ? (
-              <Heading textShadow="2px 2px #0987A0">Loading Data</Heading>
+              <Heading
+                fontWeight="extrabold"
+                fontSize={{ base: "3xl", sm: "6xl", md: "6xl", lg: "7xl" }}
+              >
+                Loading...
+              </Heading>
             ) : (
               applications?.map((data: any, index: number) => {
                 const {
@@ -295,7 +302,7 @@ const pendingApplication: NextPage = () => {
                               </Link>
                             </Flex>
                             <chakra.span mx={1} fontSize="sm" color="gray.600">
-                              {applicantAddress}
+                              <ShowINSName userAddress={applicantAddress} />
                             </chakra.span>
                           </Flex>
                         </Box>
@@ -379,7 +386,7 @@ const pendingApplication: NextPage = () => {
           </Box>
         </>
       )}
-    </>
+    </Container>
   );
 };
 

@@ -103,6 +103,8 @@ export const GET_LENDED_FOR_LOANS = gql`
       id
       lendingNumber
       fractionalisedId
+      loanAmountPerFraction
+      interestPerFractionInPercentage
       fractionalisedNftAddress
       numberOfFractions
       numberOfFractionsInvested

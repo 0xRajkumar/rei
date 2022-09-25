@@ -1,12 +1,22 @@
-import { Center, Link, Heading, Text, Divider, VStack } from "@chakra-ui/react";
+import {
+  Center,
+  Link,
+  Heading,
+  Text,
+  Divider,
+  VStack,
+  Container,
+} from "@chakra-ui/react";
 import type { NextPage } from "next";
+import HeroSection from "../components/Home";
+import OverviewSection from "../components/OverviewSection";
+
 const Home: NextPage = () => {
   return (
-    <Center h="calc(100vh - 131px)">
-      <VStack>
-        <Heading textShadow="2px 2px #0987A0">REI</Heading>
-      </VStack>
-    </Center>
+    <Container maxW="8xl" py={10}>
+      <HeroSection />
+      <OverviewSection />
+    </Container>
   );
 };
 

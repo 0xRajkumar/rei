@@ -37,6 +37,7 @@ import {
   useDisclosure,
   chakra,
   useToast,
+  Container,
 } from "@chakra-ui/react";
 import type { NextPage } from "next";
 import { useQuery, gql } from "@apollo/client";
@@ -276,289 +277,331 @@ const usernfts: NextPage = () => {
   }
   console.log(userTokens, "OKKKK");
   return (
-    <Box>
+    <Container maxW="8xl" py={10}>
       <Box>
-        <Heading>Your Created Applications</Heading>
-        <Box
-          justifyContent="left"
-          display="flex"
-          flexDirection="row"
-          flexWrap="wrap"
-          rowGap="4"
-        >
-          {loadingUserNfts ? (
-            <Heading textShadow="2px 2px #0987A0">
-              loadingUserNfts Data {userAddress}
-            </Heading>
-          ) : (
-            userTokens?.map((data: any, index: number) => {
-              const {
-                image,
-                tokenID,
-                name,
-                description,
-                attributes: { SurfaceArea, GPSCoordinates, City, Country },
-              } = data;
-              return (
-                <Box
-                  mx="2"
-                  rounded="lg"
-                  flex="1"
-                  shadow="md"
-                  bg="white"
-                  maxW="2xl"
-                  mt="0"
-                >
-                  <Image
-                    roundedTop="lg"
-                    w="full"
-                    h={64}
-                    fit="cover"
-                    src={image}
-                    alt="Article"
-                  />
-                  <Box p={6}>
-                    <Box>
-                      <Box
-                        display="flex"
-                        flexDirection="row"
-                        justifyContent="space-between"
-                      >
-                        <Flex alignItems="center">
+        <Box py="6">
+          <Heading
+            pb="6"
+            fontWeight="extrabold"
+            fontSize={{ base: "3xl", sm: "6xl", md: "6xl", lg: "7xl" }}
+          >
+            NFT's
+          </Heading>
+          <Box
+            justifyContent="left"
+            display="flex"
+            flexDirection="row"
+            flexWrap="wrap"
+            rowGap="4"
+          >
+            {loadingUserNfts || userTokens?.length == 0 ? (
+              <Heading
+                fontWeight="extrabold"
+                fontSize={{ base: "3xl", sm: "6xl", md: "6xl", lg: "7xl" }}
+              >
+                {userTokens?.length === 0 ? "NO NFT's" : "Loading NFT's..."}
+              </Heading>
+            ) : (
+              userTokens?.map((data: any, index: number) => {
+                const {
+                  image,
+                  tokenID,
+                  name,
+                  description,
+                  attributes: { SurfaceArea, GPSCoordinates, City, Country },
+                } = data;
+                return (
+                  <Box
+                    mx="2"
+                    rounded="lg"
+                    flex="1"
+                    shadow="md"
+                    bg="white"
+                    maxW="2xl"
+                    mt="0"
+                  >
+                    <Image
+                      roundedTop="lg"
+                      w="full"
+                      h={64}
+                      fit="cover"
+                      src={image}
+                      alt="Article"
+                    />
+                    <Box p={6}>
+                      <Box>
+                        <Box
+                          display="flex"
+                          flexDirection="row"
+                          justifyContent="space-between"
+                        >
                           <Flex alignItems="center">
+                            <Flex alignItems="center">
+                              <Link fontWeight="bold" color="gray.700">
+                                Token Id
+                              </Link>
+                            </Flex>
+                            <chakra.span mx={1} fontSize="sm" color="gray.600">
+                              {tokenID}
+                            </chakra.span>
+                          </Flex>
+                        </Box>
+                        <chakra.span
+                          display="block"
+                          color="gray.800"
+                          fontWeight="bold"
+                          fontSize="2xl"
+                          mt={2}
+                        >
+                          {name}
+                        </chakra.span>
+                        <chakra.p mt={2} fontSize="sm" color="gray.600">
+                          {description}
+                        </chakra.p>
+                      </Box>
+                      <Box mt={4}>
+                        <Flex alignItems="center">
+                          <GoPrimitiveDot height="8" />
+                          <Flex alignItems="center" mx="2">
                             <Link fontWeight="bold" color="gray.700">
-                              Token Id
+                              Country
                             </Link>
                           </Flex>
                           <chakra.span mx={1} fontSize="sm" color="gray.600">
-                            {tokenID}
+                            {Country}
+                          </chakra.span>
+                        </Flex>
+                        <Flex alignItems="center">
+                          <GoPrimitiveDot height="8" />
+                          <Flex alignItems="center" mx="2">
+                            <Link fontWeight="bold" color="gray.700">
+                              City
+                            </Link>
+                          </Flex>
+                          <chakra.span mx={1} fontSize="sm" color="gray.600">
+                            {City}
+                          </chakra.span>
+                        </Flex>
+                        <Flex alignItems="center">
+                          <GoPrimitiveDot height="8" />
+                          <Flex alignItems="center" mx="2">
+                            <Link fontWeight="bold" color="gray.700">
+                              Location
+                            </Link>
+                          </Flex>
+                          <chakra.span mx={1} fontSize="sm" color="gray.600">
+                            {GPSCoordinates}
+                          </chakra.span>
+                        </Flex>
+                        <Flex alignItems="center">
+                          <GoPrimitiveDot height="8" />
+                          <Flex alignItems="center" mx="2">
+                            <Link fontWeight="bold" color="gray.700">
+                              Surface area
+                            </Link>
+                          </Flex>
+                          <chakra.span mx={1} fontSize="sm" color="gray.600">
+                            {SurfaceArea}
                           </chakra.span>
                         </Flex>
                       </Box>
-                      <chakra.span
-                        display="block"
-                        color="gray.800"
-                        fontWeight="bold"
-                        fontSize="2xl"
-                        mt={2}
-                      >
-                        {name}
-                      </chakra.span>
-                      <chakra.p mt={2} fontSize="sm" color="gray.600">
-                        {description}
-                      </chakra.p>
+                      <Box py="4">
+                        {isFractionaliserApproved ? (
+                          <Button
+                            colorScheme="linkedin"
+                            w="full"
+                            onClick={onFractionOpen}
+                          >
+                            Do fractions
+                          </Button>
+                        ) : (
+                          <Button
+                            colorScheme="linkedin"
+                            w="full"
+                            onClick={approveFractionaliserContract}
+                          >
+                            First Approve
+                          </Button>
+                        )}
+                      </Box>
                     </Box>
-                    <Box mt={4}>
-                      <Flex alignItems="center">
-                        <GoPrimitiveDot height="8" />
-                        <Flex alignItems="center" mx="2">
-                          <Link fontWeight="bold" color="gray.700">
-                            Country
-                          </Link>
-                        </Flex>
-                        <chakra.span mx={1} fontSize="sm" color="gray.600">
-                          {Country}
-                        </chakra.span>
-                      </Flex>
-                      <Flex alignItems="center">
-                        <GoPrimitiveDot height="8" />
-                        <Flex alignItems="center" mx="2">
-                          <Link fontWeight="bold" color="gray.700">
-                            City
-                          </Link>
-                        </Flex>
-                        <chakra.span mx={1} fontSize="sm" color="gray.600">
-                          {City}
-                        </chakra.span>
-                      </Flex>
-                      <Flex alignItems="center">
-                        <GoPrimitiveDot height="8" />
-                        <Flex alignItems="center" mx="2">
-                          <Link fontWeight="bold" color="gray.700">
-                            Location
-                          </Link>
-                        </Flex>
-                        <chakra.span mx={1} fontSize="sm" color="gray.600">
-                          {GPSCoordinates}
-                        </chakra.span>
-                      </Flex>
-                      <Flex alignItems="center">
-                        <GoPrimitiveDot height="8" />
-                        <Flex alignItems="center" mx="2">
-                          <Link fontWeight="bold" color="gray.700">
-                            Surface area
-                          </Link>
-                        </Flex>
-                        <chakra.span mx={1} fontSize="sm" color="gray.600">
-                          {SurfaceArea}
-                        </chakra.span>
-                      </Flex>
-                    </Box>
-                    <Box py="4">
-                      {isFractionaliserApproved ? (
-                        <Button
-                          colorScheme="linkedin"
-                          w="full"
-                          onClick={onFractionOpen}
-                        >
-                          Do fractions
-                        </Button>
-                      ) : (
-                        <Button
-                          colorScheme="linkedin"
-                          w="full"
-                          onClick={approveFractionaliserContract}
-                        >
-                          First Approve
-                        </Button>
-                      )}
-                    </Box>
+                    <Modal
+                      initialFocusRef={initialRef}
+                      finalFocusRef={finalRef}
+                      isOpen={isFractionOpen}
+                      onClose={onFractionClose}
+                    >
+                      <ModalOverlay />
+                      <ModalContent>
+                        <ModalHeader>Token ID {tokenID}</ModalHeader>
+                        <ModalCloseButton />
+                        <ModalBody pb={6}>
+                          <FormControl isRequired>
+                            <FormLabel>Name</FormLabel>
+                            <Input
+                              type="string"
+                              name="name"
+                              onChange={handleFractionForm}
+                              placeholder="Name"
+                            />
+                            <FormLabel>Symbol</FormLabel>
+                            <Input
+                              type="text"
+                              onChange={handleFractionForm}
+                              name="symbol"
+                              placeholder="Symbol"
+                            />
+                            <FormLabel>Amount</FormLabel>
+                            <Input
+                              type="number"
+                              onChange={handleFractionForm}
+                              name="amount"
+                              placeholder="Amount"
+                            />
+                          </FormControl>
+                        </ModalBody>
+                        <ModalFooter>
+                          <Button
+                            w={"full"}
+                            colorScheme="linkedin"
+                            mr={3}
+                            onClick={() => {
+                              handleFraction(tokenID);
+                            }}
+                          >
+                            Do fractions
+                          </Button>
+                        </ModalFooter>
+                      </ModalContent>
+                    </Modal>
                   </Box>
-                  <Modal
-                    initialFocusRef={initialRef}
-                    finalFocusRef={finalRef}
-                    isOpen={isFractionOpen}
-                    onClose={onFractionClose}
-                  >
-                    <ModalOverlay />
-                    <ModalContent>
-                      <ModalHeader>Token ID {tokenID}</ModalHeader>
-                      <ModalCloseButton />
-                      <ModalBody pb={6}>
-                        <FormControl isRequired>
-                          <FormLabel>Name</FormLabel>
-                          <Input
-                            type="string"
-                            name="name"
-                            onChange={handleFractionForm}
-                            placeholder="Name"
-                          />
-                          <FormLabel>Symbol</FormLabel>
-                          <Input
-                            type="text"
-                            onChange={handleFractionForm}
-                            name="symbol"
-                            placeholder="Symbol"
-                          />
-                          <FormLabel>Amount</FormLabel>
-                          <Input
-                            type="number"
-                            onChange={handleFractionForm}
-                            name="amount"
-                            placeholder="Amount"
-                          />
-                        </FormControl>
-                      </ModalBody>
-                      <ModalFooter>
-                        <Button
-                          w={"full"}
-                          colorScheme="linkedin"
-                          mr={3}
-                          onClick={() => {
-                            handleFraction(tokenID);
-                          }}
-                        >
-                          Do fractions
-                        </Button>
-                      </ModalFooter>
-                    </ModalContent>
-                  </Modal>
-                </Box>
-              );
-            })
-          )}
+                );
+              })
+            )}
+          </Box>
         </Box>
-      </Box>
-      <Box>
-        <Heading>Your Frationalised NFTs</Heading>
-        <Box
-          justifyContent="left"
-          display="flex"
-          flexDirection="row"
-          flexWrap="wrap"
-          rowGap="4"
-        >
-          {loadingUserFractionalised ? (
-            <Heading textShadow="2px 2px #0987A0">DID Fractions</Heading>
+        <Box>
+          <Heading
+            pb="6"
+            fontWeight="extrabold"
+            fontSize={{ base: "3xl", sm: "6xl", md: "6xl", lg: "7xl" }}
+          >
+            Fractionalised NFT's
+          </Heading>
+          <Box
+            justifyContent="left"
+            display="flex"
+            flexDirection="row"
+            flexWrap="wrap"
+            rowGap="4"
+          >
+            {loadingUserFractionalised ||
+            userFractionlisedsData?.length === 0 ? (
+              <Heading
+                pb="6"
+                fontWeight="extrabold"
+                fontSize={{ base: "3xl", sm: "6xl", md: "6xl", lg: "7xl" }}
+              >
+                {userFractionlisedsData?.length === 0
+                  ? "No Fractionalised NFT's"
+                  : "Loading Fractionalised NFT's..."}
+              </Heading>
+            ) : (
+              userFractionlisedsData?.map((data: any, index: number) => {
+                return (
+                  <FractionalNFT
+                    refetch={refetchAfterApplyingFOrLoan}
+                    data={data}
+                    key={index}
+                  />
+                );
+              })
+            )}
+          </Box>
+        </Box>
+        <Box py="8">
+          <Heading
+            pb="6"
+            fontWeight="extrabold"
+            fontSize={{ base: "3xl", sm: "6xl", md: "6xl", lg: "7xl" }}
+          >
+            Your Collateral
+          </Heading>
+          {loadingUserLended || userLendeds?.length === 0 ? (
+            <Heading
+              pb="6"
+              fontWeight="extrabold"
+              fontSize={{ base: "3xl", sm: "6xl", md: "6xl", lg: "7xl" }}
+            >
+              {userLendeds?.length === 0 ? "No Lended" : "Loading"}
+            </Heading>
           ) : (
-            userFractionlisedsData?.map((data: any, index: number) => {
-              return (
-                <FractionalNFT
-                  refetch={refetchAfterApplyingFOrLoan}
-                  data={data}
-                  key={index}
-                />
-              );
-            })
+            <Box
+              justifyContent="left"
+              display="flex"
+              flexDirection="row"
+              flexWrap="wrap"
+              rowGap="4"
+            >
+              {userLendeds?.map((data: any, index: any) => {
+                return (
+                  <LendedItem
+                    refetch={() => {
+                      refetchUserLended({
+                        address: userAddress?.toLocaleLowerCase(),
+                      });
+                    }}
+                    data={data}
+                    key={index}
+                  />
+                );
+              })}
+            </Box>
           )}
         </Box>
-      </Box>
-      <Box>
-        <Heading as={"h1"} fontSize={"4xl"} textAlign={"center"}>
-          Lended For Loans
-        </Heading>
-        {loadingUserLended ? (
-          <Heading as={"h1"} fontSize={"4xl"} textAlign={"center"}>
-            loadingUserLended
-          </Heading>
-        ) : (
-          <Box
-            justifyContent="left"
-            display="flex"
-            flexDirection="row"
-            flexWrap="wrap"
-            rowGap="4"
+        <Box>
+          <Heading
+            pb="6"
+            fontWeight="extrabold"
+            fontSize={{ base: "3xl", sm: "6xl", md: "6xl", lg: "7xl" }}
           >
-            {userLendeds?.map((data: any, index: any) => {
-              return (
-                <LendedItem
-                  refetch={() => {
-                    refetchUserLended({
-                      address: userAddress?.toLocaleLowerCase(),
-                    });
-                  }}
-                  data={data}
-                  key={index}
-                />
-              );
-            })}
-          </Box>
-        )}
-      </Box>
-      <Box>
-        <Heading as={"h1"} fontSize={"4xl"} textAlign={"center"}>
-          Invested IN
-        </Heading>
-        {loadingUserInvestedLends ? (
-          <Heading as={"h1"} fontSize={"4xl"} textAlign={"center"}>
-            loadingUserInvestedLends
+            Invested IN
           </Heading>
-        ) : (
-          <Box
-            justifyContent="left"
-            display="flex"
-            flexDirection="row"
-            flexWrap="wrap"
-            rowGap="4"
-          >
-            {investedIn?.map((data: any, index: any) => {
-              return (
-                <InvestedInItem
-                  refetch={() => {
-                    refetchUserInvestedLends({
-                      id: userAddress?.toLocaleLowerCase(),
-                    });
-                  }}
-                  data={data.lendedforloan}
-                  amountInvested={data.amount}
-                  key={index}
-                />
-              );
-            })}
-          </Box>
-        )}
-      </Box>
-    </Box>
+          {loadingUserInvestedLends || investedIn?.length === 0 ? (
+            <Heading
+              pb="6"
+              fontWeight="extrabold"
+              fontSize={{ base: "3xl", sm: "6xl", md: "6xl", lg: "7xl" }}
+            >
+              {investedIn?.length === 0 ? "Not invested" : "Loading..."}
+            </Heading>
+          ) : (
+            <Box
+              justifyContent="left"
+              display="flex"
+              flexDirection="row"
+              flexWrap="wrap"
+              rowGap="4"
+            >
+              {investedIn?.map((data: any, index: any) => {
+                return (
+                  <InvestedInItem
+                    refetch={() => {
+                      refetchUserInvestedLends({
+                        id: userAddress?.toLocaleLowerCase(),
+                      });
+                    }}
+                    data={data.lendedforloan}
+                    amountInvested={data.amount}
+                    key={index}
+                  />
+                );
+              })}
+            </Box>
+          )}
+        </Box>
+      </Box>{" "}
+    </Container>
   );
 };
 

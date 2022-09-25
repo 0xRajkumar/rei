@@ -25,6 +25,7 @@ import {
   TabPanels,
   TabPanel,
   useToast,
+  Container,
 } from "@chakra-ui/react";
 import type { NextPage } from "next";
 import { useQuery, gql } from "@apollo/client";
@@ -171,7 +172,6 @@ const createapplication: NextPage = () => {
       console.log(err);
     }
   }
-
   useEffect(() => {
     if (userAddress !== undefined) {
       refetch({ address: userAddress.toLocaleLowerCase() });
@@ -179,17 +179,17 @@ const createapplication: NextPage = () => {
   }, [userAddress]);
   const applications = loading ? null : createdByUser?.users[0]?.applications;
   return (
-    <Box>
+    <Container maxW="8xl" py={10}>
       <HStack my={"4"} justify={"center"}>
         <Heading as={"h1"} fontSize={"4xl"} textAlign={"center"}>
-          Apply to list your properties
+          Apply to create your REI NFT
         </Heading>
       </HStack>
 
       <Tabs mt={"4em"} isFitted variant="enclosed">
         <TabList mb="1em">
           <Tab fontSize={"2xl"}>Create a new application</Tab>
-          <Tab fontSize={"2xl"}>All created applications</Tab>
+          <Tab fontSize={"2xl"}>See previous application</Tab>
         </TabList>
         <TabPanels>
           <TabPanel>
@@ -474,7 +474,7 @@ const createapplication: NextPage = () => {
           </TabPanel>
         </TabPanels>
       </Tabs>
-    </Box>
+    </Container>
   );
 };
 

@@ -22,7 +22,7 @@ import {
 } from "@apollo/client";
 
 const { chains, provider, webSocketProvider } = configureChains(
-  [chain.polygon],
+  [chain.polygonMumbai],
   [publicProvider()]
 );
 const client = createClient({
@@ -40,7 +40,7 @@ const client = createClient({
   webSocketProvider,
 });
 const clientApollo = new ApolloClient({
-  uri: "https://api.studio.thegraph.com/query/34823/reitesting1/.170",
+  uri: "https://api.thegraph.com/subgraphs/name/0xrajkumar/rei",
   cache: new InMemoryCache(),
 });
 function MyApp({ Component, pageProps }: AppProps) {
