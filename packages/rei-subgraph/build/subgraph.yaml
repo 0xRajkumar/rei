@@ -6,9 +6,9 @@ dataSources:
     name: REI
     network: mumbai
     source:
-      address: "0x8C3F3c6557b3023B7dc49C77029de31CBa833270"
+      address: "0xba4c7F3da445aC27f006962AdeC680A7Ec2dD2E1"
       abi: REI
-      startBlock: 28288452
+      startBlock: 28291543
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -27,9 +27,9 @@ dataSources:
     name: Approver
     network: mumbai
     source:
-      address: "0x82a131222724F5c33A1BE6d7Be6a6B1F5Cc3D5ff"
+      address: "0xAB79C023FF136E5D62514129650D9b79EE7454e1"
       abi: Approver
-      startBlock: 28288452
+      startBlock: 28291543
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -54,9 +54,9 @@ dataSources:
     name: Fractionaliser
     network: mumbai
     source:
-      address: "0x15173eDCED712411b0418CDcdf8ce8933Ff8BA1a"
+      address: "0xcb95F0b98eC6ef2A1eC1A676914D8FB1444A03FE"
       abi: Fractionaliser
-      startBlock: 28288452
+      startBlock: 28291543
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -78,9 +78,9 @@ dataSources:
     name: REIMarket
     network: mumbai
     source:
-      address: "0xD2bc7171aDfba97CDAD0cF400c9c16E9e187E9e8"
+      address: "0x471d3aFbd5193bA6AeF5376b06Df77A95367595a"
       abi: REIMarket
-      startBlock: 28288452
+      startBlock: 28291543
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6

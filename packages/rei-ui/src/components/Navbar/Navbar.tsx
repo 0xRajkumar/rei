@@ -92,6 +92,7 @@ const Navbar = () => {
                             <Button
                               disabled={!connector.ready}
                               onClick={() => connect({ connector })}
+                              w="full"
                               colorScheme="teal"
                               variant="ghost"
                             >

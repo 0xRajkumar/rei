@@ -1,8 +1,8 @@
-export const REIContractAddress = "0x8C3F3c6557b3023B7dc49C77029de31CBa833270";
+export const REIContractAddress = "0xba4c7F3da445aC27f006962AdeC680A7Ec2dD2E1";
 export const ApproverContractAddress =
-  "0x82a131222724F5c33A1BE6d7Be6a6B1F5Cc3D5ff";
+  "0xAB79C023FF136E5D62514129650D9b79EE7454e1";
 export const FractionaliserContractAddress =
-  "0x15173eDCED712411b0418CDcdf8ce8933Ff8BA1a";
+  "0xcb95F0b98eC6ef2A1eC1A676914D8FB1444A03FE";
 export const REIMarketContractAddress =
-  "0xD2bc7171aDfba97CDAD0cF400c9c16E9e187E9e8";
-export const USDTAddress = "0x9da9f8F8207556489CF0247db38Be889A93df3c1";
+  "0x471d3aFbd5193bA6AeF5376b06Df77A95367595a";
+export const USDTAddress = "0x09C51EC0646c143975cEd8A3D3684cebE09f0E33";

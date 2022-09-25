@@ -86,9 +86,6 @@ const pendingApplication: NextPage = () => {
       refetchApproverAccess({ address: userAddress.toLocaleLowerCase() });
     }
   }, [userAddress]);
-  console.log(
-    loadingApproverAccess ? "" : ApproverAccess?.approverAccesses[0]?.bool
-  );
   const applications = pendingUsers?.withStatuses[0]?.applications;
   const access = loadingApproverAccess
     ? null
@@ -140,7 +137,6 @@ const pendingApplication: NextPage = () => {
       const buffer = Buffer.from(JSON.stringify(nft));
       const files = [new File([buffer], `${applicationNumber}.json`)];
       const cid = await web3storage.put(files);
-      console.log("🚀 ~ file: pendingapplications.tsx ~ line 137 ~ cid", cid);
       const tx = await ApproverContract.applicationDecision(
         applicationNumber,
         approval,

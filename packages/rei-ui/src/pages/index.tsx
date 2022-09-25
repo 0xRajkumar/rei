@@ -1,12 +1,4 @@
-import {
-  Center,
-  Link,
-  Heading,
-  Text,
-  Divider,
-  VStack,
-  Container,
-} from "@chakra-ui/react";
+import { Container } from "@chakra-ui/react";
 import type { NextPage } from "next";
 import HeroSection from "../components/Home";
 import OverviewSection from "../components/OverviewSection";

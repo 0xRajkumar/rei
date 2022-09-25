@@ -115,11 +115,6 @@ const usernfts: NextPage = () => {
   const investedIn = loadingUserInvestedLends
     ? null
     : UserInvestedLends?.invester?.lendedforlaons;
-  console.log(
-    loadingUserInvestedLends
-      ? "None"
-      : UserInvestedLends?.invester?.lendedforlaons
-  );
   useEffect(() => {
     if (userAddress !== undefined) {
       refetchUserNfts({ address: userAddress?.toLocaleLowerCase() });
@@ -157,7 +152,6 @@ const usernfts: NextPage = () => {
         dataArr.map(async (data: any) => {
           const tokenData = await fetch(data.tokenURI);
           const token = await tokenData.json();
-          console.log(token, "NANAN");
           return { ...token, ...data };
         })
       );
@@ -275,7 +269,6 @@ const usernfts: NextPage = () => {
     refetchUserFractionalised({ address: userAddress?.toLocaleLowerCase() });
     refetchUserLended({ address: userAddress?.toLocaleLowerCase() });
   }
-  console.log(userTokens, "OKKKK");
   return (
     <Container maxW="8xl" py={10}>
       <Box>

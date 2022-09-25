@@ -79,10 +79,10 @@ const createapplication: NextPage = () => {
       return { ...preData, [name]: value };
     });
   }
+
   const key: any =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDNkNWIxODg4MGZCRDNlODFmMThjMTgwMTUxRUJhMzU0RERCNzk2MDQiLCJpc3MiOiJ3ZWIzLXN0b3JhZ2UiLCJpYXQiOjE2NjM3NzYwNTYzNTAsIm5hbWUiOiJSRUkifQ.MCkF8eYXgLAgMLVbLwOeabvEUrltjkXD5Vw81RCfsGY";
   const web3storage = new Web3Storage({ token: key });
-  console.log(applicationForm);
 
   const toast = useToast();
   async function handleImage(e: any) {
