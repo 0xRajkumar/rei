@@ -22,6 +22,10 @@ import {
   Stack,
   Text,
   useDisclosure,
+  chakra,
+  Flex,
+  Link,
+  useToast,
 } from "@chakra-ui/react";
 import ERC20Abi from "../constants/abis/ERC20.json";
 import React, { useState, useEffect } from "react";
@@ -38,6 +42,7 @@ import {
 import { ethers } from "ethers";
 import { GET_USER_FRACTIONALISEDS_WITH_FRACTIONALISEDID } from "../graphql/subgraph";
 import { useQuery } from "@apollo/client";
+import { GoPrimitiveDot } from "react-icons/go";
 function InvestedInItem({ data, amountInvested, key }: any) {
   const [investingInNumberOfFraction, setinvestingInNumberOfFraction] =
     useState(0);
@@ -87,32 +92,56 @@ function InvestedInItem({ data, amountInvested, key }: any) {
       id: data.fractionalisedId,
     },
   });
-
+  const toast = useToast();
   async function fetchtokendetails(data: any) {
-    const tokenData = await fetch(data.tokenURI);
-    const tokenDatainJson = await tokenData.json();
-    settokenDetail({ ...tokenDatainJson, tokenId: data.tokenId });
+    try {
+      const tokenData = await fetch(data.tokenURI);
+      const tokenDatainJson = await tokenData.json();
+      settokenDetail({ ...tokenDatainJson, tokenId: data.tokenId });
+    } catch (error) {
+      toast({ title: "Error: see in console", status: "error" });
+      console.log(
+        "🚀 ~ file: InvestedInItem.tsx ~ line 99 ~ fetchtokendetails ~ error",
+        error
+      );
+    }
   }
 
   async function handleREIApprove() {
-    const approvetx = await FractionalisedNFTContract.approve(
-      REIMarketContractAddress,
-      "115792089237316195423570985008687907853269984665640564039457584007913129639935"
-    );
-    await approvetx.wait();
-    setisReiContractApproved(true);
+    try {
+      const approvetx = await FractionalisedNFTContract.approve(
+        REIMarketContractAddress,
+        "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      );
+      await approvetx.wait();
+      setisReiContractApproved(true);
+    } catch (error) {
+      toast({ title: "Error: see in console", status: "error" });
+      console.log(
+        "🚀 ~ file: InvestedInItem.tsx ~ line 114 ~ handleREIApprove ~ error",
+        error
+      );
+    }
   }
 
   async function isREIApprovesFORUSDT() {
-    const amount = await USDTContract.allowance(
-      userAddress,
-      REIMarketContractAddress
-    );
-    if (
-      amount.toString() ==
-      "115792089237316195423570985008687907853269984665640564039457584007913129639935"
-    ) {
-      setisReiContractApproved(true);
+    try {
+      const amount = await USDTContract.allowance(
+        userAddress,
+        REIMarketContractAddress
+      );
+      if (
+        amount.toString() ==
+        "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      ) {
+        setisReiContractApproved(true);
+      }
+    } catch (error) {
+      console.log(
+        "🚀 ~ file: InvestedInItem.tsx ~ line 131 ~ isREIApprovesFORUSDT ~ error",
+        error
+      );
+      toast({ title: "Error: see in console", status: "error" });
     }
   }
   const fractionalisedNFT = loadingfractionalised
@@ -127,125 +156,261 @@ function InvestedInItem({ data, amountInvested, key }: any) {
     isREIApprovesFORUSDT();
   }, [userAddress]);
   async function handleWithdrawInvestment() {
-    await REIMarketContract.withdrawBeforeFunded(lendingNumber, amountInvested);
+    try {
+      await REIMarketContract.withdrawBeforeFunded(
+        lendingNumber,
+        amountInvested
+      );
+    } catch (error) {
+      console.log(
+        "🚀 ~ file: InvestedInItem.tsx ~ line 162 ~ handleWithdrawInvestment ~ error",
+        error
+      );
+      toast({ title: "Error: see in console", status: "error" });
+    }
   }
   async function handleGetBackInvestmentWithInterest() {
-    await REIMarketContract.getBackInvestmentWithInterest(lendingNumber);
+    try {
+      await REIMarketContract.getBackInvestmentWithInterest(lendingNumber);
+    } catch (error) {
+      toast({ title: "Error: see in console", status: "error" });
+      console.log(
+        "🚀 ~ file: InvestedInItem.tsx ~ line 176 ~ handleGetBackInvestmentWithInterest ~ error",
+        error
+      );
+    }
   }
   return (
     <>
       {tokenDetail && (
-        <Center py={12} key={key}>
-          <Box
-            role={"group"}
-            p={6}
-            maxW={"330px"}
-            w={"full"}
-            bg={"white"}
-            boxShadow={"2xl"}
-            rounded={"lg"}
-            pos={"relative"}
-            zIndex={1}
-          >
-            <Box
-              rounded={"lg"}
-              mt={-12}
-              pos={"relative"}
-              height={"230px"}
-              _after={{
-                transition: "all .3s ease",
-                content: '""',
-                w: "full",
-                h: "full",
-                pos: "absolute",
-                top: 5,
-                left: 0,
-                backgroundImage: `url(${tokenDetail?.image})`,
-                filter: "blur(15px)",
-                zIndex: -1,
-              }}
-              _groupHover={{
-                _after: {
-                  filter: "blur(20px)",
-                },
-              }}
-            >
-              <Image
-                rounded={"lg"}
-                height={230}
-                width={282}
-                objectFit={"cover"}
-                src={tokenDetail?.image}
-                alt="Nothing here"
-              />
-            </Box>
-            <Stack pt={10} align={"center"}>
-              <Text
-                color={"gray.500"}
-                fontSize={"sm"}
-                textTransform={"uppercase"}
+        <Box
+          mx="2"
+          rounded="lg"
+          flex="1"
+          shadow="md"
+          bg="white"
+          maxW="2xl"
+          mt="0"
+        >
+          <Image
+            roundedTop="lg"
+            w="full"
+            h={64}
+            fit="cover"
+            src={tokenDetail?.image}
+            alt="Article"
+          />
+          <Box p={6}>
+            <Box>
+              <Box
+                display="flex"
+                flexDirection="row"
+                justifyContent="space-between"
               >
-                tokenId = {tokenDetail?.tokenId} <br />
-                amountInvested = {amountInvested} <br />
-                status = {status}
-              </Text>
-              <Heading fontSize={"2xl"} fontFamily={"body"} fontWeight={500}>
+                <Flex alignItems="center">
+                  <Flex alignItems="center">
+                    <Link fontWeight="bold" color="gray.700">
+                      Token Id
+                    </Link>
+                  </Flex>
+                  <chakra.span mx={1} fontSize="sm" color="gray.600">
+                    {tokenDetail?.tokenId}
+                  </chakra.span>
+                </Flex>
+              </Box>
+              <chakra.span
+                display="block"
+                color="gray.800"
+                fontWeight="bold"
+                fontSize="2xl"
+                mt={2}
+              >
+                {tokenDetail?.name}
+              </chakra.span>
+              <chakra.p mt={2} fontSize="sm" color="gray.600">
                 {tokenDetail?.description}
-              </Heading>
-              <Stack direction={"column"} align={"center"}>
-                <Text color={"gray.600"}>
-                  Country = {tokenDetail?.attributes?.Country}
-                </Text>
-                <Text color={"gray.600"}>
-                  {" "}
-                  Country = {tokenDetail?.attributes?.City}
-                </Text>
-                <Text color={"gray.600"}>
-                  Country = {tokenDetail?.attributes?.GPSCoordinates}
-                </Text>
-                <Text color={"gray.600"}>
-                  Country = {tokenDetail?.attributes?.SurfaceArea}
-                </Text>
-                <Text color={"gray.600"}>Loanee = {Loanee}</Text>
-                <Text color={"gray.600"}>
-                  fractionalisedId = {fractionalisedId}
-                </Text>
-                <Text color={"gray.600"}>
-                  fractionalisedNftAddress = {fractionalisedNftAddress}
-                </Text>
-                <Text color={"gray.600"}>lendingNumber = {lendingNumber}</Text>
-                <Text color={"gray.600"}>
-                  numberOfFractions = {numberOfFractions}
-                </Text>
-                <Text color={"gray.600"}>
-                  numberOfFractionsInvested = {numberOfFractionsInvested}
-                </Text>
-              </Stack>
+              </chakra.p>
+            </Box>
+            <Box mt={4}>
+              <Flex alignItems="center">
+                <GoPrimitiveDot height="8" />
+                <Flex alignItems="center" mx="2">
+                  <Link fontWeight="bold" color="gray.700">
+                    Country
+                  </Link>
+                </Flex>
+                <chakra.span mx={1} fontSize="sm" color="gray.600">
+                  {tokenDetail?.attributes?.Country}
+                </chakra.span>
+              </Flex>
+              <Flex alignItems="center">
+                <GoPrimitiveDot height="8" />
+                <Flex alignItems="center" mx="2">
+                  <Link fontWeight="bold" color="gray.700">
+                    Loanee
+                  </Link>
+                </Flex>
+                <chakra.span mx={1} fontSize="sm" color="gray.600">
+                  {Loanee}
+                </chakra.span>
+              </Flex>
+              <Flex alignItems="center">
+                <GoPrimitiveDot height="8" />
+                <Flex alignItems="center" mx="2">
+                  <Link fontWeight="bold" color="gray.700">
+                    City
+                  </Link>
+                </Flex>
+                <chakra.span mx={1} fontSize="sm" color="gray.600">
+                  {tokenDetail?.attributes?.City}
+                </chakra.span>
+              </Flex>
+              <Flex alignItems="center">
+                <GoPrimitiveDot height="8" />
+                <Flex alignItems="center" mx="2">
+                  <Link fontWeight="bold" color="gray.700">
+                    lendingNumber
+                  </Link>
+                </Flex>
+                <chakra.span mx={1} fontSize="sm" color="gray.600">
+                  {lendingNumber}
+                </chakra.span>
+              </Flex>
+              <Flex alignItems="center">
+                <GoPrimitiveDot height="8" />
+                <Flex alignItems="center" mx="2">
+                  <Link fontWeight="bold" color="gray.700">
+                    Location
+                  </Link>
+                </Flex>
+                <chakra.span mx={1} fontSize="sm" color="gray.600">
+                  {tokenDetail?.attributes?.GPSCoordinates}
+                </chakra.span>
+              </Flex>
+              <Flex alignItems="center">
+                <GoPrimitiveDot height="8" />
+                <Flex alignItems="center" mx="2">
+                  <Link fontWeight="bold" color="gray.700">
+                    Surface area
+                  </Link>
+                </Flex>
+                <chakra.span mx={1} fontSize="sm" color="gray.600">
+                  {tokenDetail?.attributes?.SurfaceArea}
+                </chakra.span>
+              </Flex>
+              <Flex alignItems="center">
+                <GoPrimitiveDot height="8" />
+                <Flex alignItems="center" mx="2">
+                  <Link fontWeight="bold" color="gray.700">
+                    fractionalisedId
+                  </Link>
+                </Flex>
+                <chakra.span mx={1} fontSize="sm" color="gray.600">
+                  {fractionalisedId}
+                </chakra.span>
+              </Flex>
+              <Flex alignItems="center">
+                <GoPrimitiveDot height="8" />
+                <Flex alignItems="center" mx="2">
+                  <Link fontWeight="bold" color="gray.700">
+                    numberOfFractions
+                  </Link>
+                </Flex>
+                <chakra.span mx={1} fontSize="sm" color="gray.600">
+                  {numberOfFractions}
+                </chakra.span>
+              </Flex>
+              <Flex alignItems="center">
+                <GoPrimitiveDot height="8" />
+                <Flex alignItems="center" mx="2">
+                  <Link fontWeight="bold" color="gray.700">
+                    fractionalisedNftAddress
+                  </Link>
+                </Flex>
+                <chakra.span mx={1} fontSize="sm" color="gray.600">
+                  {fractionalisedNftAddress}
+                </chakra.span>
+              </Flex>
+              <Flex alignItems="center">
+                <GoPrimitiveDot height="8" />
+                <Flex alignItems="center" mx="2">
+                  <Link fontWeight="bold" color="gray.700">
+                    numberOfFractionsInvested
+                  </Link>
+                </Flex>
+                <chakra.span mx={1} fontSize="sm" color="gray.600">
+                  {numberOfFractionsInvested}
+                </chakra.span>
+              </Flex>
+              <Flex alignItems="center">
+                <GoPrimitiveDot height="8" />
+                <Flex alignItems="center" mx="2">
+                  <Link fontWeight="bold" color="gray.700">
+                    status
+                  </Link>
+                </Flex>
+                <chakra.span mx={1} fontSize="sm" color="gray.600">
+                  {status}
+                </chakra.span>
+              </Flex>
+              <Flex alignItems="center">
+                <GoPrimitiveDot height="8" />
+                <Flex alignItems="center" mx="2">
+                  <Link fontWeight="bold" color="gray.700">
+                    amountInvested
+                  </Link>
+                </Flex>
+                <chakra.span mx={1} fontSize="sm" color="gray.600">
+                  {amountInvested}
+                </chakra.span>
+              </Flex>
+            </Box>
+            <Box>
               {status === 0 && amountInvested > 0 && (
                 <>
                   {isReiContractApproved ? (
-                    <Button onClick={handleWithdrawInvestment}>
+                    <Button
+                      w="full"
+                      colorScheme="linkedin"
+                      onClick={handleWithdrawInvestment}
+                    >
                       handleWithdrawInvestment
                     </Button>
                   ) : (
-                    <Button onClick={handleREIApprove}>Approve</Button>
+                    <Button
+                      w="full"
+                      colorScheme="linkedin"
+                      onClick={handleREIApprove}
+                    >
+                      Approve
+                    </Button>
                   )}
                 </>
               )}
               {(status === 3 || status === 4) && amountInvested > 0 && (
                 <>
                   {isReiContractApproved ? (
-                    <Button onClick={handleGetBackInvestmentWithInterest}>
+                    <Button
+                      w="full"
+                      colorScheme="linkedin"
+                      onClick={handleGetBackInvestmentWithInterest}
+                    >
                       handleGetBackInvestmentWithInterest
                     </Button>
                   ) : (
-                    <Button onClick={handleREIApprove}>Approve</Button>
+                    <Button
+                      w="full"
+                      colorScheme="linkedin"
+                      onClick={handleREIApprove}
+                    >
+                      Approve
+                    </Button>
                   )}
                 </>
               )}
-            </Stack>
+            </Box>
           </Box>
-        </Center>
+        </Box>
       )}
     </>
   );

@@ -24,14 +24,16 @@ import {
   Tab,
   TabPanels,
   TabPanel,
+  useToast,
 } from "@chakra-ui/react";
 import type { NextPage } from "next";
 import { useQuery, gql } from "@apollo/client";
 import { GET_USER_APPLICATIONS } from "../graphql/subgraph";
 import { useAccount, useContract, useSigner } from "wagmi";
 import { ApproverContractAddress } from "../constants/addresses";
-import { FaFlag, FaMapMarkedAlt } from "react-icons/fa";
+import { GoPrimitiveDot } from "react-icons/go";
 import { Web3Storage } from "web3.storage";
+import ApplicationStatus from "../components/ApplicationStatus";
 const createapplication: NextPage = () => {
   const { address: userAddress, isConnected, connector } = useAccount();
   const [imageURI, setimageURI] = useState<string | null>(null);
@@ -81,6 +83,7 @@ const createapplication: NextPage = () => {
   const web3storage = new Web3Storage({ token: key });
   console.log(applicationForm);
 
+  const toast = useToast();
   async function handleImage(e: any) {
     const target = e.target;
     try {
@@ -101,6 +104,7 @@ const createapplication: NextPage = () => {
       const url: string = `https://ipfs.io/ipfs/${path}/${name}`;
       setimageURI(url);
     } catch (error) {
+      toast({ title: "Error: See in console", status: "error" });
       console.log("Error uploading file: ", error);
     }
   }
@@ -121,9 +125,14 @@ const createapplication: NextPage = () => {
       !city ||
       !gpsCoordinates ||
       !surfaceAreaInMTRs
-    )
+    ) {
+      toast({ title: "Put all value", status: "warning" });
       return;
-    if (!isConnected) return;
+    }
+    if (!isConnected) {
+      toast({ title: "Not connected", status: "warning" });
+      return;
+    }
     try {
       const tx = await ApproverContract.applyForApproval(
         name,
@@ -149,6 +158,7 @@ const createapplication: NextPage = () => {
       setimageURI("");
       refetch({ address: userAddress?.toLocaleLowerCase() });
     } catch (err) {
+      toast({ title: "Error: See in console", status: "error" });
       console.log(err);
     }
   }
@@ -175,7 +185,7 @@ const createapplication: NextPage = () => {
         <TabPanels>
           <TabPanel>
             <Box>
-              <Box minH={"100vh"} mx="auto" bg={"gray.50"}>
+              <Box minH={"100vh"} mx="auto">
                 <Stack
                   spacing={8}
                   w="100%"
@@ -228,6 +238,9 @@ const createapplication: NextPage = () => {
                           onChange={handleImage}
                         />
                       </FormControl>
+                      {imageURI && (
+                        <Image width="48" height="auto" src={imageURI} />
+                      )}
                       <FormControl id="country" isRequired>
                         <FormLabel>Country</FormLabel>
                         <Input
@@ -260,6 +273,7 @@ const createapplication: NextPage = () => {
                           type="number"
                         />
                       </FormControl>
+
                       <Stack spacing={10} pt={2}>
                         <Button
                           loadingText="Submitting"
@@ -283,12 +297,18 @@ const createapplication: NextPage = () => {
           </TabPanel>
           <TabPanel>
             <Box>
-              <Heading as={"h2"} fontSize={"4xl"} textAlign={"center"}>
+              <Heading as={"h2"} fontSize={"4xl"} textAlign={"center"} mb="10">
                 {userAddress
                   ? "Your Created Applications"
                   : "Please connect your wallet"}
               </Heading>
-              <Stack flexDirection="row" flexWrap="wrap" gap="2">
+              <Box
+                justifyContent="left"
+                display="flex"
+                flexDirection="row"
+                flexWrap="wrap"
+                rowGap="4"
+              >
                 {loading ? (
                   <Heading textShadow="2px 2px #0987A0">Loading Data</Heading>
                 ) : (
@@ -307,84 +327,135 @@ const createapplication: NextPage = () => {
                     const status = applicationStatus.id;
                     return (
                       <>
-                        <Center
-                          py={"0px"}
-                          mt={"0px!important"}
-                          border="1px"
-                          borderColor="gray.200"
-                          key={index}
+                        <Box
+                          mx="auto"
+                          rounded="lg"
+                          shadow="md"
+                          bg="white"
+                          maxW="2xl"
+                          mt="0"
                         >
-                          <Box
-                            role={"group"}
-                            p={0}
-                            maxW={{ base: "330px" }}
-                            w={"full"}
-                            bg={"white"}
-                            boxShadow={"sm"}
-                            rounded={"md"}
-                            pos={"relative"}
-                            zIndex={1}
-                          >
-                            <Image
-                              roundedTop={"lg"}
-                              height={"full"}
-                              width={"full"}
-                              objectFit={"cover"}
-                              src={imageURI}
-                              alt="Property Image"
-                            />
+                          <Image
+                            roundedTop="lg"
+                            w="full"
+                            h={64}
+                            fit="cover"
+                            src={imageURI}
+                            alt="Article"
+                          />
 
-                            <Stack p={6} pt={5} align={"center"}>
-                              <Heading
-                                fontSize={"2xl"}
-                                fontFamily={"body"}
-                                fontWeight={500}
-                                textTransform={"uppercase"}
+                          <Box p={6}>
+                            <Box>
+                              <Box
+                                display="flex"
+                                flexDirection="row"
+                                justifyContent="space-between"
                               >
-                                {name} with application Number{" "}
-                                {applicationNumber}
-                              </Heading>
-                              <Text
-                                color={"gray.500"}
-                                fontSize={"small"}
-                                my={"2em"}
+                                <Flex alignItems="center">
+                                  <Flex alignItems="center">
+                                    <Link fontWeight="bold" color="gray.700">
+                                      Application Number
+                                    </Link>
+                                  </Flex>
+                                  <chakra.span
+                                    mx={1}
+                                    fontSize="sm"
+                                    color="gray.600"
+                                  >
+                                    {applicationNumber}
+                                  </chakra.span>
+                                </Flex>
+
+                                <chakra.span
+                                  fontSize="xs"
+                                  textTransform="uppercase"
+                                  color="brand.600"
+                                >
+                                  <ApplicationStatus status={status} />
+                                </chakra.span>
+                              </Box>
+                              <chakra.span
+                                display="block"
+                                color="gray.800"
+                                fontWeight="bold"
+                                fontSize="2xl"
+                                mt={2}
                               >
+                                {name}
+                              </chakra.span>
+                              <chakra.p mt={2} fontSize="sm" color="gray.600">
                                 {description}
-                              </Text>
-                              <VStack w={"full"} p={"0px"} align={"start"}>
-                                <HStack gap={1} justify="start">
-                                  <FaFlag />
-                                  <Text color={"gray.600"}>
-                                    country: {country}
-                                  </Text>
-                                </HStack>
-                                <HStack gap={1} justify="start">
-                                  <FaMapMarkedAlt />
-                                  <Text color={"gray.600"}>
-                                    Location: {gpsCoordinates}
-                                  </Text>
-                                </HStack>
-                                <HStack gap={1} justify="start">
-                                  <FaMapMarkedAlt />
-                                  <Text color={"gray.600"}>
-                                    surfaceAreaInMTRs: {surfaceAreaInMTRs}
-                                  </Text>
-                                </HStack>
-                                <HStack gap={1} justify="start">
-                                  <FaMapMarkedAlt />
-                                  <Text color={"gray.600"}>
-                                    status: {status}
-                                  </Text>
-                                </HStack>
-                              </VStack>
-                            </Stack>
+                              </chakra.p>
+                            </Box>
+                            <Box mt={4}>
+                              <Flex alignItems="center">
+                                <GoPrimitiveDot height="8" />
+                                <Flex alignItems="center" mx="2">
+                                  <Link fontWeight="bold" color="gray.700">
+                                    Country
+                                  </Link>
+                                </Flex>
+                                <chakra.span
+                                  mx={1}
+                                  fontSize="sm"
+                                  color="gray.600"
+                                >
+                                  {country}
+                                </chakra.span>
+                              </Flex>
+                              <Flex alignItems="center">
+                                <GoPrimitiveDot height="8" />
+                                <Flex alignItems="center" mx="2">
+                                  <Link fontWeight="bold" color="gray.700">
+                                    City
+                                  </Link>
+                                </Flex>
+                                <chakra.span
+                                  mx={1}
+                                  fontSize="sm"
+                                  color="gray.600"
+                                >
+                                  {city}
+                                </chakra.span>
+                              </Flex>
+                              <Flex alignItems="center">
+                                <GoPrimitiveDot height="8" />
+                                <Flex alignItems="center" mx="2">
+                                  <Link fontWeight="bold" color="gray.700">
+                                    Location
+                                  </Link>
+                                </Flex>
+                                <chakra.span
+                                  mx={1}
+                                  fontSize="sm"
+                                  color="gray.600"
+                                >
+                                  {gpsCoordinates}
+                                </chakra.span>
+                              </Flex>
+                              <Flex alignItems="center">
+                                <GoPrimitiveDot height="8" />
+                                <Flex alignItems="center" mx="2">
+                                  <Link fontWeight="bold" color="gray.700">
+                                    Surface area
+                                  </Link>
+                                </Flex>
+                                <chakra.span
+                                  mx={1}
+                                  fontSize="sm"
+                                  color="gray.600"
+                                >
+                                  {surfaceAreaInMTRs}
+                                </chakra.span>
+                              </Flex>
+                            </Box>
                           </Box>
-                        </Center>
+                        </Box>
                       </>
                     );
                   })
                 )}
-              </Stack>
+              </Box>
             </Box>
           </TabPanel>
         </TabPanels>

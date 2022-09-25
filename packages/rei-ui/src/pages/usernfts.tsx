@@ -35,6 +35,8 @@ import {
   Radio,
   ModalFooter,
   useDisclosure,
+  chakra,
+  useToast,
 } from "@chakra-ui/react";
 import type { NextPage } from "next";
 import { useQuery, gql } from "@apollo/client";
@@ -54,6 +56,7 @@ import {
 import FractionalNFT from "../components/FractionalNFT";
 import LendedItem from "../components/LendedItem";
 import InvestedInItem from "../components/InvestedInItem";
+import { GoPrimitiveDot } from "react-icons/go";
 const usernfts: NextPage = () => {
   const [isFractionaliserApproved, setisFractionaliserApproved] =
     useState(false);
@@ -167,11 +170,22 @@ const usernfts: NextPage = () => {
       return { ...preData, [name]: value };
     });
   }
-
+  const toast = useToast();
   async function handleFraction(tokenId: Number) {
-    const { name, symbol, amount } = fractionForm;
-    if (!name || !symbol || !amount) return;
-    await FractionaliserContract.fractionalise(name, symbol, tokenId, amount);
+    try {
+      const { name, symbol, amount } = fractionForm;
+      if (!name || !symbol || !amount) {
+        toast({ title: "Put all value", status: "warning" });
+        return;
+      }
+      await FractionaliserContract.fractionalise(name, symbol, tokenId, amount);
+    } catch (err) {
+      toast({ title: "Error: See in console", status: "error" });
+      console.log(
+        "🚀 ~ file: usernfts.tsx ~ line 183 ~ handleFraction ~ err",
+        err
+      );
+    }
   }
   async function isFractionaliserContractApproved() {
     try {
@@ -194,6 +208,7 @@ const usernfts: NextPage = () => {
       await tx.wait();
       isFractionaliserContractApproved();
     } catch (err) {
+      toast({ title: "Error: see in console", status: "error" });
       console.log(err);
     }
   }
@@ -232,7 +247,13 @@ const usernfts: NextPage = () => {
     <Box>
       <Box>
         <Heading>Your Created Applications</Heading>
-        <Stack flexDirection="row" flexWrap="wrap" gap="2">
+        <Box
+          justifyContent="left"
+          display="flex"
+          flexDirection="row"
+          flexWrap="wrap"
+          rowGap="4"
+        >
           {loadingUserNfts ? (
             <Heading textShadow="2px 2px #0987A0">
               loadingUserNfts Data {userAddress}
@@ -242,90 +263,125 @@ const usernfts: NextPage = () => {
               const {
                 image,
                 tokenID,
+                name,
                 description,
                 attributes: { SurfaceArea, GPSCoordinates, City, Country },
               } = data;
               return (
-                <Box>
-                  <Center py={12} key={index}>
-                    <Box
-                      role={"group"}
-                      p={6}
-                      maxW={"330px"}
-                      w={"full"}
-                      bg={"white"}
-                      boxShadow={"2xl"}
-                      rounded={"lg"}
-                      pos={"relative"}
-                      zIndex={1}
-                    >
+                <Box
+                  mx="2"
+                  rounded="lg"
+                  flex="1"
+                  shadow="md"
+                  bg="white"
+                  maxW="2xl"
+                  mt="0"
+                >
+                  <Image
+                    roundedTop="lg"
+                    w="full"
+                    h={64}
+                    fit="cover"
+                    src={image}
+                    alt="Article"
+                  />
+                  <Box p={6}>
+                    <Box>
                       <Box
-                        rounded={"lg"}
-                        mt={-12}
-                        pos={"relative"}
-                        height={"230px"}
-                        _after={{
-                          transition: "all .3s ease",
-                          content: '""',
-                          w: "full",
-                          h: "full",
-                          pos: "absolute",
-                          top: 5,
-                          left: 0,
-                          backgroundImage: `url(${image})`,
-                          filter: "blur(15px)",
-                          zIndex: -1,
-                        }}
-                        _groupHover={{
-                          _after: {
-                            filter: "blur(20px)",
-                          },
-                        }}
+                        display="flex"
+                        flexDirection="row"
+                        justifyContent="space-between"
                       >
-                        <Image
-                          rounded={"lg"}
-                          height={230}
-                          width={282}
-                          objectFit={"cover"}
-                          src={data.image}
-                          alt="Nothing here"
-                        />
+                        <Flex alignItems="center">
+                          <Flex alignItems="center">
+                            <Link fontWeight="bold" color="gray.700">
+                              Token Id
+                            </Link>
+                          </Flex>
+                          <chakra.span mx={1} fontSize="sm" color="gray.600">
+                            {tokenID}
+                          </chakra.span>
+                        </Flex>
                       </Box>
-                      <Stack pt={10} align={"center"}>
-                        <Text
-                          color={"gray.500"}
-                          fontSize={"sm"}
-                          textTransform={"uppercase"}
-                        >
-                          tokenId = {tokenID}
-                        </Text>
-                        <Heading
-                          fontSize={"2xl"}
-                          fontFamily={"body"}
-                          fontWeight={500}
-                        >
-                          {description}
-                        </Heading>
-                        <Stack direction={"column"} align={"center"}>
-                          <Text color={"gray.600"}>Country = {Country}</Text>
-                          <Text color={"gray.600"}> Country = {City}</Text>
-                          <Text color={"gray.600"}>
-                            Country = {GPSCoordinates}
-                          </Text>
-                          <Text color={"gray.600"}>
-                            Country = {SurfaceArea}
-                          </Text>
-                        </Stack>
-                        {isFractionaliserApproved ? (
-                          <Button onClick={onFractionOpen}>DO Fractions</Button>
-                        ) : (
-                          <Button onClick={approveFractionaliserContract}>
-                            First Approve
-                          </Button>
-                        )}
-                      </Stack>
+                      <chakra.span
+                        display="block"
+                        color="gray.800"
+                        fontWeight="bold"
+                        fontSize="2xl"
+                        mt={2}
+                      >
+                        {name}
+                      </chakra.span>
+                      <chakra.p mt={2} fontSize="sm" color="gray.600">
+                        {description}
+                      </chakra.p>
                     </Box>
-                  </Center>
+                    <Box mt={4}>
+                      <Flex alignItems="center">
+                        <GoPrimitiveDot height="8" />
+                        <Flex alignItems="center" mx="2">
+                          <Link fontWeight="bold" color="gray.700">
+                            Country
+                          </Link>
+                        </Flex>
+                        <chakra.span mx={1} fontSize="sm" color="gray.600">
+                          {Country}
+                        </chakra.span>
+                      </Flex>
+                      <Flex alignItems="center">
+                        <GoPrimitiveDot height="8" />
+                        <Flex alignItems="center" mx="2">
+                          <Link fontWeight="bold" color="gray.700">
+                            City
+                          </Link>
+                        </Flex>
+                        <chakra.span mx={1} fontSize="sm" color="gray.600">
+                          {City}
+                        </chakra.span>
+                      </Flex>
+                      <Flex alignItems="center">
+                        <GoPrimitiveDot height="8" />
+                        <Flex alignItems="center" mx="2">
+                          <Link fontWeight="bold" color="gray.700">
+                            Location
+                          </Link>
+                        </Flex>
+                        <chakra.span mx={1} fontSize="sm" color="gray.600">
+                          {GPSCoordinates}
+                        </chakra.span>
+                      </Flex>
+                      <Flex alignItems="center">
+                        <GoPrimitiveDot height="8" />
+                        <Flex alignItems="center" mx="2">
+                          <Link fontWeight="bold" color="gray.700">
+                            Surface area
+                          </Link>
+                        </Flex>
+                        <chakra.span mx={1} fontSize="sm" color="gray.600">
+                          {SurfaceArea}
+                        </chakra.span>
+                      </Flex>
+                    </Box>
+                    <Box py="4">
+                      {isFractionaliserApproved ? (
+                        <Button
+                          colorScheme="linkedin"
+                          w="full"
+                          onClick={onFractionOpen}
+                        >
+                          Do fractions
+                        </Button>
+                      ) : (
+                        <Button
+                          colorScheme="linkedin"
+                          w="full"
+                          onClick={approveFractionaliserContract}
+                        >
+                          First Approve
+                        </Button>
+                      )}
+                    </Box>
+                  </Box>
                   <Modal
                     initialFocusRef={initialRef}
                     finalFocusRef={finalRef}
@@ -334,7 +390,7 @@ const usernfts: NextPage = () => {
                   >
                     <ModalOverlay />
                     <ModalContent>
-                      <ModalHeader>Do approve</ModalHeader>
+                      <ModalHeader>Token ID {tokenID}</ModalHeader>
                       <ModalCloseButton />
                       <ModalBody pb={6}>
                         <FormControl isRequired>
@@ -364,13 +420,13 @@ const usernfts: NextPage = () => {
                       <ModalFooter>
                         <Button
                           w={"full"}
-                          colorScheme="blue"
+                          colorScheme="linkedin"
                           mr={3}
                           onClick={() => {
                             handleFraction(tokenID);
                           }}
                         >
-                          Save
+                          Do fractions
                         </Button>
                       </ModalFooter>
                     </ModalContent>
@@ -379,11 +435,17 @@ const usernfts: NextPage = () => {
               );
             })
           )}
-        </Stack>
+        </Box>
       </Box>
       <Box>
         <Heading>Your Frationalised NFTs</Heading>
-        <Stack flexDirection="row" flexWrap="wrap" gap="2">
+        <Box
+          justifyContent="left"
+          display="flex"
+          flexDirection="row"
+          flexWrap="wrap"
+          rowGap="4"
+        >
           {loadingUserFractionalised ? (
             <Heading textShadow="2px 2px #0987A0">DID Fractions</Heading>
           ) : (
@@ -391,7 +453,7 @@ const usernfts: NextPage = () => {
               return <FractionalNFT data={data} key={index} />;
             })
           )}
-        </Stack>
+        </Box>
       </Box>
       <Box>
         <Heading as={"h1"} fontSize={"4xl"} textAlign={"center"}>
@@ -402,11 +464,17 @@ const usernfts: NextPage = () => {
             loadingUserLended
           </Heading>
         ) : (
-          <Flex flexDirection="row" flexWrap="wrap" gap="3">
+          <Box
+            justifyContent="left"
+            display="flex"
+            flexDirection="row"
+            flexWrap="wrap"
+            rowGap="4"
+          >
             {userLendeds?.map((data: any, index: any) => {
               return <LendedItem data={data} key={index} />;
             })}
-          </Flex>
+          </Box>
         )}
       </Box>
       <Box>
@@ -418,7 +486,13 @@ const usernfts: NextPage = () => {
             loadingUserInvestedLends
           </Heading>
         ) : (
-          <Flex flexDirection="row" flexWrap="wrap" gap="3">
+          <Box
+            justifyContent="left"
+            display="flex"
+            flexDirection="row"
+            flexWrap="wrap"
+            rowGap="4"
+          >
             {investedIn?.map((data: any, index: any) => {
               return (
                 <InvestedInItem
@@ -428,7 +502,7 @@ const usernfts: NextPage = () => {
                 />
               );
             })}
-          </Flex>
+          </Box>
         )}
       </Box>
     </Box>

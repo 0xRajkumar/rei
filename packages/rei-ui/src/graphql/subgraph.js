@@ -31,6 +31,7 @@ export const GET_USER_APPLICATIONS = gql`
         id
         applicationNumber
         name
+        city
         description
         imageURI
         country

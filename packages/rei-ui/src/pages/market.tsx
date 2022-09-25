@@ -26,7 +26,13 @@ function market() {
     : lendedloans?.lendedForLoans;
   return (
     <div>
-      <Box>
+      <Box
+        justifyContent="left"
+        display="flex"
+        flexDirection="row"
+        flexWrap="wrap"
+        rowGap="4"
+      >
         {loadinglendedloans ? (
           <Heading as={"h1"} fontSize={"4xl"} textAlign={"center"}>
             All pending applications

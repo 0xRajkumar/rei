@@ -17,6 +17,10 @@ import {
   Stack,
   Text,
   useDisclosure,
+  chakra,
+  Flex,
+  Link,
+  useToast,
 } from "@chakra-ui/react";
 import React, { useEffect, useState } from "react";
 import FractionalisedNFTAbi from "../constants/abis/FraactionalisedNFT.json";
@@ -28,6 +32,7 @@ import {
   REIMarketContractAddress,
 } from "../constants/addresses";
 import { ethers } from "ethers";
+import { GoPrimitiveDot } from "react-icons/go";
 function FractionalNFT({ data, key }: any) {
   const [loanForm, setLoanForm] = useState({
     loanAmount: 0,
@@ -37,6 +42,7 @@ function FractionalNFT({ data, key }: any) {
   const {
     image,
     tokenId,
+    name,
     description,
     attributes: { SurfaceArea, GPSCoordinates, City, Country },
     fractionalisedNftAddress,
@@ -65,153 +71,262 @@ function FractionalNFT({ data, key }: any) {
     contractInterface: REIMarketAbi,
     signerOrProvider: singer,
   });
+  const toast = useToast();
   async function handleAppproveReiMarket() {
-    const FractionalisedNFTAddress =
-      FractionaliserContract.getAddressOfFractionisedId(fractionalisedId);
-    const FractionalisedNFTContract = new ethers.Contract(
-      FractionalisedNFTAddress,
-      FractionalisedNFTAbi,
-      singer ?? undefined
-    );
-    const approvetx = await FractionalisedNFTContract.approve(
-      REIMarketContractAddress,
-      fractionQuantity
-    );
-    await approvetx.wait();
-    setisREIMarketContractApproves(true);
+    try {
+      const FractionalisedNFTAddress =
+        FractionaliserContract.getAddressOfFractionisedId(fractionalisedId);
+      const FractionalisedNFTContract = new ethers.Contract(
+        FractionalisedNFTAddress,
+        FractionalisedNFTAbi,
+        singer ?? undefined
+      );
+      const approvetx = await FractionalisedNFTContract.approve(
+        REIMarketContractAddress,
+        fractionQuantity
+      );
+      await approvetx.wait();
+      setisREIMarketContractApproves(true);
+    } catch (error) {
+      toast({ title: "Error: see in console", status: "error" });
+      console.log(
+        "🚀 ~ file: FractionalNFT.tsx ~ line 77 ~ handleAppproveReiMarket ~ error",
+        error
+      );
+    }
   }
 
   async function isREIMarketApproved() {
-    const FractionalisedNFTAddress =
-      FractionaliserContract.getAddressOfFractionisedId(fractionalisedId);
-    const FractionalisedNFTContract = new ethers.Contract(
-      FractionalisedNFTAddress,
-      FractionalisedNFTAbi,
-      singer ?? undefined
-    );
-    const approvesFor = await FractionalisedNFTContract.allowance(
-      userAddress,
-      REIMarketContractAddress
-    );
-    if (approvesFor.toString() == fractionQuantity) {
-      setisREIMarketContractApproves(true);
+    try {
+      const FractionalisedNFTAddress =
+        FractionaliserContract.getAddressOfFractionisedId(fractionalisedId);
+      const FractionalisedNFTContract = new ethers.Contract(
+        FractionalisedNFTAddress,
+        FractionalisedNFTAbi,
+        singer ?? undefined
+      );
+      const approvesFor = await FractionalisedNFTContract.allowance(
+        userAddress,
+        REIMarketContractAddress
+      );
+      if (approvesFor.toString() == fractionQuantity) {
+        setisREIMarketContractApproves(true);
+      }
+    } catch (error) {
+      console.log(
+        "🚀 ~ file: FractionalNFT.tsx ~ line 103 ~ isREIMarketApproved ~ error",
+        error
+      );
+      toast({ title: "Error: see in console", status: "error" });
     }
   }
   async function handleApplyForLoan() {
-    const { loanAmount, interest, time } = loanForm;
-    if (
-      fractionalisedId <= 0 ||
-      fractionQuantity <= 0 ||
-      loanAmount <= 0 ||
-      interest <= 0 ||
-      time <= 0
-    ) {
-      console.log("Invalid Input");
-      return;
+    try {
+      const { loanAmount, interest, time } = loanForm;
+      if (
+        fractionalisedId <= 0 ||
+        fractionQuantity <= 0 ||
+        loanAmount <= 0 ||
+        interest <= 0 ||
+        time <= 0
+      ) {
+        toast({ title: "Put all value", status: "warning" });
+        return;
+      }
+      console.log(
+        fractionalisedId,
+        fractionQuantity,
+        loanAmount,
+        interest,
+        time
+      );
+      const applytx = await REIMarketContract.applyForLoan(
+        fractionalisedId,
+        fractionQuantity,
+        loanAmount,
+        interest,
+        time
+      );
+      await applytx.wait();
+    } catch (err) {
+      toast({ title: "Error: see in console", status: "error" });
+      console.log(
+        "🚀 ~ file: FractionalNFT.tsx ~ line 127 ~ handleApplyForLoan ~ err",
+        err
+      );
     }
-    console.log(fractionalisedId, fractionQuantity, loanAmount, interest, time);
-    const applytx = await REIMarketContract.applyForLoan(
-      fractionalisedId,
-      fractionQuantity,
-      loanAmount,
-      interest,
-      time
-    );
-    await applytx.wait();
   }
   async function handleLoanForm(e: any) {
-    const { name, value } = e.target;
-    console.log(name, value);
-    setLoanForm((preData) => {
-      return { ...preData, [name]: value };
-    });
+    try {
+      const { name, value } = e.target;
+      setLoanForm((preData) => {
+        return { ...preData, [name]: value };
+      });
+    } catch (error) {
+      console.log(
+        "🚀 ~ file: FractionalNFT.tsx ~ line 163 ~ handleLoanForm ~ error",
+        error
+      );
+      toast({ title: "Error: see in console", status: "error" });
+    }
   }
   useEffect(() => {
     isREIMarketApproved();
   }, [userAddress]);
 
   return (
-    <Center py={12} key={key}>
+    <>
       <Box
-        role={"group"}
-        p={6}
-        maxW={"330px"}
-        w={"full"}
-        bg={"white"}
-        boxShadow={"2xl"}
-        rounded={"lg"}
-        pos={"relative"}
-        zIndex={1}
+        mx="2"
+        rounded="lg"
+        flex="1"
+        shadow="md"
+        bg="white"
+        maxW="2xl"
+        mt="0"
       >
-        <Box
-          rounded={"lg"}
-          mt={-12}
-          pos={"relative"}
-          height={"230px"}
-          _after={{
-            transition: "all .3s ease",
-            content: '""',
-            w: "full",
-            h: "full",
-            pos: "absolute",
-            top: 5,
-            left: 0,
-            backgroundImage: `url(${image})`,
-            filter: "blur(15px)",
-            zIndex: -1,
-          }}
-          _groupHover={{
-            _after: {
-              filter: "blur(20px)",
-            },
-          }}
-        >
-          <Image
-            rounded={"lg"}
-            height={230}
-            width={282}
-            objectFit={"cover"}
-            src={image}
-            alt="Nothing here"
-          />
-        </Box>
-        <Stack pt={10} align={"center"}>
-          <Text color={"gray.500"} fontSize={"sm"} textTransform={"uppercase"}>
-            tokenId = {tokenId}
-          </Text>
-          <Heading fontSize={"2xl"} fontFamily={"body"} fontWeight={500}>
-            {description}
-          </Heading>
-          <Stack direction={"column"} align={"center"}>
-            <Text color={"gray.600"}>Country = {Country}</Text>
-            <Text color={"gray.600"}> Country = {City}</Text>
-            <Text color={"gray.600"}>Country = {GPSCoordinates}</Text>
-            <Text color={"gray.600"}>Country = {SurfaceArea}</Text>
-            <Text color={"gray.600"}>
-              fractionalisedNftAddress = {fractionalisedNftAddress}
-            </Text>
-            <Text color={"gray.600"}>
-              fractionalisedId = {fractionalisedId}
-            </Text>
-            <Text color={"gray.600"}>
-              fractionQuantity = {fractionQuantity}
-            </Text>
-            <Text color={"gray.600"}>
-              NFTContractAddress = {NFTContractAddress}
-            </Text>
-          </Stack>
-          <>
+        <Image
+          roundedTop="lg"
+          w="full"
+          h={64}
+          fit="cover"
+          src={image}
+          alt="Article"
+        />
+        <Box p={6}>
+          <Box>
+            <Box
+              display="flex"
+              flexDirection="row"
+              justifyContent="space-between"
+            >
+              <Flex alignItems="center">
+                <Flex alignItems="center">
+                  <Link fontWeight="bold" color="gray.700">
+                    Token Id
+                  </Link>
+                </Flex>
+                <chakra.span mx={1} fontSize="sm" color="gray.600">
+                  {tokenId}
+                </chakra.span>
+              </Flex>
+            </Box>
+            <chakra.span
+              display="block"
+              color="gray.800"
+              fontWeight="bold"
+              fontSize="2xl"
+              mt={2}
+            >
+              {name}
+            </chakra.span>
+            <chakra.p mt={2} fontSize="sm" color="gray.600">
+              {description}
+            </chakra.p>
+          </Box>
+          <Box mt={4}>
+            <Flex alignItems="center">
+              <GoPrimitiveDot height="8" />
+              <Flex alignItems="center" mx="2">
+                <Link fontWeight="bold" color="gray.700">
+                  Country
+                </Link>
+              </Flex>
+              <chakra.span mx={1} fontSize="sm" color="gray.600">
+                {Country}
+              </chakra.span>
+            </Flex>
+            <Flex alignItems="center">
+              <GoPrimitiveDot height="8" />
+              <Flex alignItems="center" mx="2">
+                <Link fontWeight="bold" color="gray.700">
+                  City
+                </Link>
+              </Flex>
+              <chakra.span mx={1} fontSize="sm" color="gray.600">
+                {City}
+              </chakra.span>
+            </Flex>
+            <Flex alignItems="center">
+              <GoPrimitiveDot height="8" />
+              <Flex alignItems="center" mx="2">
+                <Link fontWeight="bold" color="gray.700">
+                  Location
+                </Link>
+              </Flex>
+              <chakra.span mx={1} fontSize="sm" color="gray.600">
+                {GPSCoordinates}
+              </chakra.span>
+            </Flex>
+            <Flex alignItems="center">
+              <GoPrimitiveDot height="8" />
+              <Flex alignItems="center" mx="2">
+                <Link fontWeight="bold" color="gray.700">
+                  Surface area
+                </Link>
+              </Flex>
+              <chakra.span mx={1} fontSize="sm" color="gray.600">
+                {SurfaceArea}
+              </chakra.span>
+            </Flex>
+            <Flex alignItems="center">
+              <GoPrimitiveDot height="8" />
+              <Flex alignItems="center" mx="2">
+                <Link fontWeight="bold" color="gray.700">
+                  fractionalisedId
+                </Link>
+              </Flex>
+              <chakra.span mx={1} fontSize="sm" color="gray.600">
+                {fractionalisedId}
+              </chakra.span>
+            </Flex>
+            <Flex alignItems="center">
+              <GoPrimitiveDot height="8" />
+              <Flex alignItems="center" mx="2">
+                <Link fontWeight="bold" color="gray.700">
+                  fractionQuantity
+                </Link>
+              </Flex>
+              <chakra.span mx={1} fontSize="sm" color="gray.600">
+                {fractionQuantity}
+              </chakra.span>
+            </Flex>
+            <Flex alignItems="center">
+              <GoPrimitiveDot height="8" />
+              <Flex alignItems="center" mx="2">
+                <Link fontWeight="bold" color="gray.700">
+                  fractionalisedNftAddress
+                </Link>
+              </Flex>
+              <chakra.span mx={1} fontSize="sm" color="gray.600">
+                {fractionalisedNftAddress}
+              </chakra.span>
+            </Flex>
+          </Box>
+          <Box>
             {fractionQuantity > 0 && (
               <>
                 {isREIMarketContractApproves ? (
-                  <Button onClick={onApplyFormOpen}>Apply For Loan</Button>
+                  <Button
+                    width="full"
+                    colorScheme="linkedin"
+                    onClick={onApplyFormOpen}
+                  >
+                    Apply For Loan
+                  </Button>
                 ) : (
-                  <Button onClick={handleAppproveReiMarket}>Approve</Button>
+                  <Button
+                    width="full"
+                    colorScheme="linkedin"
+                    onClick={handleAppproveReiMarket}
+                  >
+                    Approve
+                  </Button>
                 )}
               </>
             )}
-          </>
-        </Stack>
+          </Box>
+        </Box>
       </Box>
       <Modal
         blockScrollOnMount={false}
@@ -256,7 +371,7 @@ function FractionalNFT({ data, key }: any) {
           </ModalFooter>
         </ModalContent>
       </Modal>
-    </Center>
+    </>
   );
 }
 

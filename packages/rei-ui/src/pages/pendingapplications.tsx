@@ -27,8 +27,10 @@ import {
   RadioGroup,
   Radio,
   FormHelperText,
+  chakra,
+  Flex,
 } from "@chakra-ui/react";
-import { FaMapMarkedAlt, FaFlag } from "react-icons/fa";
+import { GoPrimitiveDot } from "react-icons/go";
 import type { NextPage } from "next";
 import { useQuery, gql } from "@apollo/client";
 import { useAccount, useContract, useSigner } from "wagmi";
@@ -39,6 +41,9 @@ import {
   GET_APPROVER_ACCESS,
 } from "../graphql/subgraph";
 import { ApproverContractAddress } from "../constants/addresses";
+import ApplicationStatus from "../components/ApplicationStatus";
+import { useToast } from "@chakra-ui/react";
+
 const pendingApplication: NextPage = () => {
   /*
   In development we will use in .ENV file
@@ -56,7 +61,7 @@ const pendingApplication: NextPage = () => {
 
   const initialRef = useRef(null);
   const finalRef = useRef(null);
-
+  const toast = useToast();
   const { address: userAddress, isConnected, connector } = useAccount();
   const {
     loading: loadingpendingUsers,
@@ -101,28 +106,36 @@ const pendingApplication: NextPage = () => {
     gpscoordinates: String,
     surfaceArea: Number
   ) {
-    if (!(approval === 1 || approval === 2)) return;
-    if (
-      !applicationNumber ||
-      !name ||
-      !description ||
-      !image ||
-      !country ||
-      !city ||
-      !gpscoordinates ||
-      !surfaceArea
-    )
-      return;
-    const attributes = {
-      Country: country,
-      City: city,
-      GPSCoordinates: gpscoordinates,
-      SurfaceArea: surfaceArea,
-    };
-    const nft = { name, description, image, attributes };
-    const buffer = Buffer.from(JSON.stringify(nft));
-    const files = [new File([buffer], `${applicationNumber}.json`)];
     try {
+      if (!(approval === 1 || approval === 2)) {
+        toast({ title: "Not approves", status: "warning" });
+        return;
+      }
+      if (
+        !applicationNumber ||
+        !name ||
+        !description ||
+        !image ||
+        !country ||
+        !city ||
+        !gpscoordinates ||
+        !surfaceArea
+      ) {
+        toast({
+          title: "Fill all value",
+          status: "warning",
+        });
+        return;
+      }
+      const attributes = {
+        Country: country,
+        City: city,
+        GPSCoordinates: gpscoordinates,
+        SurfaceArea: surfaceArea,
+      };
+      const nft = { name, description, image, attributes };
+      const buffer = Buffer.from(JSON.stringify(nft));
+      const files = [new File([buffer], `${applicationNumber}.json`)];
       const cid = await web3storage.put(files);
       console.log("🚀 ~ file: pendingapplications.tsx ~ line 137 ~ cid", cid);
       await ApproverContract.applicationDecision(
@@ -131,6 +144,7 @@ const pendingApplication: NextPage = () => {
         `${cid}/${applicationNumber}.json`
       );
     } catch (err) {
+      toast({ title: "Error: See in console", status: "error" });
       console.log("🚀 ~ file: pendingapplications.tsx ~ line 128 ~ err", err);
     }
   }
@@ -145,168 +159,219 @@ const pendingApplication: NextPage = () => {
               All pending applications
             </Heading>
           </HStack>
-          <Center>
-            <Stack
-              flexDirection="row"
-              flexWrap="wrap"
-              gap="4"
-              justify="center"
-              m={"auto"}
-              align={"start"}
-            >
-              {loadingpendingUsers ? (
-                <Heading textShadow="2px 2px #0987A0">Loading Data</Heading>
-              ) : (
-                applications?.map((data: any, index: number) => {
-                  const {
-                    applicationNumber,
-                    name,
-                    description,
-                    country,
-                    city,
-                    gpsCoordinates,
-                    imageURI,
-                    applicant,
-                    surfaceAreaInMTRs,
-                  } = data;
-                  const applicantAddress = applicant.id;
-                  return (
-                    <>
-                      <Center
-                        py={"0px"}
-                        mt={"0px!important"}
-                        border="1px"
-                        borderColor="gray.200"
-                        key={index}
-                      >
-                        <Box
-                          role={"group"}
-                          p={0}
-                          maxW={{ base: "330px" }}
-                          w={"full"}
-                          bg={"white"}
-                          boxShadow={"sm"}
-                          rounded={"md"}
-                          pos={"relative"}
-                          zIndex={1}
-                        >
-                          <Image
-                            roundedTop={"lg"}
-                            height={"full"}
-                            width={"full"}
-                            objectFit={"cover"}
-                            src={imageURI}
-                            alt="Property Image"
-                          />
+          <Box
+            justifyContent="left"
+            display="flex"
+            flexDirection="row"
+            flexWrap="wrap"
+            rowGap="4"
+          >
+            {loadingpendingUsers ? (
+              <Heading textShadow="2px 2px #0987A0">Loading Data</Heading>
+            ) : (
+              applications?.map((data: any, index: number) => {
+                const {
+                  applicationNumber,
+                  name,
+                  description,
+                  country,
+                  city,
+                  gpsCoordinates,
+                  imageURI,
+                  applicant,
+                  surfaceAreaInMTRs,
+                } = data;
+                const applicantAddress = applicant.id;
+                return (
+                  <>
+                    <Box
+                      mx="2"
+                      rounded="lg"
+                      flex="1"
+                      shadow="md"
+                      bg="white"
+                      maxW="2xl"
+                      mt="0"
+                    >
+                      <Image
+                        roundedTop="lg"
+                        w="full"
+                        h={64}
+                        fit="cover"
+                        src={imageURI}
+                        alt="Article"
+                      />
 
-                          <Stack p={6} pt={5} align={"center"}>
-                            <Heading
-                              fontSize={"2xl"}
-                              fontFamily={"body"}
-                              fontWeight={500}
-                              textTransform={"uppercase"}
-                            >
-                              {name} with application Number {applicationNumber}
-                            </Heading>
-                            <Text
-                              color={"gray.500"}
-                              fontSize={"small"}
-                              my={"2em"}
-                            >
-                              {description}
-                              {applicantAddress}
-                              Yessssssssssss <br /> {surfaceAreaInMTRs}
-                            </Text>
-                            <VStack w={"full"} p={"0px"} align={"start"}>
-                              <HStack gap={1} justify="start">
-                                <FaFlag />
-                                <Text color={"gray.600"}>
-                                  country: {country}
-                                </Text>
-                              </HStack>
-                              <HStack gap={1} justify="start">
-                                <FaMapMarkedAlt />
-                                <Text color={"gray.600"}>
-                                  Location: {gpsCoordinates}
-                                </Text>
-                              </HStack>
-                            </VStack>
-                            {access && (
-                              <Button onClick={onApproveOpen}>
-                                Do approve{" "}
-                              </Button>
-                            )}
-                          </Stack>
+                      <Box p={6}>
+                        <Box>
+                          <Box
+                            display="flex"
+                            flexDirection="row"
+                            justifyContent="space-between"
+                          >
+                            <Flex alignItems="center">
+                              <Flex alignItems="center">
+                                <Link fontWeight="bold" color="gray.700">
+                                  Application Number
+                                </Link>
+                              </Flex>
+                              <chakra.span
+                                mx={1}
+                                fontSize="sm"
+                                color="gray.600"
+                              >
+                                {applicationNumber}
+                              </chakra.span>
+                            </Flex>
+                          </Box>
+                          <chakra.span
+                            display="block"
+                            color="gray.800"
+                            fontWeight="bold"
+                            fontSize="2xl"
+                            mt={2}
+                          >
+                            {name}
+                          </chakra.span>
+                          <chakra.p mt={2} fontSize="sm" color="gray.600">
+                            {description}
+                          </chakra.p>
                         </Box>
-                      </Center>
-                      <Modal
-                        initialFocusRef={initialRef}
-                        finalFocusRef={finalRef}
-                        isOpen={isApproveOpen}
-                        onClose={onApproveClose}
-                      >
-                        <ModalOverlay />
-                        <ModalContent>
-                          <ModalHeader>
-                            Do approve {applicationNumber}
-                          </ModalHeader>
-                          <ModalCloseButton />
-                          <ModalBody pb={6}>
-                            <FormControl as="fieldset">
-                              <FormLabel as="legend">
-                                Select what you wanna do
-                              </FormLabel>
-                              <RadioGroup defaultValue="1">
-                                <HStack spacing="24px">
-                                  <Radio
-                                    onChange={(e: any) => {
-                                      setapproval(Number(e.target.value));
-                                    }}
-                                    value={"1"}
-                                  >
-                                    Approve
-                                  </Radio>
-                                  <Radio
-                                    onChange={(e: any) => {
-                                      setapproval(Number(e.target.value));
-                                    }}
-                                    value={"2"}
-                                  >
-                                    Not Approve
-                                  </Radio>
-                                </HStack>
-                              </RadioGroup>
-                            </FormControl>
-                          </ModalBody>
-                          <ModalFooter>
+                        <Box mt={4}>
+                          <Flex alignItems="center">
+                            <GoPrimitiveDot height="8" />
+                            <Flex alignItems="center" mx="2">
+                              <Link fontWeight="bold" color="gray.700">
+                                Country
+                              </Link>
+                            </Flex>
+                            <chakra.span mx={1} fontSize="sm" color="gray.600">
+                              {country}
+                            </chakra.span>
+                          </Flex>
+                          <Flex alignItems="center">
+                            <GoPrimitiveDot height="8" />
+                            <Flex alignItems="center" mx="2">
+                              <Link fontWeight="bold" color="gray.700">
+                                City
+                              </Link>
+                            </Flex>
+                            <chakra.span mx={1} fontSize="sm" color="gray.600">
+                              {city}
+                            </chakra.span>
+                          </Flex>
+                          <Flex alignItems="center">
+                            <GoPrimitiveDot height="8" />
+                            <Flex alignItems="center" mx="2">
+                              <Link fontWeight="bold" color="gray.700">
+                                Location
+                              </Link>
+                            </Flex>
+                            <chakra.span mx={1} fontSize="sm" color="gray.600">
+                              {gpsCoordinates}
+                            </chakra.span>
+                          </Flex>
+                          <Flex alignItems="center">
+                            <GoPrimitiveDot height="8" />
+                            <Flex alignItems="center" mx="2">
+                              <Link fontWeight="bold" color="gray.700">
+                                Surface area
+                              </Link>
+                            </Flex>
+                            <chakra.span mx={1} fontSize="sm" color="gray.600">
+                              {surfaceAreaInMTRs}
+                            </chakra.span>
+                          </Flex>
+                          <Flex alignItems="center">
+                            <GoPrimitiveDot height="8" />
+                            <Flex alignItems="center" mx="2">
+                              <Link fontWeight="bold" color="gray.700">
+                                Applicant
+                              </Link>
+                            </Flex>
+                            <chakra.span mx={1} fontSize="sm" color="gray.600">
+                              {applicantAddress}
+                            </chakra.span>
+                          </Flex>
+                        </Box>
+                        <Box py="4">
+                          {access && (
                             <Button
-                              w={"full"}
-                              colorScheme="blue"
-                              mr={3}
-                              onClick={() => {
-                                handleDecision(
-                                  applicationNumber,
-                                  name,
-                                  description,
-                                  imageURI,
-                                  country,
-                                  city,
-                                  gpsCoordinates,
-                                  surfaceAreaInMTRs
-                                );
-                              }}
+                              colorScheme="linkedin"
+                              w="full"
+                              onClick={onApproveOpen}
                             >
-                              Save
+                              Give Approval
                             </Button>
-                          </ModalFooter>
-                        </ModalContent>
-                      </Modal>
-                    </>
-                  );
-                })
-              )}
-            </Stack>
-          </Center>
+                          )}
+                        </Box>
+                      </Box>
+                    </Box>
+                    <Modal
+                      initialFocusRef={initialRef}
+                      finalFocusRef={finalRef}
+                      isOpen={isApproveOpen}
+                      onClose={onApproveClose}
+                    >
+                      <ModalOverlay />
+                      <ModalContent>
+                        <ModalHeader>
+                          Application {applicationNumber}
+                        </ModalHeader>
+                        <ModalCloseButton />
+                        <ModalBody pb={6}>
+                          <FormControl as="fieldset">
+                            <FormLabel as="legend">Decision</FormLabel>
+                            <RadioGroup defaultValue="1">
+                              <HStack spacing="24px">
+                                <Radio
+                                  onChange={(e: any) => {
+                                    setapproval(Number(e.target.value));
+                                  }}
+                                  value={"1"}
+                                >
+                                  Approve
+                                </Radio>
+                                <Radio
+                                  onChange={(e: any) => {
+                                    setapproval(Number(e.target.value));
+                                  }}
+                                  value={"2"}
+                                >
+                                  Not Approve
+                                </Radio>
+                              </HStack>
+                            </RadioGroup>
+                          </FormControl>
+                        </ModalBody>
+                        <ModalFooter>
+                          <Button
+                            w={"full"}
+                            colorScheme="linkedin"
+                            mr={3}
+                            onClick={() => {
+                              handleDecision(
+                                applicationNumber,
+                                name,
+                                description,
+                                imageURI,
+                                country,
+                                city,
+                                gpsCoordinates,
+                                surfaceAreaInMTRs
+                              );
+                            }}
+                          >
+                            Save
+                          </Button>
+                        </ModalFooter>
+                      </ModalContent>
+                    </Modal>
+                  </>
+                );
+              })
+            )}
+          </Box>
         </>
       )}
     </>

@@ -22,6 +22,10 @@ import {
   Stack,
   Text,
   useDisclosure,
+  chakra,
+  Link,
+  Flex,
+  useToast,
 } from "@chakra-ui/react";
 import ERC20Abi from "../constants/abis/ERC20.json";
 import React, { useState, useEffect } from "react";
@@ -38,6 +42,7 @@ import {
 import { ethers } from "ethers";
 import { GET_USER_FRACTIONALISEDS_WITH_FRACTIONALISEDID } from "../graphql/subgraph";
 import { useQuery } from "@apollo/client";
+import { GoPrimitiveDot } from "react-icons/go";
 function MarketItem({ data, key }: any) {
   const [investingInNumberOfFraction, setinvestingInNumberOfFraction] =
     useState(0);
@@ -82,35 +87,59 @@ function MarketItem({ data, key }: any) {
       id: data.fractionalisedId,
     },
   });
-
+  const toast = useToast();
   async function fetchtokendetails(data: any) {
-    const tokenData = await fetch(data.tokenURI);
-    const tokenDatainJson = await tokenData.json();
-    settokenDetail({ ...tokenDatainJson, tokenId: data.tokenId });
+    try {
+      const tokenData = await fetch(data.tokenURI);
+      const tokenDatainJson = await tokenData.json();
+      settokenDetail({ ...tokenDatainJson, tokenId: data.tokenId });
+    } catch (error) {
+      console.log(
+        "🚀 ~ file: MarketItem.tsx ~ line 94 ~ fetchtokendetails ~ error",
+        error
+      );
+      toast({ title: "Error: see in console", status: "error" });
+    }
   }
 
   async function handleREIApprove() {
-    const approvetx = await USDTContract.approve(
-      REIMarketContractAddress,
-      "115792089237316195423570985008687907853269984665640564039457584007913129639935"
-    );
-    await approvetx.wait();
-    setisReiMarketContractApproved(true);
+    try {
+      const approvetx = await USDTContract.approve(
+        REIMarketContractAddress,
+        "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      );
+      await approvetx.wait();
+      setisReiMarketContractApproved(true);
+    } catch (error) {
+      console.log(
+        "🚀 ~ file: MarketItem.tsx ~ line 109 ~ handleREIApprove ~ error",
+        error
+      );
+      toast({ title: "Error: see in console", status: "error" });
+    }
   }
 
   const fractionalisedNFT = loadingfractionalised
     ? null
     : fractionalised.fractionaliseds[0];
   async function isREIApprovesFORUSDT() {
-    const amount = await USDTContract.allowance(
-      userAddress,
-      REIMarketContractAddress
-    );
-    if (
-      amount.toString() ==
-      "115792089237316195423570985008687907853269984665640564039457584007913129639935"
-    ) {
-      setisReiMarketContractApproved(true);
+    try {
+      const amount = await USDTContract.allowance(
+        userAddress,
+        REIMarketContractAddress
+      );
+      if (
+        amount.toString() ==
+        "115792089237316195423570985008687907853269984665640564039457584007913129639935"
+      ) {
+        setisReiMarketContractApproved(true);
+      }
+    } catch (error) {
+      toast({ title: "Error: see in console", status: "error" });
+      console.log(
+        "🚀 ~ file: MarketItem.tsx ~ line 129 ~ isREIApprovesFORUSDT ~ error",
+        error
+      );
     }
   }
   useEffect(() => {
@@ -122,149 +151,239 @@ function MarketItem({ data, key }: any) {
     isREIApprovesFORUSDT();
   }, [userAddress]);
   async function handleInvest() {
-    if (investingInNumberOfFraction <= 0) return;
-    const investtx = await REIMarketContract.invest(
-      lendingNumber,
-      investingInNumberOfFraction
-    );
-    await investtx.wait();
+    try {
+      if (investingInNumberOfFraction <= 0) {
+        toast({ title: "Fill all value", status: "warning" });
+        return;
+      }
+
+      const investtx = await REIMarketContract.invest(
+        lendingNumber,
+        investingInNumberOfFraction
+      );
+      await investtx.wait();
+    } catch (error) {
+      toast({ title: "Error: see in console", status: "error" });
+
+      console.log(
+        "🚀 ~ file: MarketItem.tsx ~ line 157 ~ handleInvest ~ error",
+        error
+      );
+    }
   }
-  console.log(isReiContractApproved);
   return (
     <>
       {tokenDetail && (
-        <Center py={12} key={key}>
-          <Box
-            role={"group"}
-            p={6}
-            maxW={"330px"}
-            w={"full"}
-            bg={"white"}
-            boxShadow={"2xl"}
-            rounded={"lg"}
-            pos={"relative"}
-            zIndex={1}
-          >
-            <Box
-              rounded={"lg"}
-              mt={-12}
-              pos={"relative"}
-              height={"230px"}
-              _after={{
-                transition: "all .3s ease",
-                content: '""',
-                w: "full",
-                h: "full",
-                pos: "absolute",
-                top: 5,
-                left: 0,
-                backgroundImage: `url(${tokenDetail?.image})`,
-                filter: "blur(15px)",
-                zIndex: -1,
-              }}
-              _groupHover={{
-                _after: {
-                  filter: "blur(20px)",
-                },
-              }}
-            >
-              <Image
-                rounded={"lg"}
-                height={230}
-                width={282}
-                objectFit={"cover"}
-                src={tokenDetail?.image}
-                alt="Nothing here"
-              />
-            </Box>
-            <Stack pt={10} align={"center"}>
-              <Text
-                color={"gray.500"}
-                fontSize={"sm"}
-                textTransform={"uppercase"}
+        <Box
+          mx="2"
+          rounded="lg"
+          flex="1"
+          shadow="md"
+          bg="white"
+          maxW="2xl"
+          mt="0"
+        >
+          <Image
+            roundedTop="lg"
+            w="full"
+            h={64}
+            fit="cover"
+            src={tokenDetail?.image}
+            alt="Article"
+          />
+          <Box p={6}>
+            <Box>
+              <Box
+                display="flex"
+                flexDirection="row"
+                justifyContent="space-between"
               >
-                tokenId = {tokenDetail?.tokenId}
-              </Text>
-              <Heading fontSize={"2xl"} fontFamily={"body"} fontWeight={500}>
+                <Flex alignItems="center">
+                  <GoPrimitiveDot height="8" />
+                  <Flex alignItems="center" mx="2">
+                    <Link fontWeight="bold" color="gray.700">
+                      Token Id
+                    </Link>
+                  </Flex>
+                  <chakra.span mx={1} fontSize="sm" color="gray.600">
+                    {tokenDetail?.tokenId}
+                  </chakra.span>
+                </Flex>
+              </Box>
+              <chakra.span
+                display="block"
+                color="gray.800"
+                fontWeight="bold"
+                fontSize="2xl"
+                mt={2}
+              >
+                {tokenDetail?.name}
+              </chakra.span>
+              <chakra.p mt={2} fontSize="sm" color="gray.600">
                 {tokenDetail?.description}
-              </Heading>
-              <Stack direction={"column"} align={"center"}>
-                <Text color={"gray.600"}>
-                  Country = {tokenDetail?.attributes?.Country}
-                </Text>
-                <Text color={"gray.600"}>
-                  {" "}
-                  Country = {tokenDetail?.attributes?.City}
-                </Text>
-                <Text color={"gray.600"}>
-                  Country = {tokenDetail?.attributes?.GPSCoordinates}
-                </Text>
-                <Text color={"gray.600"}>
-                  Country = {tokenDetail?.attributes?.SurfaceArea}
-                </Text>
-                <Text color={"gray.600"}>Loanee = {Loanee}</Text>
-                <Text color={"gray.600"}>
-                  fractionalisedId = {fractionalisedId}
-                </Text>
-                <Text color={"gray.600"}>
-                  fractionalisedNftAddress = {fractionalisedNftAddress}
-                </Text>
-                <Text color={"gray.600"}>lendingNumber = {lendingNumber}</Text>
-                <Text color={"gray.600"}>
-                  numberOfFractions = {numberOfFractions}
-                </Text>
-                <Text color={"gray.600"}>
-                  numberOfFractionsInvested = {numberOfFractionsInvested}
-                </Text>
-              </Stack>
+              </chakra.p>
+            </Box>
+            <Box mt={4}>
+              <Flex alignItems="center">
+                <GoPrimitiveDot height="8" />
+                <Flex alignItems="center" mx="2">
+                  <Link fontWeight="bold" color="gray.700">
+                    Country
+                  </Link>
+                </Flex>
+                <chakra.span mx={1} fontSize="sm" color="gray.600">
+                  {tokenDetail?.attributes?.Country}
+                </chakra.span>
+              </Flex>
+              <Flex alignItems="center">
+                <GoPrimitiveDot height="8" />
+                <Flex alignItems="center" mx="2">
+                  <Link fontWeight="bold" color="gray.700">
+                    Loanee
+                  </Link>
+                </Flex>
+                <chakra.span mx={1} fontSize="sm" color="gray.600">
+                  {Loanee}
+                </chakra.span>
+              </Flex>
+              <Flex alignItems="center">
+                <GoPrimitiveDot height="8" />
+                <Flex alignItems="center" mx="2">
+                  <Link fontWeight="bold" color="gray.700">
+                    City
+                  </Link>
+                </Flex>
+                <chakra.span mx={1} fontSize="sm" color="gray.600">
+                  {tokenDetail?.attributes?.City}
+                </chakra.span>
+              </Flex>
+              <Flex alignItems="center">
+                <GoPrimitiveDot height="8" />
+                <Flex alignItems="center" mx="2">
+                  <Link fontWeight="bold" color="gray.700">
+                    lendingNumber
+                  </Link>
+                </Flex>
+                <chakra.span mx={1} fontSize="sm" color="gray.600">
+                  {lendingNumber}
+                </chakra.span>
+              </Flex>
+              <Flex alignItems="center">
+                <GoPrimitiveDot height="8" />
+                <Flex alignItems="center" mx="2">
+                  <Link fontWeight="bold" color="gray.700">
+                    Location
+                  </Link>
+                </Flex>
+                <chakra.span mx={1} fontSize="sm" color="gray.600">
+                  {tokenDetail?.attributes?.GPSCoordinates}
+                </chakra.span>
+              </Flex>
+              <Flex alignItems="center">
+                <GoPrimitiveDot height="8" />
+                <Flex alignItems="center" mx="2">
+                  <Link fontWeight="bold" color="gray.700">
+                    Surface area
+                  </Link>
+                </Flex>
+                <chakra.span mx={1} fontSize="sm" color="gray.600">
+                  {tokenDetail?.attributes?.SurfaceArea}
+                </chakra.span>
+              </Flex>
+              <Flex alignItems="center">
+                <GoPrimitiveDot height="8" />
+                <Flex alignItems="center" mx="2">
+                  <Link fontWeight="bold" color="gray.700">
+                    fractionalisedId
+                  </Link>
+                </Flex>
+                <chakra.span mx={1} fontSize="sm" color="gray.600">
+                  {fractionalisedId}
+                </chakra.span>
+              </Flex>
+              <Flex alignItems="center">
+                <GoPrimitiveDot height="8" />
+                <Flex alignItems="center" mx="2">
+                  <Link fontWeight="bold" color="gray.700">
+                    numberOfFractions
+                  </Link>
+                </Flex>
+                <chakra.span mx={1} fontSize="sm" color="gray.600">
+                  {numberOfFractions}
+                </chakra.span>
+              </Flex>
+              <Flex alignItems="center">
+                <GoPrimitiveDot height="8" />
+                <Flex alignItems="center" mx="2">
+                  <Link fontWeight="bold" color="gray.700">
+                    fractionalisedNftAddress
+                  </Link>
+                </Flex>
+                <chakra.span mx={1} fontSize="sm" color="gray.600">
+                  {fractionalisedNftAddress}
+                </chakra.span>
+              </Flex>
+              <Flex alignItems="center">
+                <GoPrimitiveDot height="8" />
+                <Flex alignItems="center" mx="2">
+                  <Link fontWeight="bold" color="gray.700">
+                    numberOfFractionsInvested
+                  </Link>
+                </Flex>
+                <chakra.span mx={1} fontSize="sm" color="gray.600">
+                  {numberOfFractionsInvested}
+                </chakra.span>
+              </Flex>
+            </Box>
+            <Box>
               <Button onClick={onInvestOpen}>Invest</Button>
-              <Modal
-                initialFocusRef={initialRef}
-                finalFocusRef={finalRef}
-                isOpen={isInvestOpen}
-                onClose={onInvestClose}
-              >
-                <ModalOverlay />
-                <ModalContent>
-                  <ModalHeader>Create your account</ModalHeader>
-                  <ModalCloseButton />
-                  <ModalBody pb={6}>
-                    <NumberInput
-                      onChange={(e) => {
-                        console.log(e.valueOf());
-                        setinvestingInNumberOfFraction(Number(e.valueOf()));
-                      }}
-                      defaultValue={0}
-                      min={0}
-                      max={numberOfFractions - numberOfFractionsInvested}
+            </Box>
+            <Modal
+              initialFocusRef={initialRef}
+              finalFocusRef={finalRef}
+              isOpen={isInvestOpen}
+              onClose={onInvestClose}
+            >
+              <ModalOverlay />
+              <ModalContent>
+                <ModalHeader>Create your account</ModalHeader>
+                <ModalCloseButton />
+                <ModalBody pb={6}>
+                  <NumberInput
+                    onChange={(e) => {
+                      console.log(e.valueOf());
+                      setinvestingInNumberOfFraction(Number(e.valueOf()));
+                    }}
+                    defaultValue={0}
+                    min={0}
+                    max={numberOfFractions - numberOfFractionsInvested}
+                  >
+                    <NumberInputField />
+                    <NumberInputStepper>
+                      <NumberIncrementStepper />
+                      <NumberDecrementStepper />
+                    </NumberInputStepper>
+                  </NumberInput>
+                </ModalBody>
+                <ModalFooter>
+                  {isReiContractApproved ? (
+                    <Button onClick={handleInvest} colorScheme="blue" mr={3}>
+                      Do invest
+                    </Button>
+                  ) : (
+                    <Button
+                      onClick={handleREIApprove}
+                      colorScheme="blue"
+                      mr={3}
                     >
-                      <NumberInputField />
-                      <NumberInputStepper>
-                        <NumberIncrementStepper />
-                        <NumberDecrementStepper />
-                      </NumberInputStepper>
-                    </NumberInput>
-                  </ModalBody>
-                  <ModalFooter>
-                    {isReiContractApproved ? (
-                      <Button onClick={handleInvest} colorScheme="blue" mr={3}>
-                        Do invest
-                      </Button>
-                    ) : (
-                      <Button
-                        onClick={handleREIApprove}
-                        colorScheme="blue"
-                        mr={3}
-                      >
-                        First Approve
-                      </Button>
-                    )}
-                  </ModalFooter>
-                </ModalContent>
-              </Modal>
-            </Stack>
+                      First Approve
+                    </Button>
+                  )}
+                </ModalFooter>
+              </ModalContent>
+            </Modal>
           </Box>
-        </Center>
+        </Box>
       )}
     </>
   );
