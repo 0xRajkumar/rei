@@ -80,9 +80,6 @@ We used THe graph to index onchain data becouse of the graph now user experience
 
 #### 3. TheGraph
 
-#### 4. Chainlink
+#### 4. React
 
-#### 5. React
-
-#### 6. Web3
-
+#### 5. Ethers and Wagmi
